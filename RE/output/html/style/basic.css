@@ -1,0 +1,48 @@
+body {
+    font-size: 16px;
+    font-family: "Arial";
+    margin: 10px 10px 10px 10px;
+    padding: 0px 0px 0px 0px;
+}
+
+.css_title {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    /* background-color: #CCFFCC; */
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 16px 0px;
+}
+
+.css_lines {
+    /* background-color: blue; */
+    padding: 0px 0px 0px 0px;
+    margin: 18px 64px 18px 64px;
+    text-align: center;
+}
+
+.css_text {
+    /* background-color: #FFFFDD; */
+    padding: 0px 0px 0px 0px;
+    margin: 11px 0px 11px 0px;
+}
+
+.css_bible_text {
+    background-color: #f7f7f7;
+    padding: 5px 5px 5px 5px;
+    margin: 11px 16px 0px 16px;
+    border-top: solid 1px #808080;
+    font-size: 15px;
+    text-align: justify;
+}
+
+.css_bible_origin {
+    background-color: #eeeeee;
+    padding: 0px 5px 0px 5px;
+    margin: 0px 16px 11px 16px;
+    border-top: solid 1px #cccccc;
+    border-bottom: solid 1px #808080;
+    text-align: right;
+    font-size: 14px;
+}
+
