@@ -8,4 +8,4 @@ Dwa Świeczniki:
 Dwaj Prorocy:
 #(Obj 11, 10)#
 Dwaj Pomazańcy:
-#(Za 4, 14)#
+#(Za 4, 11-14)#
