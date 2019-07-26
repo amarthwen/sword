@@ -1,16 +1,10 @@
-Przykładowy komentarz do pierwszego wersetu, który jest tak długi, że nie powienien zmieścić się w jednej linii. Został on napisany dlatego, aby sprawdzić wielkość odległości pomiędzy kolejnymi wersetami.
-A to jest drugi paragraf, który również został użyty do sprawdzenia odległości pomiędzy akapitami.
+Tysiąc dwieście sześćdziesiąt dni:
 #(Obj 11, 3)#
-Przykładowy komentarz do drugiego wersetu:
 #(Obj 12, 6)#
-Przykładowy komentarz do trzeciego wersetu:
+Czterdzieści dwa miesiące:
 #(Obj 11, 2)#
-Przykładowy komentarz do czwartego wersetu:
 #(Obj 13, 5)#
-Przykładowy komentarz do piątego wersetu:
+Czas, czasy i pół czasu:
 #(Obj 12, 14)#
-Przykładowy komentarz do szóstego wersetu:
 #(Dn 7, 25)#
-Przykładowy komentarz do ostatniego - siódmego wersetu:
 #(Dn 12, 7)#
-Przykładowy tekst po ostatnim wersecie
