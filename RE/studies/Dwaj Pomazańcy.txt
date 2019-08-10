@@ -9,3 +9,4 @@ Dwaj Prorocy:
 #(Obj 11, 10)#
 Dwaj Pomazańcy:
 #(Za 4, 11-14)#
+#(Ps 105, 6-15)#
