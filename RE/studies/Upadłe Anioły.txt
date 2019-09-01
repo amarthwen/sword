@@ -1,5 +1,5 @@
 #(Ef 6, 10-12)#
-Rabusie:
+Rabusie/złodzieje:
 #(Dn 11, 33)#
 #(Jr 12, 12)#
 #(Iz 24, 16)#
@@ -9,6 +9,7 @@ Rabusie:
 #(Ha 1, 9-11)#
 #(Jr 30, 15-16)#
 #(Ez 7, 20-24)#
+#(Jr 49, 9)#
 Mordercy:
 Grabieżcy:
 Włamywacze:
