@@ -2,8 +2,16 @@
 import os
 import sys
 import codecs
+import os
+import sys
 from SWORD import SWORD
 from HTML import HTML
+from LATEX import LATEX
+
+output_folder_txt = u'txt'
+output_folder_html = u'html'
+output_folder_latex = u'latex'
+output_folder_pdf = u'pdf'
 
 def print_file_contents(bible_parsed_contents, dir_input, dir_output, filename):
     tmp_title = os.path.splitext(filename)[0]
@@ -15,27 +23,36 @@ def print_file_contents(bible_parsed_contents, dir_input, dir_output, filename):
     tmp_text = [tmp_title.decode('utf-8')]
 
     HTML.Init()
+    LATEX.Init()
+
     HTML.SetTitle(tmp_title.decode('utf-8'))
+    LATEX.SetTitle(tmp_title.decode('utf-8'))
 
     for tmp_query in tmp_contents:
         tmp_bible_query_lines = SWORD.ParseQueryContents(tmp_query.decode('utf-8'))
         tmp_bible_text = SWORD.GetBibleText(bible_parsed_contents, tmp_bible_query_lines)
 
         if len(tmp_bible_text):
-            tmp_quoted_text = u'"' + u' '.join(tmp_bible_text) + u'"'
+            tmp_bible_text_joined = u' '.join(tmp_bible_text)
+            tmp_quoted_text = u'"' + tmp_bible_text_joined + u'"'
             tmp_query_stripped = tmp_query.decode('utf-8').replace(SWORD.g_delimiter_boundary, u'')
 
             tmp_text.append(u'* ' + tmp_quoted_text + u' ' + tmp_query_stripped)
             HTML.AddBibleText(tmp_quoted_text, tmp_query_stripped)
+            LATEX.AddBibleText(tmp_bible_text_joined, tmp_query_stripped)
         else:
             tmp_text.append(tmp_query.decode('utf-8'))
             HTML.AddText(tmp_query.decode('utf-8'))
+            LATEX.AddText(tmp_query.decode('utf-8'))
 
-    with codecs.open(os.path.join(dir_output + u'/txt', tmp_title.decode('utf-8') + '.txt'), 'w', 'utf-8') as f:
+    with codecs.open(os.path.join(dir_output + u'/' + output_folder_txt, tmp_title.decode('utf-8') + '.txt'), 'w', 'utf-8') as f:
         f.write('\r\n'.join(tmp_text))
 
-    with codecs.open(os.path.join(dir_output + u'/html', tmp_title.decode('utf-8') + '.html'), 'w', 'utf-8') as f:
+    with codecs.open(os.path.join(dir_output + u'/' + output_folder_html, tmp_title.decode('utf-8') + '.html'), 'w', 'utf-8') as f:
         f.write(HTML.GetPage(u'Wersety do studium:'))
+
+    with codecs.open(os.path.join(dir_output + u'/' + output_folder_latex, tmp_title.decode('utf-8') + '.tex'), 'w', 'utf-8') as f:
+        f.write(LATEX.GetPage(u'Wersety do studium:'))
 
 if len(sys.argv) < 3:
     print 'error: please give at least three arguments: source, input directory and output directory'
