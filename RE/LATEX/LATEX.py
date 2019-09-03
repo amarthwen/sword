@@ -37,16 +37,16 @@ def AddBibleText(text, origin):
     global g_contents
     global g_lines
 
-    origin_with_hard_spaces = origin.replace(' ', '~')
+    origin_within_mbox = '\\mbox{' + origin + '}'
 
     elements = [
         '\\begin{quote}',
-         ',,' + text + '\'\' ' + origin_with_hard_spaces,
+         ',,' + text + '\'\' ' + origin_within_mbox,
         '\\end{quote}'
     ]
 
     g_contents.append('\r\n'.join(elements))
-    g_lines.append(origin_with_hard_spaces)
+    g_lines.append(origin_within_mbox)
 
 def GetTitle():
     return '\\centerline{\\textbf{\\MakeUppercase{' + g_title + '}}}'
