@@ -41,7 +41,7 @@ def AddBibleText(text, origin):
 
     elements = [
         '\\begin{quote}',
-         ',,' + text + '\'\' ' + origin_within_mbox,
+         ',,' + text.replace('(...)', '(\ldots)') + '\'\' ' + origin_within_mbox,
         '\\end{quote}'
     ]
 
