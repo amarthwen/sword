@@ -50,6 +50,12 @@ class IModuleElement:
     return self.HandleCmdUnknown(arg_ModuleParams)
 
 class Translation:
+  # list of all translations already used
+  atr_Translations = {}
+
+  # currently used translation
+  atr_CurrentTranslation = None
+
   # line related regular expression data
   atr_RegExpStrLine = cfg_RegExpStrLineDelimiterInternal + r'(\d*\D+)' + cfg_RegExpStrLineDelimiterInternal + r'(\d+)' + cfg_RegExpStrLineDelimiterInternal + r'(\d+)[ ]+\'(.*)\''
 
@@ -72,6 +78,21 @@ class Translation:
     self.atr_Name = arg_TranslationName
     self.atr_FullName = tmp_Lines[0].strip(cfg_TranslationFullNameQuoteChar)
     self.atr_Contents = tmp_Contents
+
+  @staticmethod
+  def Get(arg_TranslationName):
+    if arg_TranslationName not in Translation.atr_Translations:
+      Translation.atr_Translations[arg_TranslationName] = Translation(arg_TranslationName)
+
+    return Translation.atr_Translations[arg_TranslationName]
+
+  @staticmethod
+  def GetCurrent():
+    return Translation.atr_CurrentTranslation
+
+  @staticmethod
+  def SetCurrent(arg_TranslationName):
+    Translation.atr_CurrentTranslation = Translation.Get(arg_TranslationName)
 
   def GetName(self):
     return self.atr_Name
@@ -110,12 +131,6 @@ class Translation:
 
 
 class Scripture(IModuleElement):
-  # list of all Scriptures already used
-  atr_Translations = {}
-
-  # currently used Scripture
-  atr_CurrentTranslation = None
-
   # text origin related regular expression data
   atr_RegExpStrTextOriginRange = r'\d+(?:' + cfg_RegExpStrTextOriginDelimiterLineRangeInternal + r'\d+){0,1}'
   atr_RegExpStrTextOriginMultipleRange = atr_RegExpStrTextOriginRange + r'(?:' + cfg_RegExpStrTextOriginDelimiterLineRange + atr_RegExpStrTextOriginRange + r')*'
@@ -127,7 +142,7 @@ class Scripture(IModuleElement):
   atr_RegExpTextOriginQuery = re.compile(atr_RegExpStrTextOriginQuery, re.UNICODE | re.IGNORECASE)
 
   def __init__(self):
-    self._UseTranslation(cfg_TranslationNameDefault)
+    Translation.SetCurrent(cfg_TranslationNameDefault)
   
   def _GetLinesFromTextOrigin(self, arg_TextOrigin):
     self.Log('get lines from text origin: ' + arg_TextOrigin)
@@ -161,25 +176,11 @@ class Scripture(IModuleElement):
 
     return tmp_Lines
 
-  def _GetTranslation(self, arg_TranslationName):
-    if arg_TranslationName not in self.atr_Translations:
-      self.atr_Translations[arg_TranslationName] = Translation(arg_TranslationName)
-
-    return self.atr_Translations[arg_TranslationName]
-
-  def _UseTranslation(self, arg_TranslationName):
-    self.atr_CurrentTranslation = self._GetTranslation(arg_TranslationName)
-
-  def _GetText(self, arg_TextOrigin, arg_Translation):
-    tmp_TextOriginLines = self._GetLinesFromTextOrigin(arg_TextOrigin)
-
-    return arg_Translation.GetText(tmp_TextOriginLines) + u' ' + arg_TextOrigin
-
   def HandleCmdUseTranslation(self, arg_TranslationName):
-    self._UseTranslation(arg_TranslationName)
+    Translation.SetCurrent(arg_TranslationName)
 
   def HandleCmdGetText(self, arg_TextOrigin):
-    return self._GetText(arg_TextOrigin, self.atr_CurrentTranslation)
+    return Translation.GetCurrent().GetText(self._GetLinesFromTextOrigin(arg_TextOrigin)) + u' ' + arg_TextOrigin
 
   def HandleCmd(self, arg_ModuleParams):
     return {
