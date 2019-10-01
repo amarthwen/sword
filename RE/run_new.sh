@@ -7,7 +7,7 @@ Cfg_StudiesFilenameExt='txt'
 
 for tmp_FileName in $Cfg_StudiesDir/*.$Cfg_StudiesFilenameExt; do
   tmp_Study=$(basename "$tmp_FileName" | cut -d. -f1)
-  tmp_Rslt=`python generators.py "$tmp_FileName"`
+  tmp_Rslt=`python -B generate.py "$tmp_FileName"`
   if (( $? == 0 )); then
     echo -e -n "[${COL_2} OK ${COL_X}]"
   else
