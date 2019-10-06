@@ -16,15 +16,6 @@ def main():
   if not os.path.exists(tmp_Args.OptInput):
     sys.exit(os.EX_OSFILE)
 
-  # create instance of generators
-  tmp_Gens = Generators.Generators()
-
-  # register generators
-  tmp_Gens.Register(Generators.Text())
-  tmp_Gens.Register(Generators.HTML())
-  tmp_Gens.Register(Generators.ODT())
-  tmp_Gens.Register(Generators.PDF())
-
   print 'Processing file: "' + tmp_Args.OptInput + '"'
 
   with codecs.open(tmp_Args.OptInput, 'r', 'utf-8') as tmp_File:
@@ -32,6 +23,23 @@ def main():
 
   # remove empty lines and comments
   tmp_FileContents[:] = [tmp_Line for tmp_Line in tmp_FileContents if len(tmp_Line) > 0 and tmp_Line[0] != Cfg_ChrComment]
+
+  # create instance of modules
+  tmp_Mods = Modules.Modules()
+
+  # register modules
+  tmp_Mods.Register(Modules.Sword())
+
+  tmp_
+
+  # create instance of generators
+  tmp_Gens = Generators.Generators()
+
+  # register generators
+  tmp_Gens.Register(Generators.Text())
+  # tmp_Gens.Register(Generators.HTML())
+  # tmp_Gens.Register(Generators.ODT())
+  # tmp_Gens.Register(Generators.PDF())
 
   tmp_Gens.Process(tmp_FileContents)
 

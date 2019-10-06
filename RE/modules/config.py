@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+CommentChar = u'%'
+
 # configuration variables
 StrModuleLeadingChar = '#'
 StrModuleTokenCharSet = 'a-zA-Z0-9_'

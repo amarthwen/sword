@@ -4,6 +4,7 @@
 # imports
 # ================================================================ #
 import Modules
+import xml.etree.ElementTree as ET
 
 # ================================================================ #
 # implementation of generator interface
@@ -33,10 +34,10 @@ class Text(iGenerator):
   def __init__(self):
     iGenerator.__init__(self)
 
-    self.Register(Modules.Sword())
+    self.Register(Modules.SWORD())
 
   def GetName(self):
-    return 'Text'
+    return 'text'
 
 # ================================================================ #
 # implementation of generator: HTML
@@ -46,8 +47,10 @@ class HTML(iGenerator):
   def __init__(self):
     iGenerator.__init__(self)
 
+    self.Register(Modules.Document())
+
   def GetName(self):
-    return 'HTML'
+    return 'html'
 
 # ================================================================ #
 # implementation of generator: ODT
@@ -58,7 +61,7 @@ class ODT(iGenerator):
     iGenerator.__init__(self)
 
   def GetName(self):
-    return 'ODT'
+    return 'odt'
 
 # ================================================================ #
 # implementation of generator: PDF
@@ -69,7 +72,7 @@ class PDF(iGenerator):
     iGenerator.__init__(self)
 
   def GetName(self):
-    return 'PDF'
+    return 'pdf'
 
 # ================================================================ #
 # implementation of generators container
@@ -88,6 +91,7 @@ class Generators:
 
   def Process(self, arg_FileContents):
     for tmp_GeneratorName, tmp_Generator in self.atr_Generators.items():
-      tmp_Text = tmp_Generator.Process(arg_FileContents)
+      tmp_XmlNodeRoot = tmp_Generator.Process(arg_FileContents)
+      print ET.tostring(tmp_XmlNodeRoot, encoding='utf-8')
       # print 'generator: "' + tmp_Generator.GetName() + '", text: "' + tmp_Text + '"'
 
