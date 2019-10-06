@@ -43,10 +43,13 @@ def main():
   # process file contents
   tmp_XmlNodeRoot = tmp_Mods.Process(tmp_FileContents)
 
+  tmp_InputFileName = tmp_Args.OptInput.decode('utf-8')
+  tmp_OutputFolderName = tmp_Args.OptOutput.decode('utf-8')
+
   # get file name
-  tmp_FileNameWithExt = os.path.basename(tmp_Args.OptInput)
+  tmp_FileNameWithExt = os.path.basename(tmp_InputFileName)
   tmp_FileName = os.path.splitext(tmp_FileNameWithExt)[0]
-  tmp_OutputFileName = os.path.join(tmp_Args.OptOutput, tmp_FileName + u'.xml')
+  tmp_OutputFileName = os.path.join(tmp_OutputFolderName, tmp_FileName + u'.xml')
 
   print 'Write results to file: "' + tmp_OutputFileName + '"'
 
