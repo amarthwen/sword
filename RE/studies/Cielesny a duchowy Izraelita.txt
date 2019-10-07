@@ -1,3 +1,5 @@
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
 Ziemski Izraelita
 - cielesna nieczystość
 - cielesna krew
@@ -21,36 +23,36 @@ Ziemski Izraelita
 
 Niebiański Izraelita
 - duchowa nieczystość
-#(J 13, 6-11)#
-#(Łk 11, 24-26)#
+SWORD::Scripture::GetText("J 13, 6-11")
+SWORD::Scripture::GetText("Łk 11, 24-26")
 - duchowa krew
 - duchowe ciało
-#(1 Kor 15, 44)#
+SWORD::Scripture::GetText("1 Kor 15, 44")
 - duchowy pokarm
-#(J 4, 31-34)#
+SWORD::Scripture::GetText("J 4, 31-34")
 - duchowy wzrok i słuch
 - niebiańska szata
-#(Za 3, 1-5)#
+SWORD::Scripture::GetText("Za 3, 1-5")
 - obrzezanie w duchu
 - duchowa nagość
-#(Obj 3, 17-18)#
+SWORD::Scripture::GetText("Obj 3, 17-18")
 - duchowy głód
-#(Am 8, 11-12)#
+SWORD::Scripture::GetText("Am 8, 11-12")
 - duchowy sen
 - duchowy chrzest
-#(J 1, 33)#
+SWORD::Scripture::GetText("J 1, 33")
 - duchowa śmierć
 - niebiański skarb
-#(Mt 6, 19-20)#
+SWORD::Scripture::GetText("Mt 6, 19-20")
 - niebiański dom
 - duchowa ślepota i głuchota
-#(Obj 3, 17-18)#
+SWORD::Scripture::GetText("Obj 3, 17-18")
 - życie według ducha
-#(Ga 5, 16-17)#
+SWORD::Scripture::GetText("Ga 5, 16-17")
 - niebiańska bieda (duchowa)
-#(Obj 3, 17-18)#
+SWORD::Scripture::GetText("Obj 3, 17-18")
 - składanie duchowych ofiar
-#(J 4, 24)#
-#(Ps 51, 19)#
+SWORD::Scripture::GetText("J 4, 24")
+SWORD::Scripture::GetText("Ps 51, 19")
 - niebiańska rodzina
-#(Mt 12, 46-50)#
+SWORD::Scripture::GetText("Mt 12, 46-50")

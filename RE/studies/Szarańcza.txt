@@ -1,8 +1,10 @@
-#(Obj 9, 1-11)#
-#(Jl 1, 4)#
-#(Am 4, 9)#
-#(Ml 3, 11)#
-#(Jl 2, 25)#
-#(Am 7, 1-3)#
-#(Na 3, 14-17)#
-#(2 Moj 10, 1-20)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Obj 9, 1-11")
+SWORD::Scripture::GetText("Jl 1, 4")
+SWORD::Scripture::GetText("Am 4, 9")
+SWORD::Scripture::GetText("Ml 3, 11")
+SWORD::Scripture::GetText("Jl 2, 25")
+SWORD::Scripture::GetText("Am 7, 1-3")
+SWORD::Scripture::GetText("Na 3, 14-17")
+SWORD::Scripture::GetText("2 Moj 10, 1-20")

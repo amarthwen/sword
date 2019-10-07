@@ -1,13 +1,15 @@
-#(Ps 51, 18-19)#
-#(Ps 50, 14.23)#
-#(Jr 7, 21-27)#
-#(1 Sm 15, 22)#
-#(Oz 6, 6)#
-#(Mt 23, 23)#
-#(Prz 21, 3)#
-#(Mt 9, 13)#
-#(J 4, 23-24)#
-#(Am 5, 21-24)#
-#(Iz 1, 14-20)#
-#(Mi 6, 6-8)#
-#(Ez 20, 41-42)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Ps 51, 18-19")
+SWORD::Scripture::GetText("Ps 50, 14.23")
+SWORD::Scripture::GetText("Jr 7, 21-27")
+SWORD::Scripture::GetText("1 Sm 15, 22")
+SWORD::Scripture::GetText("Oz 6, 6")
+SWORD::Scripture::GetText("Mt 23, 23")
+SWORD::Scripture::GetText("Prz 21, 3")
+SWORD::Scripture::GetText("Mt 9, 13")
+SWORD::Scripture::GetText("J 4, 23-24")
+SWORD::Scripture::GetText("Am 5, 21-24")
+SWORD::Scripture::GetText("Iz 1, 14-20")
+SWORD::Scripture::GetText("Mi 6, 6-8")
+SWORD::Scripture::GetText("Ez 20, 41-42")

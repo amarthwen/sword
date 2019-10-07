@@ -1,3 +1,5 @@
-#(Iz 24, 5-6)#
-#(Iz 34, 1-5)#
-#(Ml 3, 9)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Iz 24, 5-6")
+SWORD::Scripture::GetText("Iz 34, 1-5")
+SWORD::Scripture::GetText("Ml 3, 9")

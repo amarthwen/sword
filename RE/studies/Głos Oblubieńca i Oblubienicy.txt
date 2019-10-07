@@ -1,4 +1,6 @@
-#(Obj 18, 23)#
-#(Jr 7, 34)#
-#(Jr 16, 9)#
-#(Jr 25, 9-11)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Obj 18, 23")
+SWORD::Scripture::GetText("Jr 7, 34")
+SWORD::Scripture::GetText("Jr 16, 9")
+SWORD::Scripture::GetText("Jr 25, 9-11")

@@ -1,10 +1,12 @@
-#(Ab 1, 5-6)#
-#(Obj 14, 17-20)#
-#(Obj 19, 11-15)#
-#(Iz 63, 1-6)#
-#(Am 9, 13)#
-#(Jl 3, 17-19)#
-#(Obj 16, 19)#
-#(Iz 32, 10)#
-#(Obj 14, 9-10)#
-#(Jr 25, 15-17.27-29)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Ab 1, 5-6")
+SWORD::Scripture::GetText("Obj 14, 17-20")
+SWORD::Scripture::GetText("Obj 19, 11-15")
+SWORD::Scripture::GetText("Iz 63, 1-6")
+SWORD::Scripture::GetText("Am 9, 13")
+SWORD::Scripture::GetText("Jl 3, 17-19")
+SWORD::Scripture::GetText("Obj 16, 19")
+SWORD::Scripture::GetText("Iz 32, 10")
+SWORD::Scripture::GetText("Obj 14, 9-10")
+SWORD::Scripture::GetText("Jr 25, 15-17.27-29")

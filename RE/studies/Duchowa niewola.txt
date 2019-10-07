@@ -1,6 +1,8 @@
-#(2 Tm 2, 24-26)#
-#(1 Moj 4, 6-7)#
-#(Rz 7, 14-25)#
-#(Rz 8, 14-15)#
-#(Ga 4, 1-7)#
-#(Iz 30, 1)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("2 Tm 2, 24-26")
+SWORD::Scripture::GetText("1 Moj 4, 6-7")
+SWORD::Scripture::GetText("Rz 7, 14-25")
+SWORD::Scripture::GetText("Rz 8, 14-15")
+SWORD::Scripture::GetText("Ga 4, 1-7")
+SWORD::Scripture::GetText("Iz 30, 1")

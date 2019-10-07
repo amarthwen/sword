@@ -51,7 +51,7 @@ def main():
   tmp_FileName = os.path.splitext(tmp_FileNameWithExt)[0]
   tmp_OutputFileName = os.path.join(tmp_OutputFolderName, tmp_FileName + u'.xml')
 
-  print 'Write results to file: "' + tmp_OutputFileName + '"'
+  print 'Write results to file: "' + tmp_OutputFileName.encode('utf-8') + '"'
 
   # store xml tree to output file
   with codecs.open(tmp_OutputFileName, 'w+', 'utf-8') as tmp_File:

@@ -1,8 +1,10 @@
-#(Mt 21, 12-13)#
-#(J 2, 13-21)#
-#(Ez 28, 12-19)#
-#(2 Kor 2, 17)#
-#(2 Kor 4, 1-2)#
-#(Oz 7, 13)#
-#(So 3, 11-13)#
-#(Za 14, 20-21)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Mt 21, 12-13")
+SWORD::Scripture::GetText("J 2, 13-21")
+SWORD::Scripture::GetText("Ez 28, 12-19")
+SWORD::Scripture::GetText("2 Kor 2, 17")
+SWORD::Scripture::GetText("2 Kor 4, 1-2")
+SWORD::Scripture::GetText("Oz 7, 13")
+SWORD::Scripture::GetText("So 3, 11-13")
+SWORD::Scripture::GetText("Za 14, 20-21")

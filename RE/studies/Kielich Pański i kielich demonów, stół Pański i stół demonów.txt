@@ -1,3 +1,5 @@
-#(1 Kor 10, 19-21)#
-#(Mt 20, 20-23)#
-#(Łk 22, 39-42)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("1 Kor 10, 19-21")
+SWORD::Scripture::GetText("Mt 20, 20-23")
+SWORD::Scripture::GetText("Łk 22, 39-42")

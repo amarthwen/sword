@@ -1,4 +1,6 @@
-#(Obj 1, 18)#
-#(Obj 6, 8)#
-#(Obj 20, 13-14)#
-#(1 Kor 15, 54-56)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Obj 1, 18")
+SWORD::Scripture::GetText("Obj 6, 8")
+SWORD::Scripture::GetText("Obj 20, 13-14")
+SWORD::Scripture::GetText("1 Kor 15, 54-56")

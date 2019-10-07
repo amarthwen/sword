@@ -1,7 +1,9 @@
-#(Hbr 12, 22-24)#
-#(Hbr 13, 20-21)#
-#(Rz 8, 8-11)#
-#(Mt 26, 27-28)#
-#(J 4, 7-15)#
-#(J 7, 37-39)#
-#(Ef 2, 11-13)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Hbr 12, 22-24")
+SWORD::Scripture::GetText("Hbr 13, 20-21")
+SWORD::Scripture::GetText("Rz 8, 8-11")
+SWORD::Scripture::GetText("Mt 26, 27-28")
+SWORD::Scripture::GetText("J 4, 7-15")
+SWORD::Scripture::GetText("J 7, 37-39")
+SWORD::Scripture::GetText("Ef 2, 11-13")

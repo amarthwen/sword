@@ -1,2 +1,4 @@
-#(Iz 24, 5)#
-#(Iz 33, 8)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Iz 24, 5")
+SWORD::Scripture::GetText("Iz 33, 8")

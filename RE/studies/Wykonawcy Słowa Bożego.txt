@@ -1,3 +1,5 @@
-#(Jk 1, 22-25)#
-#(Łk 6, 46-49)#
-#(Mt 12, 46-50)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Jk 1, 22-25")
+SWORD::Scripture::GetText("Łk 6, 46-49")
+SWORD::Scripture::GetText("Mt 12, 46-50")

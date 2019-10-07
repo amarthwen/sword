@@ -1,1 +1,3 @@
-#(Za 14, 1-3.6-7.12-15)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Za 14, 1-3.6-7.12-15")

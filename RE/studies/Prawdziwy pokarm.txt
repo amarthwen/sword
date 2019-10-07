@@ -1,6 +1,8 @@
-#(Mt 4, 1-4)#
-#(J 4, 31-34)#
-#(Rz 14, 17)#
-#(1 Kor 6, 9-10)#
-#(1 Kor 6, 12-13)#
-#(Ga 5, 16-17)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Mt 4, 1-4")
+SWORD::Scripture::GetText("J 4, 31-34")
+SWORD::Scripture::GetText("Rz 14, 17")
+SWORD::Scripture::GetText("1 Kor 6, 9-10")
+SWORD::Scripture::GetText("1 Kor 6, 12-13")
+SWORD::Scripture::GetText("Ga 5, 16-17")

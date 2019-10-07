@@ -1,3 +1,5 @@
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
 Człowiek jako dom:
 Człowiek jako świątynia Ducha Świętego:
 Człowiek jako drzewo:

@@ -1,5 +1,7 @@
-#(Na 2, 9-11)#
-#(Jr 12, 10-12)#
-#(Iz 34, 9-11)#
-#(Iz 1, 7-9)#
-#(So 2, 9.13)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Na 2, 9-11")
+SWORD::Scripture::GetText("Jr 12, 10-12")
+SWORD::Scripture::GetText("Iz 34, 9-11")
+SWORD::Scripture::GetText("Iz 1, 7-9")
+SWORD::Scripture::GetText("So 2, 9.13")

@@ -1,7 +1,9 @@
-#(1 P 2, 9)#
-#(Obj 1, 6)#
-#(Obj 5, 10)#
-#(Ez 28, 13-16)#
-#(1 P 2, 4-8)#
-#(Oz 6, 5)#
-#(1 Krl 6, 7)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("1 P 2, 9")
+SWORD::Scripture::GetText("Obj 1, 6")
+SWORD::Scripture::GetText("Obj 5, 10")
+SWORD::Scripture::GetText("Ez 28, 13-16")
+SWORD::Scripture::GetText("1 P 2, 4-8")
+SWORD::Scripture::GetText("Oz 6, 5")
+SWORD::Scripture::GetText("1 Krl 6, 7")

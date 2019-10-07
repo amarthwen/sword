@@ -1,3 +1,5 @@
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
 Cielesny żołnierz:
 - cielesny wróg
 - cielesna zbroja i oręż

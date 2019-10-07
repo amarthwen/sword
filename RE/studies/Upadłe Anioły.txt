@@ -1,23 +1,25 @@
-#(Ef 6, 10-12)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Ef 6, 10-12")
 Rabusie/złodzieje:
-#(Dn 11, 33)#
-#(Jr 12, 12)#
-#(Iz 24, 16)#
-#(Ab 1, 5-6)#
-#(Iz 33, 1)#
-#(Iz 1, 21-23)#
-#(Ha 1, 9-11)#
-#(Jr 30, 15-16)#
-#(Ez 7, 20-24)#
-#(Jr 49, 9)#
+SWORD::Scripture::GetText("Dn 11, 33")
+SWORD::Scripture::GetText("Jr 12, 12")
+SWORD::Scripture::GetText("Iz 24, 16")
+SWORD::Scripture::GetText("Ab 1, 5-6")
+SWORD::Scripture::GetText("Iz 33, 1")
+SWORD::Scripture::GetText("Iz 1, 21-23")
+SWORD::Scripture::GetText("Ha 1, 9-11")
+SWORD::Scripture::GetText("Jr 30, 15-16")
+SWORD::Scripture::GetText("Ez 7, 20-24")
+SWORD::Scripture::GetText("Jr 49, 9")
 Mordercy:
 Grabieżcy:
 Włamywacze:
 Różne rodzaje duchów:
 - duch kłamstwa
-#(1 Krl 22, 18-22)#
-#(Mi 2, 11)#
+SWORD::Scripture::GetText("1 Krl 22, 18-22")
+SWORD::Scripture::GetText("Mi 2, 11")
 - duch wszeteczeństwa
-#(Oz 4, 12; 5, 4)#
+SWORD::Scripture::GetText("Oz 4, 12; 5, 4")
 - duch głuchy i niemy
-#(Mk 9, 25-27)#
+SWORD::Scripture::GetText("Mk 9, 25-27")

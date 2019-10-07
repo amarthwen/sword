@@ -1,4 +1,6 @@
-#(Ga 2, 3-5)#
-#(Ga 4, 6-7)#
-#(2 Kor 3, 17)#
-#(Ga 4, 29-31)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Ga 2, 3-5")
+SWORD::Scripture::GetText("Ga 4, 6-7")
+SWORD::Scripture::GetText("2 Kor 3, 17")
+SWORD::Scripture::GetText("Ga 4, 29-31")

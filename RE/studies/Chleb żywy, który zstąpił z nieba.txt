@@ -1,8 +1,10 @@
-#(Mt 26, 26)#
-#(2 Moj 16, 14-15)#
-#(1 Kor 10, 1-4)#
-#(J 6, 32-58)#
-#(Łk 22, 19)#
-#(Mt 4, 1-4)#
-#(J 4, 31-34)#
-#(J 1, 1-5.14)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Mt 26, 26")
+SWORD::Scripture::GetText("2 Moj 16, 14-15")
+SWORD::Scripture::GetText("1 Kor 10, 1-4")
+SWORD::Scripture::GetText("J 6, 32-58")
+SWORD::Scripture::GetText("Łk 22, 19")
+SWORD::Scripture::GetText("Mt 4, 1-4")
+SWORD::Scripture::GetText("J 4, 31-34")
+SWORD::Scripture::GetText("J 1, 1-5.14")

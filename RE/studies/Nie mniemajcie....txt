@@ -1,2 +1,4 @@
-#(Mt 5, 17-20)#
-#(Mt 10, 34-39)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Mt 5, 17-20")
+SWORD::Scripture::GetText("Mt 10, 34-39")

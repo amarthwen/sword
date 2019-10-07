@@ -1,16 +1,18 @@
-#(Ef 3, 14-19)#
-#(Ga 4, 6)#
-#(Rz 8, 15)#
-#(Jr 31, 31-34)#
-#(2 Kor 1, 21-22)#
-#(2 Kor 3, 3)#
-#(1 Kor 2, 9-10)#
-#(Jr 17, 9-10)#
-#(Oz 5, 4)#
-#(Łk 6, 45)#
-#(Jk 3, 7-12)#
-#(Jk 4, 8)#
-#(Ps 51, 12)#
-#(Mt 6, 19-21)#
-#(Rz 1, 18-25)#
-#(1 Moj 6, 5-6)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Ef 3, 14-19")
+SWORD::Scripture::GetText("Ga 4, 6")
+SWORD::Scripture::GetText("Rz 8, 15")
+SWORD::Scripture::GetText("Jr 31, 31-34")
+SWORD::Scripture::GetText("2 Kor 1, 21-22")
+SWORD::Scripture::GetText("2 Kor 3, 3")
+SWORD::Scripture::GetText("1 Kor 2, 9-10")
+SWORD::Scripture::GetText("Jr 17, 9-10")
+SWORD::Scripture::GetText("Oz 5, 4")
+SWORD::Scripture::GetText("Łk 6, 45")
+SWORD::Scripture::GetText("Jk 3, 7-12")
+SWORD::Scripture::GetText("Jk 4, 8")
+SWORD::Scripture::GetText("Ps 51, 12")
+SWORD::Scripture::GetText("Mt 6, 19-21")
+SWORD::Scripture::GetText("Rz 1, 18-25")
+SWORD::Scripture::GetText("1 Moj 6, 5-6")

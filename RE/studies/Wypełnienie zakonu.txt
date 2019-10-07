@@ -1,3 +1,5 @@
-#(Rz 13, 10)#
-#(Rz 5, 5)#
-#(Mt 5, 17)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Rz 13, 10")
+SWORD::Scripture::GetText("Rz 5, 5")
+SWORD::Scripture::GetText("Mt 5, 17")

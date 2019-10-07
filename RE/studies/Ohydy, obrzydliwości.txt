@@ -1,6 +1,8 @@
-#(Iz 44, 9-20)#
-#(Jr 4, 1-4)#
-#(Ez 11, 17-21)#
-#(Ez 8, 1-18)#
-#(Jr 7, 30)#
-#(Ez 7, 20)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Iz 44, 9-20")
+SWORD::Scripture::GetText("Jr 4, 1-4")
+SWORD::Scripture::GetText("Ez 11, 17-21")
+SWORD::Scripture::GetText("Ez 8, 1-18")
+SWORD::Scripture::GetText("Jr 7, 30")
+SWORD::Scripture::GetText("Ez 7, 20")

@@ -1,3 +1,5 @@
-#(2 Tes 2, 1-12)#
-#(Dn 8, 23-25)#
-#(Dn 11, 31-39)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("2 Tes 2, 1-12")
+SWORD::Scripture::GetText("Dn 8, 23-25")
+SWORD::Scripture::GetText("Dn 11, 31-39")

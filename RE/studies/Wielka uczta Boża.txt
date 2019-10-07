@@ -1,9 +1,11 @@
-#(Obj 19, 17-19)#
-#(Iz 34, 1-8)#
-#(Jr 7, 32-33)#
-#(Jr 16, 1-4)#
-#(Jr 19, 7)#
-#(Jr 34, 20)#
-#(Ez 39, 1-5)#
-#(Ez 39, 17-20)#
-#(Iz 66, 24)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Obj 19, 17-19")
+SWORD::Scripture::GetText("Iz 34, 1-8")
+SWORD::Scripture::GetText("Jr 7, 32-33")
+SWORD::Scripture::GetText("Jr 16, 1-4")
+SWORD::Scripture::GetText("Jr 19, 7")
+SWORD::Scripture::GetText("Jr 34, 20")
+SWORD::Scripture::GetText("Ez 39, 1-5")
+SWORD::Scripture::GetText("Ez 39, 17-20")
+SWORD::Scripture::GetText("Iz 66, 24")

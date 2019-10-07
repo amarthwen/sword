@@ -1,3 +1,5 @@
-#(Ez 37, 21-28)#
-#(J 14, 16-17)#
-#(Iz 24, 4-5)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Ez 37, 21-28")
+SWORD::Scripture::GetText("J 14, 16-17")
+SWORD::Scripture::GetText("Iz 24, 4-5")

@@ -1,7 +1,9 @@
-#(Obj 13, 11-18)#
-#(Obj 14, 9-12)#
-#(Obj 15, 1-2)#
-#(Obj 16, 2.11)#
-#(Obj 19, 20)#
-#(Obj 20, 4)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Obj 13, 11-18")
+SWORD::Scripture::GetText("Obj 14, 9-12")
+SWORD::Scripture::GetText("Obj 15, 1-2")
+SWORD::Scripture::GetText("Obj 16, 2.11")
+SWORD::Scripture::GetText("Obj 19, 20")
+SWORD::Scripture::GetText("Obj 20, 4")
 

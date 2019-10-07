@@ -1,9 +1,11 @@
-#(1 J 1, 6-10)#
-#(5 Moj 32, 43)#
-#(Iz 1, 25-26)#
-#(Iz 1, 16-18)#
-#(Jr 13, 26-27)#
-#(Jr 6, 27-30)#
-#(Ml 3, 1-4)#
-#(Za 13, 8-9)#
-#(Ez 22, 17-22)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("1 J 1, 6-10")
+SWORD::Scripture::GetText("5 Moj 32, 43")
+SWORD::Scripture::GetText("Iz 1, 25-26")
+SWORD::Scripture::GetText("Iz 1, 16-18")
+SWORD::Scripture::GetText("Jr 13, 26-27")
+SWORD::Scripture::GetText("Jr 6, 27-30")
+SWORD::Scripture::GetText("Ml 3, 1-4")
+SWORD::Scripture::GetText("Za 13, 8-9")
+SWORD::Scripture::GetText("Ez 22, 17-22")

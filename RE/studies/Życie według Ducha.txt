@@ -1,0 +1,2 @@
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")

@@ -1,12 +1,14 @@
-#(So 1, 14-18)#
-#(Iz 13, 2-13)#
-#(Iz 34, 1-10)#
-#(Ha 3, 1-19)#
-#(Jl 2, 1-11)#
-#(So 1, 8-13)#
-#(Iz 24, 1-23)#
-#(Jl 3, 16-26)#
-#(Am 5, 18.20)#
-#(Am 8, 9-10)#
-#(Za 14, 6-7)#
-#(Ml 3, 19-21)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("So 1, 14-18")
+SWORD::Scripture::GetText("Iz 13, 2-13")
+SWORD::Scripture::GetText("Iz 34, 1-10")
+SWORD::Scripture::GetText("Ha 3, 1-19")
+SWORD::Scripture::GetText("Jl 2, 1-11")
+SWORD::Scripture::GetText("So 1, 8-13")
+SWORD::Scripture::GetText("Iz 24, 1-23")
+SWORD::Scripture::GetText("Jl 3, 16-26")
+SWORD::Scripture::GetText("Am 5, 18.20")
+SWORD::Scripture::GetText("Am 8, 9-10")
+SWORD::Scripture::GetText("Za 14, 6-7")
+SWORD::Scripture::GetText("Ml 3, 19-21")

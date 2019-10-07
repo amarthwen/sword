@@ -1,10 +1,12 @@
-#(Mt 24, 29-31)#
-#(Obj 6, 12-14)#
-#(Iz 24, 21-23)#
-#(Am 8, 9-10)#
-#(Ha 3, 11)#
-#(Iz 13, 9-10)#
-#(Jl 2, 10)#
-#(Jl 3, 3-4)#
-#(Jl 3, 20)#
-#(Ez 32, 7)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Mt 24, 29-31")
+SWORD::Scripture::GetText("Obj 6, 12-14")
+SWORD::Scripture::GetText("Iz 24, 21-23")
+SWORD::Scripture::GetText("Am 8, 9-10")
+SWORD::Scripture::GetText("Ha 3, 11")
+SWORD::Scripture::GetText("Iz 13, 9-10")
+SWORD::Scripture::GetText("Jl 2, 10")
+SWORD::Scripture::GetText("Jl 3, 3-4")
+SWORD::Scripture::GetText("Jl 3, 20")
+SWORD::Scripture::GetText("Ez 32, 7")

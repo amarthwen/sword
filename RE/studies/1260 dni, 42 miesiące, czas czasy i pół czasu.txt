@@ -1,10 +1,12 @@
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
 Tysiąc dwieście sześćdziesiąt dni:
-#(Obj 11, 3)#
-#(Obj 12, 6)#
+SWORD::Scripture::GetText("Obj 11, 3")
+SWORD::Scripture::GetText("Obj 12, 6")
 Czterdzieści dwa miesiące:
-#(Obj 11, 2)#
-#(Obj 13, 5)#
+SWORD::Scripture::GetText("Obj 11, 2")
+SWORD::Scripture::GetText("Obj 13, 5")
 Czas, czasy i pół czasu:
-#(Obj 12, 14)#
-#(Dn 7, 25)#
-#(Dn 12, 7)#
+SWORD::Scripture::GetText("Obj 12, 14")
+SWORD::Scripture::GetText("Dn 7, 25")
+SWORD::Scripture::GetText("Dn 12, 7")

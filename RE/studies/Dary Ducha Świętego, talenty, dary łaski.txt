@@ -1,5 +1,7 @@
-#(Mt 25, 14-15)#
-#(Rz 12, 6-8)#
-#(Ef 4, 7-13)#
-#(1 Kor 12, 4-11)#
-#(1 Kor 14, 12)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Mt 25, 14-15")
+SWORD::Scripture::GetText("Rz 12, 6-8")
+SWORD::Scripture::GetText("Ef 4, 7-13")
+SWORD::Scripture::GetText("1 Kor 12, 4-11")
+SWORD::Scripture::GetText("1 Kor 14, 12")

@@ -1,1 +1,3 @@
-#(Mi 3, 5-7)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Mi 3, 5-7")

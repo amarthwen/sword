@@ -1,5 +1,7 @@
-#(Rz 7, 7-20)#
-#(Ga 5, 16-17)#
-#(1 Moj 4, 3-7)#
-#(Ef 6, 10-18)#
-#(1 Kor 15, 53-56)#
+DOC::Sectioning::Begin("Document")
+SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::GetText("Rz 7, 7-20")
+SWORD::Scripture::GetText("Ga 5, 16-17")
+SWORD::Scripture::GetText("1 Moj 4, 3-7")
+SWORD::Scripture::GetText("Ef 6, 10-18")
+SWORD::Scripture::GetText("1 Kor 15, 53-56")
