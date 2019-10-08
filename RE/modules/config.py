@@ -26,5 +26,6 @@ ScriptureTextExcerptDelimiter = u'(...)'
 # Scripture: text origin related configuration
 ScriptureTextOriginDelimiterChapter = r';'
 ScriptureTextOriginDelimiterChapterInternal = r','
-ScriptureTextOriginDelimiterLineRange = r'.'
-ScriptureTextOriginDelimiterLineRangeInternal = r'-'
+ScriptureTextOriginDelimiterVersetRange = r'.'
+ScriptureTextOriginDelimiterVersetRangeInternal = r'-'
+ScriptureTextOriginDelimiterReferenceRange = r'..'

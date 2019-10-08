@@ -22,10 +22,11 @@ cfg_TranslationExtension = config.ScriptureTranslationExtension
 cfg_TranslationFullNameQuoteChar = config.ScriptureFullNameQuoteChar
 
 # text origin related regular expression configuration variables
-cfg_RegExpStrTextOriginDelimiterLineRange = config.ScriptureTextOriginDelimiterLineRange
-cfg_RegExpStrTextOriginDelimiterLineRangeInternal = config.ScriptureTextOriginDelimiterLineRangeInternal
+cfg_RegExpStrTextOriginDelimiterLineRange = config.ScriptureTextOriginDelimiterVersetRange
+cfg_RegExpStrTextOriginDelimiterLineRangeInternal = config.ScriptureTextOriginDelimiterVersetRangeInternal
 cfg_RegExpStrTextOriginDelimiterChapter = config.ScriptureTextOriginDelimiterChapter
 cfg_RegExpStrTextOriginDelimiterChapterInternal = config.ScriptureTextOriginDelimiterChapterInternal
+cfg_RegExpStrTextOriginDelimiterReferenceRange = config.ScriptureTextOriginDelimiterReferenceRange
 
 # ================================================================ #
 # implementation of module entry
@@ -190,15 +191,17 @@ class Translation:
   def GetFullName(self):
     return self.atr_XmlNodeRoot.getroot().get('name', None)
 
-  def GetLine(self, arg_Book, arg_Chapter, arg_Verset):
-    tmpXmlNode = self.atr_XmlNodeRoot.find("./book[@shortcut='{}']/chapter[@id='{}']/verset[@id='{}']".format(arg_Book, str(arg_Chapter), str(arg_Verset)))
+  def GetVerset(self, arg_Book, arg_Chapter, arg_Verset):
+    tmpXmlNode = self.atr_XmlNodeRoot.find(u"./book[@shortcut='{}']/chapter[@id='{}']/verset[@id='{}']".format(arg_Book, str(arg_Chapter), str(arg_Verset)))
 
     if tmpXmlNode is None:
       raise Exception
 
-    return (tmpXmlNode.get('ref', 0), tmpXmlNode.text)
+    return (arg_Book, arg_Chapter, arg_Verset, int(tmpXmlNode.get('ref', '0')), tmpXmlNode.text)
 
   def GetText(self, arg_TextOrigin, tmp_XmlNodeRoot):
+    tmp_Versets = []
+
     tmp_Rslt = self.atr_RegExpTextOriginQuery.match(arg_TextOrigin.replace(u' ', u''))
     if tmp_Rslt is None:
       raise Exception
@@ -230,12 +233,30 @@ class Translation:
 
         # add xml nodes for each line
         for i in range(tmp_LineRangeMin, tmp_LineRangeMax + 1):
-          tmp_Line = self.GetLine(tmp_Book, tmp_ChapterNr, i)
+          tmp_Versets.append(self.GetVerset(tmp_Book, tmp_ChapterNr, i))
 
-          tmp_XmlNodeLine = ET.SubElement(tmp_XmlNodeRoot, 'verset')
-          tmp_XmlNodeLine.set('ref', str(tmp_Line[0]))
-          tmp_XmlNodeLine.set('origin', tmp_Book + u' ' + str(tmp_ChapterNr) + u', ' + str(i))
-          tmp_XmlNodeLine.text = tmp_Line[1]
+    tmp_Versets.append((u'', 0, 0, 0, u''))
+
+    tmp_VersetMin = None
+    tmp_VersetMax = None
+    for tmp_VersetCurr in tmp_Versets:
+      if tmp_VersetMax is not None and tmp_VersetCurr[3] == tmp_VersetMax[3] + 1 and tmp_VersetCurr[1] == tmp_VersetMax[1]:
+        tmp_VersetMax = tmp_VersetCurr
+        # tmp_Text = tmp_Text + u' ' + tmp_VersetCurr[4]
+      else:
+        if tmp_VersetMin is not None and tmp_VersetMax is not None:
+          tmp_XmlNodeVerset = ET.SubElement(tmp_XmlNodeRoot, 'verset')
+          if tmp_VersetMin != tmp_VersetMax:
+            tmp_XmlNodeVerset.set('ref', str(tmp_VersetMin[3]) + cfg_RegExpStrTextOriginDelimiterReferenceRange + str(tmp_VersetMax[3]))
+            tmp_XmlNodeVerset.set('origin', tmp_VersetMin[0] + u' ' + str(tmp_VersetMin[1]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[2]) + cfg_RegExpStrTextOriginDelimiterLineRangeInternal + str(tmp_VersetMax[2]))
+          else:
+            tmp_XmlNodeVerset.set('ref', str(tmp_VersetMin[3]))
+            tmp_XmlNodeVerset.set('origin', tmp_VersetMin[0] + u' ' + str(tmp_VersetMin[1]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[2]))
+          # tmp_XmlNodeVerset.text = tmp_Text
+
+        tmp_VersetMin = tmp_VersetCurr
+        tmp_VersetMax = tmp_VersetCurr
+        # tmp_Text = tmp_VersetCurr[4]
 
   @staticmethod
   def GetNameFromFileName(arg_FileName):
