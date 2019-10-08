@@ -168,12 +168,6 @@ class IModule:
 # ================================================================ #
 # helper class
 class Translation:
-  # line related regular expression data
-  atr_RegExpStrLine = cfg_RegExpStrLineDelimiterInternal + r'(\d*\D+)' + cfg_RegExpStrLineDelimiterInternal + r'(\d+)' + cfg_RegExpStrLineDelimiterInternal + r'(\d+)[ ]+\'(.*)\''
-
-  # text origin related regular expression
-  atr_RegExpLineQuery = re.compile(atr_RegExpStrLine, re.UNICODE | re.IGNORECASE)
-
   # text origin related regular expression data
   atr_RegExpStrTextOriginRange = r'\d+(?:' + cfg_RegExpStrTextOriginDelimiterLineRangeInternal + r'\d+){0,1}'
   atr_RegExpStrTextOriginMultipleRange = atr_RegExpStrTextOriginRange + r'(?:' + cfg_RegExpStrTextOriginDelimiterLineRange + atr_RegExpStrTextOriginRange + r')*'
@@ -185,38 +179,24 @@ class Translation:
   atr_RegExpTextOriginQuery = re.compile(atr_RegExpStrTextOriginQuery, re.UNICODE | re.IGNORECASE)
 
   def __init__(self, arg_TranslationFileName):
-    with codecs.open(arg_TranslationFileName, 'r', 'utf-8') as tmp_TranslationHandle:
-      tmp_Lines = [tmp_Line.strip() for tmp_Line in tmp_TranslationHandle.readlines()]
-
-    i = 0
-    tmp_Contents = {}
-    for tmp_Line in tmp_Lines:
-      tmp_Rslt = self.atr_RegExpLineQuery.match(tmp_Line)
-      if tmp_Rslt is not None:
-        tmp_Groups = tmp_Rslt.groups()
-        tmp_Contents[(tmp_Groups[0], int(tmp_Groups[1]), int(tmp_Groups[2]))] = (i, tmp_Groups[3])
-        i = i + 1
-
-    self.atr_Name = Translation.GetNameFromFileName(arg_TranslationFileName)
-    self.atr_FullName = tmp_Lines[0].strip(cfg_TranslationFullNameQuoteChar)
-    self.atr_Contents = tmp_Contents
+    self.atr_XmlNodeRoot = ET.parse(arg_TranslationFileName)
 
   def __str__(self):
     return self.GetName()
 
   def GetName(self):
-    return self.atr_Name
+    return self.atr_XmlNodeRoot.getroot().get('shortcut', None)
 
   def GetFullName(self):
-    return self.atr_FullName
+    return self.atr_XmlNodeRoot.getroot().get('name', None)
 
-  def GetLine(self, arg_LineID):
-    tmpLine = self.atr_Contents.get(arg_LineID, None)
+  def GetLine(self, arg_Book, arg_Chapter, arg_Verset):
+    tmpXmlNode = self.atr_XmlNodeRoot.find("./book[@shortcut='{}']/chapter[@id='{}']/verset[@id='{}']".format(arg_Book, str(arg_Chapter), str(arg_Verset)))
 
-    if tmpLine is None:
+    if tmpXmlNode is None:
       raise Exception
 
-    return tmpLine
+    return (tmpXmlNode.get('ref', 0), tmpXmlNode.text)
 
   def GetText(self, arg_TextOrigin, tmp_XmlNodeRoot):
     tmp_Rslt = self.atr_RegExpTextOriginQuery.match(arg_TextOrigin.replace(u' ', u''))
@@ -250,11 +230,10 @@ class Translation:
 
         # add xml nodes for each line
         for i in range(tmp_LineRangeMin, tmp_LineRangeMax + 1):
-          tmp_LineID = (tmp_Book, tmp_ChapterNr, i)
-          tmp_Line = self.GetLine(tmp_LineID)
+          tmp_Line = self.GetLine(tmp_Book, tmp_ChapterNr, i)
 
-          tmp_XmlNodeLine = ET.SubElement(tmp_XmlNodeRoot, 'line')
-          tmp_XmlNodeLine.set('id', str(tmp_Line[0]))
+          tmp_XmlNodeLine = ET.SubElement(tmp_XmlNodeRoot, 'verset')
+          tmp_XmlNodeLine.set('ref', str(tmp_Line[0]))
           tmp_XmlNodeLine.set('origin', tmp_Book + u' ' + str(tmp_ChapterNr) + u', ' + str(i))
           tmp_XmlNodeLine.text = tmp_Line[1]
 
@@ -537,14 +516,14 @@ class Modules:
         if self.atr_Modules:
           try:
             tmp_Module = self.atr_Modules.get(tmp_Item['elements'][0], None)
-            if tmp_Module is not None:
-              tmp_XmlNodeChild = tmp_Module.Process(tmp_Item['elements'][1:], tmp_Item['params'])
-              if tmp_XmlNodeChild is not None:
-                tmp_XmlNodeObject.append(tmp_XmlNodeChild)
           except:
             tmp_Module = None
 
-        if tmp_Module is None:
+        if tmp_Module is not None:
+          tmp_XmlNodeChild = tmp_Module.Process(tmp_Item['elements'][1:], tmp_Item['params'])
+          if tmp_XmlNodeChild is not None:
+            tmp_XmlNodeObject.append(tmp_XmlNodeChild)
+        else:
           # regular text
           tmp_XmlNodeText = ET.SubElement(tmp_XmlNodeObject, 'text')
 

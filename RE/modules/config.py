@@ -14,7 +14,7 @@ ScriptureTranslationDefault = 'BW'
 ScriptureTranslationPath = 'Scripture/translations'
 
 # Scripture: default translation extension
-ScriptureTranslationExtension = '.txt'
+ScriptureTranslationExtension = '.xml'
 
 # Scripture: line related configuration
 ScriptureLineDelimiterInternal = r'/'
