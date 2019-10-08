@@ -1,4 +1,4 @@
-DOC::Sectioning::Begin("Document")
+Document::Sectioning::Begin("Document")
 SWORD::Scripture::UseTranslation("BW")
 Lud Boży jako Świątynia Boża:
 SWORD::Scripture::GetText("Hbr 9, 1-10")

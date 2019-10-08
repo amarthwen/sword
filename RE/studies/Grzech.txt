@@ -1,4 +1,4 @@
-DOC::Sectioning::Begin("Document")
+Document::Sectioning::Begin("Document")
 SWORD::Scripture::UseTranslation("BW")
 SWORD::Scripture::GetText("Rz 7, 7-20")
 SWORD::Scripture::GetText("Ga 5, 16-17")
