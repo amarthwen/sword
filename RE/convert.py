@@ -37,7 +37,7 @@ def main():
   tmp_Mods = Modules.Modules()
 
   # register modules
-  tmp_Mods.Register(Modules.DOC())
+  tmp_Mods.Register(Modules.Document())
   tmp_Mods.Register(Modules.SWORD())
 
   # process file contents
@@ -54,8 +54,13 @@ def main():
   print 'Write results to file: "' + tmp_OutputFileName.encode('utf-8') + '"'
 
   # store xml tree to output file
-  with codecs.open(tmp_OutputFileName, 'w+', 'utf-8') as tmp_File:
-    tmp_File.write(ET.tostring(tmp_XmlNodeRoot))
+  ET.ElementTree(tmp_XmlNodeRoot).write(
+    tmp_OutputFileName,
+    encoding = 'utf-8',
+    xml_declaration = True,
+    default_namespace = None,
+    method = "xml"
+  )
 
 if __name__ == "__main__":
   main()
