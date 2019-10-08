@@ -54,9 +54,6 @@ class Entry:
       if tmp_Rslt is not None:
         tmp_Groups = tmp_Rslt.groups()
 
-        # print tmp_Rslt.start(0)
-        # print tmp_Rslt.end(0)
-
         tmp_Start = tmp_Rslt.start(0)
         tmp_End = tmp_Rslt.end(0)
 
@@ -105,11 +102,30 @@ class IModule:
   def __init__(self):
     self.atr_Modules = {}
 
+    self.atr_XmlNamespace = {
+      self.GetName().lower() : 'https://github.com/amarthwen/sword/xmlns/' + self.GetName().lower()
+    }
+
+    ET.register_namespace(self.atr_XmlNamespace.keys()[0], self.atr_XmlNamespace.values()[0])
+
   def __str__(self):
     return self.GetName()
 
   def GetName(self):
     raise NotImplementedError
+
+  def GetXmlNamespaces(self):
+    tmp_XmlNamespaces = {}
+
+    for tmp_Module in self.atr_Modules.values():
+      tmp_XmlNamespaces.update(tmp_Module.GetXmlNamespaces())
+
+    tmp_XmlNamespaces.update(self.atr_XmlNamespace)
+
+    return tmp_XmlNamespaces
+
+  def GetXmlTagName(self, arg_TagName):
+    return u'{' + self.atr_XmlNamespace.values()[0] + u'}' + arg_TagName
 
   def HandleCmdUnknown(self, arg_Params):
     raise NotImplementedError
@@ -121,9 +137,8 @@ class IModule:
     pass
 
   def HandleObject(self, arg_XmlNodeObject):
-    if self.atr_Modules:
-      for tmp_Module in self.atr_Modules.values():
-        tmp_Module.HandleObject(arg_XmlNodeObject)
+    for tmp_Module in self.atr_Modules.values():
+      tmp_Module.HandleObject(arg_XmlNodeObject)
 
     self.HandleObjectLocally(arg_XmlNodeObject)
         
@@ -140,12 +155,7 @@ class IModule:
 
       tmp_XmlNodeChild = tmp_Module.Process(arg_Elements[1:], arg_Params)
 
-    if tmp_XmlNodeChild is not None:
-      # create xml node
-      tmp_XmlNodeRoot = ET.Element(self.GetName())
-      tmp_XmlNodeRoot.append(tmp_XmlNodeChild)
-
-    return tmp_XmlNodeRoot
+    return tmp_XmlNodeChild
 
   def Register(self, arg_Module):
     tmp_ModuleName = str(arg_Module)
@@ -191,8 +201,6 @@ class Translation:
     self.atr_FullName = tmp_Lines[0].strip(cfg_TranslationFullNameQuoteChar)
     self.atr_Contents = tmp_Contents
 
-    # print 'Translation: "' + self.atr_Name + '" ("' + self.atr_FullName + '") registered'
-
   def __str__(self):
     return self.GetName()
 
@@ -210,17 +218,10 @@ class Translation:
 
     return tmpLine
 
-  def GetText(self, arg_TextOrigin):
-    tmp_XmlNodeRoot = None
-
+  def GetText(self, arg_TextOrigin, tmp_XmlNodeRoot):
     tmp_Rslt = self.atr_RegExpTextOriginQuery.match(arg_TextOrigin.replace(u' ', u''))
     if tmp_Rslt is None:
       raise Exception
-
-    # create xml node
-    tmp_XmlNodeRoot = ET.Element('GetText')
-    tmp_XmlNodeRoot.set('translation', self.GetName())
-    tmp_XmlNodeRoot.set('origin', arg_TextOrigin)
 
     # get book and chapters with lines
     tmp_Groups = tmp_Rslt.groups()
@@ -257,15 +258,6 @@ class Translation:
           tmp_XmlNodeLine.set('origin', tmp_Book + u' ' + str(tmp_ChapterNr) + u', ' + str(i))
           tmp_XmlNodeLine.text = tmp_Line[1]
 
-    
-    # tmp_Output = ET.tostring(tmp_XmlNodeRoot)
-    tmp_Output = ET.tostring(tmp_XmlNodeRoot, encoding='utf-8')
-
-    # print tmp_Output
-
-    return tmp_XmlNodeRoot
-    # return tmp_Output
-
   @staticmethod
   def GetNameFromFileName(arg_FileName):
     return os.path.splitext(os.path.basename(arg_FileName))[0]
@@ -289,7 +281,6 @@ class Translations:
     tmp_TranslationName = Translation.GetNameFromFileName(arg_TranslationFileName)
 
     if tmp_TranslationName not in self.atr_Translations:
-      # print '> add translation: "' + tmp_TranslationName + '"'
       self.atr_Translations[tmp_TranslationName] = Translation(arg_TranslationFileName)
 
 # module
@@ -308,13 +299,21 @@ class Scripture(IModule):
     return self.__class__.__name__
 
   def HandleCmdGetText(self, arg_Params):
-    tmp_XmlNodeRoot = None
     tmp_TextOrigin = arg_Params[0].strip(cfg_ChrQuote)
 
-    if self.atr_Translations.GetCurrent() is None:
+    tmp_XmlNodeRoot = ET.Element(self.GetXmlTagName('extract'))
+
+    tmp_CurrentTranslation = self.atr_Translations.GetCurrent()
+
+    if tmp_CurrentTranslation is None:
       raise Exception
 
-    return self.atr_Translations.GetCurrent().GetText(tmp_TextOrigin)
+    tmp_CurrentTranslation.GetText(tmp_TextOrigin, tmp_XmlNodeRoot)
+
+    tmp_XmlNodeRoot.set('translation', tmp_CurrentTranslation.GetName())
+    tmp_XmlNodeRoot.set('origin', tmp_TextOrigin)
+
+    return tmp_XmlNodeRoot
 
   def HandleCmdUseTranslation(self, arg_Params):
     tmp_XmlNodeRoot = None
@@ -371,7 +370,6 @@ class Sectioning(IModule):
   def HandleObjectLocally(self, arg_XmlNodeObject):
     # do not add document itself
     if arg_XmlNodeObject is not None and arg_XmlNodeObject.find(u'.//' + Sectioning.GetLevelName(0)) is None:
-      # print 'add object: ' + ET.tostring(arg_XmlNodeObject)
       tmp_CurrentLevel = self.GetCurrentLevel()
 
       if tmp_CurrentLevel >= 0 and self.atr_XmlPath[tmp_CurrentLevel] is not None:
@@ -381,8 +379,6 @@ class Sectioning(IModule):
     tmp_XmlNode = None
     tmp_Level = None
     tmp_Title = None
-
-    # print arg_Params
 
     # sanity check
     if len(arg_Params) == 0:
@@ -407,10 +403,13 @@ class Sectioning(IModule):
     if len(arg_Params) > 1:
       tmp_Title = arg_Params[1].strip(cfg_ChrQuote)
 
+    # set tag name
+    tmp_TagName = self.GetXmlTagName(Sectioning.GetLevelName(tmp_Level).lower())
+
     if tmp_Level == 0:
-      tmp_XmlNode = ET.Element(Sectioning.GetLevelName(tmp_Level))
+      tmp_XmlNode = ET.Element(tmp_TagName)
     else:
-      tmp_XmlNode = ET.SubElement(self.atr_XmlPath[tmp_Level - 1], Sectioning.GetLevelName(tmp_Level))
+      tmp_XmlNode = ET.SubElement(self.atr_XmlPath[tmp_Level - 1], tmp_TagName)
 
     if tmp_Title is not None:
       tmp_XmlNode.set('title', tmp_Title)
@@ -422,8 +421,6 @@ class Sectioning(IModule):
     for tmp_Value in self.atr_Levels.values():
       if tmp_Value > tmp_Level:
         self.atr_XmlPath[tmp_Value] = None
-
-    # print ET.tostring(tmp_XmlNode)
 
     # return only xml node with level set to 0
     if tmp_Level > 0:
@@ -474,7 +471,7 @@ class Sectioning(IModule):
     return tmp_LevelName
 
 # module
-class DOC(IModule):
+class Document(IModule):
   def __init__(self):
     IModule.__init__(self)
 
@@ -525,10 +522,13 @@ class Modules:
       self.atr_Modules[tmp_ModuleName] = arg_Module
 
   def Process(self, arg_FileContents):
-    tmp_XmlNodeContents = ET.Element('Contents')
+    tmp_XmlNodeContents = ET.Element('contents')
+    tmp_XmlNamespaces = {} # TODO: add default namespace?
+    for tmp_Module in self.atr_Modules.values():
+      tmp_XmlNamespaces.update(tmp_Module.GetXmlNamespaces())
 
     for tmp_Line in arg_FileContents:
-      tmp_XmlNodeObject = ET.Element('Object')
+      tmp_XmlNodeObject = ET.Element('object')
       tmp_Items = Entry(tmp_Line).GetItems()
 
       for tmp_Item in tmp_Items:
@@ -540,27 +540,27 @@ class Modules:
             if tmp_Module is not None:
               tmp_XmlNodeChild = tmp_Module.Process(tmp_Item['elements'][1:], tmp_Item['params'])
               if tmp_XmlNodeChild is not None:
-                # print '### child returned: ' + ET.tostring(tmp_XmlNodeChild)
-                if tmp_XmlNodeChild.find(u'.//Sectioning/' + Sectioning.GetLevelName(0)) is not None:
-                  # print 'Document found!'
-                  tmp_XmlNodeContents.append(tmp_XmlNodeChild)
-                  
                 tmp_XmlNodeObject.append(tmp_XmlNodeChild)
           except:
             tmp_Module = None
 
         if tmp_Module is None:
           # regular text
-          tmp_XmlNodeText = ET.SubElement(tmp_XmlNodeObject, 'Text')
+          tmp_XmlNodeText = ET.SubElement(tmp_XmlNodeObject, 'text')
 
           try:
             tmp_XmlNodeText.text = tmp_Item['text']
           except:
             tmp_XmlNodeText.text = tmp_Item
 
-      if tmp_XmlNodeObject.find('*') is not None and self.atr_Modules:
-        for tmp_Module in self.atr_Modules.values():
-          tmp_Module.HandleObject(tmp_XmlNodeObject)
+      tmp_TagName = u'sectioning' + u':' + Sectioning.GetLevelName(0).lower()
+      tmp_XmlNodeDocument = tmp_XmlNodeObject.find(tmp_TagName, tmp_XmlNamespaces)
+      if tmp_XmlNodeDocument is not None:
+        tmp_XmlNodeContents.append(tmp_XmlNodeDocument)
+      else:
+        if tmp_XmlNodeObject.find('*') is not None and self.atr_Modules:
+          for tmp_Module in self.atr_Modules.values():
+            tmp_Module.HandleObject(tmp_XmlNodeObject)
 
     return tmp_XmlNodeContents
 
