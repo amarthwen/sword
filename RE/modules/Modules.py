@@ -32,14 +32,12 @@ cfg_RegExpStrTextOriginDelimiterReferenceRange = config.ScriptureTextOriginDelim
 # implementation of module entry
 # ================================================================ #
 class Entry:
-  atr_RegExpStrTokenRaw = u'[a-zA-Z0-9_]*'
-  atr_RegExpStrToken = u'[\s]*' + atr_RegExpStrTokenRaw + u'[\s]*'
-  atr_RegExpStrPathElement = u'[\s]*' + atr_RegExpStrToken + u'[\s]*'
-  atr_RegExpStrPath = u'(' + atr_RegExpStrPathElement + u'(?:' + cfg_ChrPathElementSeparator + atr_RegExpStrPathElement + u')*)'
+  atr_RegExpStrToken = u'[a-zA-Z0-9_]*'
+  atr_RegExpStrPath = u'(' + atr_RegExpStrToken + u'(?:' + u'[\s]*' + cfg_ChrPathElementSeparator + u'[\s]*' + atr_RegExpStrToken + u')*)'
 
   atr_RegExpStrString = cfg_ChrQuote + u'[^' + cfg_ChrQuote + u']*' + cfg_ChrQuote
-  atr_RegExpStrParamListElement = u'[\s]*(?:' + atr_RegExpStrString + u'|' + atr_RegExpStrTokenRaw + u')[\s]*'
-  atr_RegExpStrParamList = u'\((' + atr_RegExpStrParamListElement + u'(?:' + cfg_ChrParamListSeparator + atr_RegExpStrParamListElement + u')*)\)[\s]*'
+  atr_RegExpStrParamListElement = u'[\s]*(?:' + atr_RegExpStrString + u'|' + atr_RegExpStrToken + u')[\s]*'
+  atr_RegExpStrParamList = u'[\s]*\((' + atr_RegExpStrParamListElement + u'(?:' + cfg_ChrParamListSeparator + atr_RegExpStrParamListElement + u')*)\)'
   atr_RegExpStrOptionalParamListSeparatorWithParamListElement = u'(' + cfg_ChrParamListSeparator + u'{0,1}(' + atr_RegExpStrParamListElement + '))'
 
   atr_RegExpStrPathAndParamList = u'(' + atr_RegExpStrPath + atr_RegExpStrParamList + u')'
