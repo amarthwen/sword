@@ -191,16 +191,17 @@ class Translation:
   def GetFullName(self):
     return self.atr_XmlNodeRoot.getroot().get('name', None)
 
-  def GetVerset(self, arg_Book, arg_Chapter, arg_Verset):
+  def GetVersetReference(self, arg_Book, arg_Chapter, arg_Verset):
     tmpXmlNode = self.atr_XmlNodeRoot.find(u"./book[@shortcut='{}']/chapter[@id='{}']/verset[@id='{}']".format(arg_Book, str(arg_Chapter), str(arg_Verset)))
 
     if tmpXmlNode is None:
       raise Exception
 
-    return (arg_Book, arg_Chapter, arg_Verset, int(tmpXmlNode.get('ref', '0')), tmpXmlNode.text)
+    return int(tmpXmlNode.get('ref', '0'))
 
-  def GetText(self, arg_TextOrigin, tmp_XmlNodeRoot):
+  def GetVersetReferences(self, arg_TextOrigin):
     tmp_Versets = []
+    tmp_VersetReferences = []
 
     tmp_Rslt = self.atr_RegExpTextOriginQuery.match(arg_TextOrigin.replace(u' ', u''))
     if tmp_Rslt is None:
@@ -231,32 +232,40 @@ class Translation:
           tmp_LineRangeMin = tmp_LineRangeMax
           tmp_LineRangeMax = tmp_LineRangeMid
 
-        # add xml nodes for each line
-        for i in range(tmp_LineRangeMin, tmp_LineRangeMax + 1):
-          tmp_Versets.append(self.GetVerset(tmp_Book, tmp_ChapterNr, i))
+        tmp_VersetReferenceMin = self.GetVersetReference(tmp_Book, tmp_ChapterNr, tmp_LineRangeMin)
+        tmp_VersetReferenceMax = self.GetVersetReference(tmp_Book, tmp_ChapterNr, tmp_LineRangeMax)
+
+        # sanity check
+        if tmp_VersetReferenceMin == 0 or tmp_VersetReferenceMax == 0:
+          raise Exception
+
+        tmp_Versets.append((tmp_ChapterNr, tmp_LineRangeMin, tmp_LineRangeMax, tmp_VersetReferenceMin, tmp_VersetReferenceMax))
 
     tmp_Versets.append((u'', 0, 0, 0, u''))
 
     tmp_VersetMin = None
     tmp_VersetMax = None
+
     for tmp_VersetCurr in tmp_Versets:
-      if tmp_VersetMax is not None and tmp_VersetCurr[3] == tmp_VersetMax[3] + 1 and tmp_VersetCurr[1] == tmp_VersetMax[1]:
+      if tmp_VersetMax is not None and tmp_VersetCurr[1] == tmp_VersetMax[2] + 1 and tmp_VersetCurr[0] == tmp_VersetMax[0]:
         tmp_VersetMax = tmp_VersetCurr
-        # tmp_Text = tmp_Text + u' ' + tmp_VersetCurr[4]
       else:
         if tmp_VersetMin is not None and tmp_VersetMax is not None:
-          tmp_XmlNodeVerset = ET.SubElement(tmp_XmlNodeRoot, 'verset')
-          if tmp_VersetMin != tmp_VersetMax:
-            tmp_XmlNodeVerset.set('ref', str(tmp_VersetMin[3]) + cfg_RegExpStrTextOriginDelimiterReferenceRange + str(tmp_VersetMax[3]))
-            tmp_XmlNodeVerset.set('origin', tmp_VersetMin[0] + u' ' + str(tmp_VersetMin[1]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[2]) + cfg_RegExpStrTextOriginDelimiterLineRangeInternal + str(tmp_VersetMax[2]))
+          if tmp_VersetMin != tmp_VersetMax or tmp_VersetMin[1] != tmp_VersetMax[2]:
+            tmp_VersetReferences.append({
+              'ref' : str(tmp_VersetMin[3]) + cfg_RegExpStrTextOriginDelimiterReferenceRange + str(tmp_VersetMax[4]),
+              'origin' : tmp_Book + u' ' + str(tmp_VersetMin[0]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[1]) + cfg_RegExpStrTextOriginDelimiterLineRangeInternal + str(tmp_VersetMax[2])
+            })
           else:
-            tmp_XmlNodeVerset.set('ref', str(tmp_VersetMin[3]))
-            tmp_XmlNodeVerset.set('origin', tmp_VersetMin[0] + u' ' + str(tmp_VersetMin[1]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[2]))
-          # tmp_XmlNodeVerset.text = tmp_Text
+            tmp_VersetReferences.append({
+              'ref' : str(tmp_VersetMin[3]),
+              'origin' : tmp_Book + u' ' + str(tmp_VersetMin[0]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[1])
+            })
 
         tmp_VersetMin = tmp_VersetCurr
         tmp_VersetMax = tmp_VersetCurr
-        # tmp_Text = tmp_VersetCurr[4]
+
+    return tmp_VersetReferences
 
   @staticmethod
   def GetNameFromFileName(arg_FileName):
@@ -308,7 +317,12 @@ class Scripture(IModule):
     if tmp_CurrentTranslation is None:
       raise Exception
 
-    tmp_CurrentTranslation.GetText(tmp_TextOrigin, tmp_XmlNodeRoot)
+    GetVersetReferences = tmp_CurrentTranslation.GetVersetReferences(tmp_TextOrigin)
+
+    for GetVersetReference in GetVersetReferences:
+      tmp_XmlNodeVersetReference = ET.SubElement(tmp_XmlNodeRoot, 'verset')
+      for tmp_Key, tmp_Value in GetVersetReference.items():
+        tmp_XmlNodeVersetReference.set(tmp_Key, tmp_Value)
 
     tmp_XmlNodeRoot.set('translation', tmp_CurrentTranslation.GetName())
     tmp_XmlNodeRoot.set('origin', tmp_TextOrigin)
