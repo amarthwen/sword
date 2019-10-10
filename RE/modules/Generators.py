@@ -3,7 +3,7 @@
 # ================================================================ #
 # imports
 # ================================================================ #
-import Modules
+import codecs, os
 import xml.etree.ElementTree as ET
 
 # ================================================================ #
@@ -11,7 +11,7 @@ import xml.etree.ElementTree as ET
 # ================================================================ #
 class iGenerator:
   def __init__(self):
-    self.atr_Modules = Modules.Modules()
+    pass
 
   def __str__(self):
     return self.GetName()
@@ -19,25 +19,34 @@ class iGenerator:
   def GetName(self):
     raise NotImplementedError
 
-  def Process(self, arg_FileContents):
-    # print '> generator running: "' + self.GetName() + '"'
-    return self.atr_Modules.Process(arg_FileContents)
+  def Process(self, arg_FileName, arg_XmlNodeRoot, arg_OutputFolderName):
+    self.WriteContents(arg_FileName, u'Generated with generator: "' + self.GetName() + '"', arg_OutputFolderName)
 
-  def Register(self, arg_Module):
-    self.atr_Modules.Register(arg_Module)
+  def WriteContents(self, arg_FileName, arg_Contents, arg_OutputFolderName):
+    tmp_Name = self.GetName()
+
+    tmp_OutputFolderName = os.path.join(arg_OutputFolderName, tmp_Name)
+    tmp_OutputFileName = arg_FileName + u'.' + tmp_Name
+
+    if os.path.exists(tmp_OutputFolderName):
+      if not os.path.isdir(tmp_OutputFolderName):
+        raise Exception
+    else:
+      os.mkdir(tmp_OutputFolderName)
+
+    with codecs.open(os.path.join(tmp_OutputFolderName, tmp_OutputFileName), 'w+', 'utf-8') as tmp_File:
+      tmp_File.write(arg_Contents)
 
 # ================================================================ #
-# implementation of generator: Text
+# implementation of generator: TXT
 # ================================================================ #
 # generator
-class Text(iGenerator):
+class TXT(iGenerator):
   def __init__(self):
     iGenerator.__init__(self)
 
-    self.Register(Modules.SWORD())
-
   def GetName(self):
-    return 'text'
+    return self.__class__.__name__.lower()
 
 # ================================================================ #
 # implementation of generator: HTML
@@ -47,21 +56,19 @@ class HTML(iGenerator):
   def __init__(self):
     iGenerator.__init__(self)
 
-    self.Register(Modules.Document())
-
   def GetName(self):
-    return 'html'
+    return self.__class__.__name__.lower()
 
 # ================================================================ #
-# implementation of generator: ODT
+# implementation of generator: FODT
 # ================================================================ #
 # generator
-class ODT(iGenerator):
+class FODT(iGenerator):
   def __init__(self):
     iGenerator.__init__(self)
 
   def GetName(self):
-    return 'odt'
+    return self.__class__.__name__.lower()
 
 # ================================================================ #
 # implementation of generator: PDF
@@ -72,7 +79,7 @@ class PDF(iGenerator):
     iGenerator.__init__(self)
 
   def GetName(self):
-    return 'pdf'
+    return self.__class__.__name__.lower()
 
 # ================================================================ #
 # implementation of generators container
@@ -89,9 +96,7 @@ class Generators:
     if tmp_GeneratorName not in self.atr_Generators:
       self.atr_Generators[tmp_GeneratorName] = arg_Generator
 
-  def Process(self, arg_FileContents):
-    for tmp_GeneratorName, tmp_Generator in self.atr_Generators.items():
-      tmp_XmlNodeRoot = tmp_Generator.Process(arg_FileContents)
-      print ET.tostring(tmp_XmlNodeRoot, encoding='utf-8')
-      # print 'generator: "' + tmp_Generator.GetName() + '", text: "' + tmp_Text + '"'
+  def Process(self, arg_FileName, arg_XmlNodeRoot, arg_OutputFolderName):
+    for tmp_Generator in self.atr_Generators.values():
+      tmp_Contents = tmp_Generator.Process(arg_FileName, arg_XmlNodeRoot, arg_OutputFolderName)
 

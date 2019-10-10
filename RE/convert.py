@@ -10,7 +10,7 @@ from modules import Modules
 # ================================================================ #
 # configuration
 # ================================================================ #
-Cfg_ChrComment = '#'
+Cfg_ChrComment = u'#'
 
 # ================================================================ #
 # main()
@@ -26,6 +26,19 @@ def main():
     sys.exit(os.EX_OSFILE)
 
   print 'Processing file: "' + tmp_Args.OptInput + '"'
+
+  # get input file name
+  tmp_InputFileName = tmp_Args.OptInput.decode('utf-8')
+
+  # get output folder name
+  tmp_OutputFolderName = tmp_Args.OptOutput.decode('utf-8')
+
+  # try to create output folder, if doesn't exist
+  if os.path.exists(tmp_OutputFolderName):
+    if not os.path.isdir(tmp_OutputFolderName):
+      raise Exception
+  else:
+    os.mkdir(tmp_OutputFolderName)
 
   with codecs.open(tmp_Args.OptInput, 'r', 'utf-8') as tmp_File:
     tmp_FileContents = [tmp_Line.strip() for tmp_Line in tmp_File.readlines()]
@@ -43,15 +56,10 @@ def main():
   # process file contents
   tmp_XmlNodeRoot = tmp_Mods.Process(tmp_FileContents)
 
-  tmp_InputFileName = tmp_Args.OptInput.decode('utf-8')
-  tmp_OutputFolderName = tmp_Args.OptOutput.decode('utf-8')
-
   # get file name
   tmp_FileNameWithExt = os.path.basename(tmp_InputFileName)
   tmp_FileName = os.path.splitext(tmp_FileNameWithExt)[0]
   tmp_OutputFileName = os.path.join(tmp_OutputFolderName, tmp_FileName + u'.xml')
-
-  print 'Write results to file: "' + tmp_OutputFileName.encode('utf-8') + '"'
 
   # store xml tree to output file
   ET.ElementTree(tmp_XmlNodeRoot).write(

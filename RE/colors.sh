@@ -36,10 +36,10 @@ COL_E=$BASH_COLOR_LIGHT_CYAN
 COL_F=$BASH_COLOR_WHITE
 COL_X=$BASH_COLOR_DEFAULT
 
-cmd_SetColor() {
+function cmd_SetColor() {
   echo -e -n $1
 }
 
-cmd_PrintWithColor() {
-  echo -e $1$2$BASH_COLOR_NONE
+function cmd_PrintWithColor() {
+  echo -e $1$2$BASH_COLOR_DEFAULT
 }
