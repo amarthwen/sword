@@ -1,5 +1,5 @@
 Document::Sectioning::Begin("Document")
-SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::Translations::Use("BW")
 Dwaj Świadkowie:
 SWORD::Scripture::GetText("Obj 11, 3")
 Dwa Drzewa Oliwne:

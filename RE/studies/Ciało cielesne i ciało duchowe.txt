@@ -1,5 +1,5 @@
 Document::Sectioning::Begin("Document")
-SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::Translations::Use("BW")
 Ciało cielesne i ciało duchowe:
 SWORD::Scripture::GetText("J 12, 24-25")
 SWORD::Scripture::GetText("1 Kor 15, 35-44")

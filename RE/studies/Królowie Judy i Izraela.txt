@@ -1,5 +1,5 @@
 Document::Sectioning::Begin("Document")
-SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::Translations::Use("BW")
 Królowie przed podziałem Izraela:
 - Saul
 SWORD::Scripture::GetText("1 Sm 13, 1")

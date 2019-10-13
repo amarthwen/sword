@@ -1,5 +1,5 @@
 Document::Sectioning::Begin("Document")
-SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::Translations::Use("BW")
 Tysiąc dwieście sześćdziesiąt dni:
 SWORD::Scripture::GetText("Obj 11, 3")
 SWORD::Scripture::GetText("Obj 12, 6")

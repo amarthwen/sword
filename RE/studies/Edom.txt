@@ -1,5 +1,5 @@
 Document::Sectioning::Begin("Document")
-SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::Translations::Use("BW")
 Wykonanie wyroku na Edomie:
 SWORD::Scripture::GetText("Iz 34, 1-10")
 Spustoszenie Edomu:

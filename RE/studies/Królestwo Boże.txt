@@ -1,5 +1,5 @@
 Document::Sectioning::Begin("Document")
-SWORD::Scripture::UseTranslation("BW")
+SWORD::Scripture::Translations::Use("BW")
 SWORD::Scripture::GetText("Mt 22, 2-14")
 SWORD::Scripture::GetText("Mt 13, 31-32")
 SWORD::Scripture::GetText("Mt 13, 33")
