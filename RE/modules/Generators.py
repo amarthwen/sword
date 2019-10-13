@@ -15,6 +15,9 @@ cfg_XmlAttrScriptureExtract = config.ScriptureExtractXmlAttribs
 # xml attributes: 'scripture:extract/verset'
 cfg_XmlAttrScriptureExtractVerset = config.ScriptureExtractVersetXmlAttribs
 
+# xml attributes: 'sectioning:section'
+cfg_XmlAttrSectioningSection = config.SectioningSectionXmlAttribs
+
 # ================================================================ #
 # configuration of generator TXT
 # ================================================================ #
@@ -87,6 +90,8 @@ class TXT(iGenerator):
       'Translations' : Modules.Translations()
     }
 
+    self.atr_SectioningLevels = [0 for tmp_Level in Modules.Sectioning.atr_Levels.items()]
+
   def GetName(self):
     return self.__class__.__name__.lower()
 
@@ -144,21 +149,62 @@ class TXT(iGenerator):
 
     return u''.join(filter(None, tmp_Contents))
 
+  def HandleTagSectioningSection(self, arg_XmlNode):
+    tmp_Contents = []
+    tmp_AtrLevel = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Level'], None)
+    tmp_AtrTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Title'], None)
+
+    # sanity check
+    if tmp_AtrLevel is None:
+      raise Exception
+
+    # get level
+    tmp_Level = int(tmp_AtrLevel)
+
+    # increase current level
+    self.atr_SectioningLevels[tmp_Level] = self.atr_SectioningLevels[tmp_Level] + 1
+
+    # clear all levels below current one
+    for tmp_SectioningLevel in Modules.Sectioning.atr_Levels.values():
+      if tmp_SectioningLevel > tmp_Level:
+        self.atr_SectioningLevels[tmp_SectioningLevel] = 0
+
+    tmp_Prefixes = []
+    for tmp_SectioningLevel in self.atr_SectioningLevels[1:]:
+      if tmp_SectioningLevel > 0:
+        tmp_Prefixes.append(str(tmp_SectioningLevel))
+      else:
+        break
+
+    tmp_Header = u'.'.join(tmp_Prefixes)
+
+    if tmp_AtrTitle is not None:
+      if tmp_Level > 0:
+        tmp_Header = tmp_Header + u'. '
+      tmp_Header = tmp_Header + tmp_AtrTitle
+
+    tmp_Contents.append(tmp_Header)
+
+    return u''.join(filter(None, tmp_Contents))
+
   def HandleTag(self, arg_XmlNode):
     tmp_Contents = []
 
+    tmp_Contents.append(
+      {
+        'object' : self.HandleTagObject,
+        self.atr_Modules['Sectioning'].GetXmlTagName(u'section') : self.HandleTagSectioningSection,
+      }.get(arg_XmlNode.tag, self.HandleTagUnknown)(arg_XmlNode)
+    )
+
     for tmp_XmlNodeChild in arg_XmlNode:
-      tmp_Contents.append(
-        {
-          'object' : self.HandleTagObject,
-        }.get(tmp_XmlNodeChild.tag, self.HandleTagUnknown)(tmp_XmlNodeChild)
-      )
+      tmp_Contents.append(self.HandleTag(tmp_XmlNodeChild))
 
     return u'\n'.join(filter(None, tmp_Contents))
 
   def Process(self, arg_FileName, arg_XmlNodeRoot, arg_OutputFolderName):
     tmp_XmlNamespaces = self.GetXmlNamespaces()
-    tmp_XmlNodeDocument = arg_XmlNodeRoot.find(u'.//' + self.atr_Modules['Sectioning'].GetXmlTagName(Modules.Sectioning.GetLevelName(0).lower()), tmp_XmlNamespaces)
+    tmp_XmlNodeDocument = arg_XmlNodeRoot.find(self.atr_Modules['Sectioning'].GetXmlTagName(u'section'), tmp_XmlNamespaces)
 
     if tmp_XmlNodeDocument is None:
       raise Exception

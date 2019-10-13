@@ -19,6 +19,9 @@ cfg_StrTranslationExtension = config.ScriptureTranslationExtension
 # xml attributes: 'scripture:extract'
 cfg_XmlAttrScriptureExtract = config.ScriptureExtractXmlAttribs
 
+# xml attributes: 'sectioning:section'
+cfg_XmlAttrSectioningSection = config.SectioningSectionXmlAttribs
+
 # ================================================================ #
 # implementation of module interface
 # ================================================================ #
@@ -193,12 +196,12 @@ class Scripture(IModule):
 # ================================================================ #
 class Sectioning(IModule):
   atr_Levels = {
-    'Document' : 0,
-    'Section' : 1,
-    'SubSection' : 2,
-    'SubSubSection' : 3,
-    'Paragraph' : 4,
-    'SubParagraph' : 5
+    'document' : 0,
+    'section' : 1,
+    'subsection' : 2,
+    'subsubsection' : 3,
+    'paragraph' : 4,
+    'subparagraph' : 5
   }
 
   def __init__(self):
@@ -240,7 +243,7 @@ class Sectioning(IModule):
       raise Exception
 
     # get requested level
-    tmp_Level = self.atr_Levels.get(arg_Params[0].strip(cfg_ChrEntryItemQuote), None)
+    tmp_Level = self.atr_Levels.get(arg_Params[0].strip(cfg_ChrEntryItemQuote).lower(), None)
 
     # sanity check
     if tmp_Level is None:
@@ -259,15 +262,17 @@ class Sectioning(IModule):
       tmp_Title = arg_Params[1].strip(cfg_ChrEntryItemQuote)
 
     # set tag name
-    tmp_TagName = self.GetXmlTagName(Sectioning.GetLevelName(tmp_Level).lower())
+    tmp_TagName = self.GetXmlTagName(u'section')
 
     if tmp_Level == 0:
       tmp_XmlNode = ET.Element(tmp_TagName)
     else:
       tmp_XmlNode = ET.SubElement(self.atr_XmlPath[tmp_Level - 1], tmp_TagName)
 
+    tmp_XmlNode.set(cfg_XmlAttrSectioningSection['Level'], str(tmp_Level))
+
     if tmp_Title is not None:
-      tmp_XmlNode.set('title', tmp_Title)
+      tmp_XmlNode.set(cfg_XmlAttrSectioningSection['Title'], tmp_Title)
 
     # assign xml node in xml path
     self.atr_XmlPath[tmp_Level] = tmp_XmlNode
@@ -291,7 +296,7 @@ class Sectioning(IModule):
       raise Exception
 
     # get requested level
-    tmp_Level = self.atr_Levels.get(arg_Params[0].strip(cfg_ChrEntryItemQuote), None)
+    tmp_Level = self.atr_Levels.get(arg_Params[0].strip(cfg_ChrEntryItemQuote).lower(), None)
 
     # sanity check
     if tmp_Level is None:
@@ -393,7 +398,7 @@ class Modules:
             tmp_XmlNodeText.text = tmp_Item
 
       tmp_XmlNodeDocument = tmp_XmlNodeObject.find(arg_TagNameDocument, tmp_XmlNamespaces)
-      if tmp_XmlNodeDocument is not None:
+      if tmp_XmlNodeDocument is not None and tmp_XmlNodeDocument.get(cfg_XmlAttrSectioningSection['Level'], None) == '0':
         tmp_XmlNodeContents.append(tmp_XmlNodeDocument)
       else:
         if tmp_XmlNodeObject.find('*') is not None and self.atr_Modules:

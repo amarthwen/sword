@@ -35,6 +35,15 @@ ScriptureExtractVersetXmlAttribs = {
 }
 
 # ================================================================ #
+# module: Sectioning
+# ================================================================ #
+# xml attributes: 'sectioning:section'
+SectioningSectionXmlAttribs = {
+  'Level' : u'level',
+  'Title' : u'title'
+}
+
+# ================================================================ #
 # generator: TXT
 # ================================================================ #
 GenTXTQuoteChr = u'"'

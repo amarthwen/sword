@@ -43,7 +43,7 @@ def main():
     tmp_FileContents = [tmp_Line.strip(u'\n') for tmp_Line in tmp_File.readlines()]
 
   # remove empty lines and comments
-  tmp_FileContents[:] = [tmp_Line for tmp_Line in tmp_FileContents if len(tmp_Line) > 0 and tmp_Line[0] != Cfg_ChrComment]
+  tmp_FileContents[:] = [tmp_Line for tmp_Line in tmp_FileContents if len(tmp_Line) > 0 and tmp_Line.strip()[0] != Cfg_ChrComment]
 
   tmp_Modules = {
     'Document' : Modules.Document(),
@@ -66,7 +66,7 @@ def main():
   tmp_Mods.Register(tmp_Modules['Document'])
 
   # process file contents
-  tmp_XmlNodeRoot = tmp_Mods.Process(tmp_FileContents, tmp_Modules['Sectioning'].GetXmlTagName(Modules.Sectioning.GetLevelName(0).lower()))
+  tmp_XmlNodeRoot = tmp_Mods.Process(tmp_FileContents, tmp_Modules['Sectioning'].GetXmlTagName(u'section'))
 
   # get file name
   tmp_FileNameWithExt = os.path.basename(tmp_InputFileName)
