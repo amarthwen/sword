@@ -66,7 +66,7 @@ def main():
   tmp_Mods.Register(tmp_Modules['Document'])
 
   # process file contents
-  tmp_XmlNodeRoot = tmp_Mods.Process(tmp_FileContents)
+  tmp_XmlNodeRoot = tmp_Mods.Process(tmp_FileContents, tmp_Modules['Sectioning'].GetXmlTagName(Modules.Sectioning.GetLevelName(0).lower()))
 
   # get file name
   tmp_FileNameWithExt = os.path.basename(tmp_InputFileName)

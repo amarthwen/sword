@@ -360,7 +360,7 @@ class Modules:
     if tmp_ModuleName not in self.atr_Modules:
       self.atr_Modules[tmp_ModuleName] = arg_Module
 
-  def Process(self, arg_FileContents):
+  def Process(self, arg_FileContents, arg_TagNameDocument):
     tmp_XmlNodeContents = ET.Element('contents')
     tmp_XmlNamespaces = {} # TODO: add default namespace?
     for tmp_Module in self.atr_Modules.values():
@@ -392,8 +392,7 @@ class Modules:
           except:
             tmp_XmlNodeText.text = tmp_Item
 
-      tmp_TagName = u'sectioning' + u':' + Sectioning.GetLevelName(0).lower()
-      tmp_XmlNodeDocument = tmp_XmlNodeObject.find(tmp_TagName, tmp_XmlNamespaces)
+      tmp_XmlNodeDocument = tmp_XmlNodeObject.find(arg_TagNameDocument, tmp_XmlNamespaces)
       if tmp_XmlNodeDocument is not None:
         tmp_XmlNodeContents.append(tmp_XmlNodeDocument)
       else:
