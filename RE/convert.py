@@ -3,8 +3,7 @@
 # ================================================================ #
 # imports
 # ================================================================ #
-import argparse, codecs, os, sys
-import xml.etree.ElementTree as ET
+import argparse, codecs, os, sys, xml.etree.ElementTree as ET
 from modules import Modules
 
 # ================================================================ #
@@ -41,17 +40,30 @@ def main():
     os.mkdir(tmp_OutputFolderName)
 
   with codecs.open(tmp_Args.OptInput, 'r', 'utf-8') as tmp_File:
-    tmp_FileContents = [tmp_Line.strip() for tmp_Line in tmp_File.readlines()]
+    tmp_FileContents = [tmp_Line.strip(u'\n') for tmp_Line in tmp_File.readlines()]
 
   # remove empty lines and comments
   tmp_FileContents[:] = [tmp_Line for tmp_Line in tmp_FileContents if len(tmp_Line) > 0 and tmp_Line[0] != Cfg_ChrComment]
+
+  tmp_Modules = {
+    'Document' : Modules.Document(),
+    'Scripture' : Modules.Scripture(),
+    'Sectioning' : Modules.Sectioning(),
+    'SWORD' : Modules.SWORD(),
+    'Translations' : Modules.Translations()
+  }
+
+  # create structure
+  tmp_Modules['Document'].Register(tmp_Modules['Sectioning'])
+  tmp_Modules['Scripture'].Register(tmp_Modules['Translations'])
+  tmp_Modules['SWORD'].Register(tmp_Modules['Scripture'])
 
   # create instance of modules
   tmp_Mods = Modules.Modules()
 
   # register modules
-  tmp_Mods.Register(Modules.Document())
-  tmp_Mods.Register(Modules.SWORD())
+  tmp_Mods.Register(tmp_Modules['SWORD'])
+  tmp_Mods.Register(tmp_Modules['Document'])
 
   # process file contents
   tmp_XmlNodeRoot = tmp_Mods.Process(tmp_FileContents)

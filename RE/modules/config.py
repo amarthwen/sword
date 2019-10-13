@@ -1,27 +1,18 @@
 # -*- coding: utf-8 -*-
 
-CommentChar = u'%'
+# ================================================================ #
+# helper: Entry
+# ================================================================ #
+EntryItemQuoteChr = u'"'
 
-# configuration variables
-StrModuleLeadingChar = '#'
-StrModuleTokenCharSet = 'a-zA-Z0-9_'
-StrModuleElementSeparator = ':'
-
-# default Scripture being used
-ScriptureTranslationDefault = 'BW'
-
-# path to stored Scriptures
-ScriptureTranslationPath = 'Scripture/translations'
+# ================================================================ #
+# module: Scripture
+# ================================================================ #
+# Scripture: path to stored translations
+ScriptureTranslationsPath = 'Scripture/translations'
 
 # Scripture: default translation extension
 ScriptureTranslationExtension = '.xml'
-
-# Scripture: line related configuration
-ScriptureLineDelimiterInternal = r'/'
-ScriptureFullNameQuoteChar = '\''
-
-# Scripture: default excerpt delimiter
-ScriptureTextExcerptDelimiter = u'(...)'
 
 # Scripture: text origin related configuration
 ScriptureTextOriginDelimiterChapter = r';'
@@ -29,3 +20,23 @@ ScriptureTextOriginDelimiterChapterInternal = r','
 ScriptureTextOriginDelimiterVersetRange = r'.'
 ScriptureTextOriginDelimiterVersetRangeInternal = r'-'
 ScriptureTextOriginDelimiterReferenceRange = r'..'
+
+# xml attributes: 'scripture:extract'
+ScriptureExtractXmlAttribs = {
+  'Origin' : u'origin',
+  'TranslationName' : u'translation',
+  'Inline' : u'inline' # Optional, default value: false
+}
+
+# xml attributes: 'scripture:extract/verset'
+ScriptureExtractVersetXmlAttribs = {
+  'Origin' : u'origin',
+  'Reference' : u'ref'
+}
+
+# ================================================================ #
+# generator: TXT
+# ================================================================ #
+GenTXTQuoteChr = u'"'
+GenTXTVersetDelimiterStr = u' (...) '
+

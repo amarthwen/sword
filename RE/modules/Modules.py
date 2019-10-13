@@ -3,106 +3,33 @@
 # ================================================================ #
 # imports
 # ================================================================ #
-import codecs, config, os, re
-import xml.etree.ElementTree as ET
+import os, xml.etree.ElementTree as ET
+from modules import config, Helpers
 
 # ================================================================ #
 # configuration
 # ================================================================ #
-cfg_ChrPathElementSeparator = u'::'
-cfg_ChrParamListSeparator = u','
-cfg_ChrQuote = u'"'
-
-# line related regular expression configuration variables
-cfg_RegExpStrLineDelimiterInternal = config.ScriptureLineDelimiterInternal
+# entry item related configuration variables
+cfg_ChrEntryItemQuote = config.EntryItemQuoteChr
 
 # translation related configuration variables
-cfg_TranslationsPath = config.ScriptureTranslationPath
-cfg_TranslationExtension = config.ScriptureTranslationExtension
-cfg_TranslationFullNameQuoteChar = config.ScriptureFullNameQuoteChar
+cfg_StrTranslationsPath = config.ScriptureTranslationsPath
+cfg_StrTranslationExtension = config.ScriptureTranslationExtension
 
-# text origin related regular expression configuration variables
-cfg_RegExpStrTextOriginDelimiterLineRange = config.ScriptureTextOriginDelimiterVersetRange
-cfg_RegExpStrTextOriginDelimiterLineRangeInternal = config.ScriptureTextOriginDelimiterVersetRangeInternal
-cfg_RegExpStrTextOriginDelimiterChapter = config.ScriptureTextOriginDelimiterChapter
-cfg_RegExpStrTextOriginDelimiterChapterInternal = config.ScriptureTextOriginDelimiterChapterInternal
-cfg_RegExpStrTextOriginDelimiterReferenceRange = config.ScriptureTextOriginDelimiterReferenceRange
-
-# ================================================================ #
-# implementation of module entry
-# ================================================================ #
-class Entry:
-  atr_RegExpStrToken = u'[a-zA-Z0-9_]*'
-  atr_RegExpStrPath = u'(' + atr_RegExpStrToken + u'(?:' + u'[\s]*' + cfg_ChrPathElementSeparator + u'[\s]*' + atr_RegExpStrToken + u')*)'
-
-  atr_RegExpStrString = cfg_ChrQuote + u'[^' + cfg_ChrQuote + u']*' + cfg_ChrQuote
-  atr_RegExpStrParamListElement = u'[\s]*(?:' + atr_RegExpStrString + u'|' + atr_RegExpStrToken + u')[\s]*'
-  atr_RegExpStrParamList = u'[\s]*\((' + atr_RegExpStrParamListElement + u'(?:' + cfg_ChrParamListSeparator + atr_RegExpStrParamListElement + u')*)\)'
-  atr_RegExpStrOptionalParamListSeparatorWithParamListElement = u'(' + cfg_ChrParamListSeparator + u'{0,1}(' + atr_RegExpStrParamListElement + '))'
-
-  atr_RegExpStrPathAndParamList = u'(' + atr_RegExpStrPath + atr_RegExpStrParamList + u')'
-
-  atr_RegExpPathAndParamList = re.compile(atr_RegExpStrPathAndParamList, re.UNICODE)
-  atr_RegExpParamListElement = re.compile(atr_RegExpStrOptionalParamListSeparatorWithParamListElement, re.UNICODE)
-
-  def __init__(self, arg_Line):
-    tmp_Items = []
-
-    while len(arg_Line) > 0:
-      tmp_Rslt = self.atr_RegExpPathAndParamList.search(arg_Line)
-      if tmp_Rslt is not None:
-        tmp_Groups = tmp_Rslt.groups()
-
-        tmp_Start = tmp_Rslt.start(0)
-        tmp_End = tmp_Rslt.end(0)
-
-        # add text before entry
-        if tmp_Start > 0:
-          tmp_Items.append(arg_Line[ : tmp_Start])
-
-        # add entry
-        tmp_Items.append(self.GetEntry(arg_Line[tmp_Start : tmp_End], tmp_Groups[1].strip(), tmp_Groups[2].strip()))
-
-        arg_Line = arg_Line[tmp_End : ]
-      else:
-        # add text after entry
-        tmp_Items.append(arg_Line)
-        break
-
-    self.atr_Items = tmp_Items
-
-  def GetEntry(self, arg_Text, arg_Path, arg_Params):
-    tmp_Entry = {
-      'text' : arg_Text,
-      'elements' : [tmpPathElement.strip() for tmpPathElement in arg_Path.split(cfg_ChrPathElementSeparator)],
-      'params' : []
-    }
-
-    while arg_Params != '':
-      tmp_Rslt = self.atr_RegExpParamListElement.match(arg_Params)
-      if tmp_Rslt is not None:
-        tmp_Groups = tmp_Rslt.groups()
-        tmp_Param = tmp_Groups[1].strip()
-        tmp_Entry['params'].append(tmp_Param)
-        arg_Params = arg_Params[:tmp_Rslt.start(1)] + arg_Params[tmp_Rslt.end(1):]
-      else:
-        break;
-
-    return tmp_Entry
-
-  def GetItems(self):
-    return self.atr_Items
+# xml attributes: 'scripture:extract'
+cfg_XmlAttrScriptureExtract = config.ScriptureExtractXmlAttribs
 
 # ================================================================ #
 # implementation of module interface
 # ================================================================ #
-# interface
 class IModule:
+  atr_XmlNamespaceBase = u'https://github.com/amarthwen/sword/xmlns/'
+
   def __init__(self):
     self.atr_Modules = {}
 
     self.atr_XmlNamespace = {
-      self.GetName().lower() : 'https://github.com/amarthwen/sword/xmlns/' + self.GetName().lower()
+      self.GetName().lower() : IModule.atr_XmlNamespaceBase + self.GetName().lower()
     }
 
     ET.register_namespace(self.atr_XmlNamespace.keys()[0], self.atr_XmlNamespace.values()[0])
@@ -112,6 +39,9 @@ class IModule:
 
   def GetName(self):
     raise NotImplementedError
+  
+  def GetXmlNamespace(self):
+    return self.atr_XmlNamespace
 
   def GetXmlNamespaces(self):
     tmp_XmlNamespaces = {}
@@ -119,7 +49,7 @@ class IModule:
     for tmp_Module in self.atr_Modules.values():
       tmp_XmlNamespaces.update(tmp_Module.GetXmlNamespaces())
 
-    tmp_XmlNamespaces.update(self.atr_XmlNamespace)
+    tmp_XmlNamespaces.update(self.GetXmlNamespace())
 
     return tmp_XmlNamespaces
 
@@ -163,154 +93,77 @@ class IModule:
       self.atr_Modules[tmp_ModuleName] = arg_Module
 
 # ================================================================ #
-# implementation of module: Scripture
+# implementation of module: Translations
 # ================================================================ #
-# helper class
-class Translation:
-  # text origin related regular expression data
-  atr_RegExpStrTextOriginRange = r'\d+(?:' + cfg_RegExpStrTextOriginDelimiterLineRangeInternal + r'\d+){0,1}'
-  atr_RegExpStrTextOriginMultipleRange = atr_RegExpStrTextOriginRange + r'(?:' + cfg_RegExpStrTextOriginDelimiterLineRange + atr_RegExpStrTextOriginRange + r')*'
-  atr_RegExpStrTextOriginChapter = r'(?:\d+' + cfg_RegExpStrTextOriginDelimiterChapterInternal + atr_RegExpStrTextOriginMultipleRange + r')'
-  atr_RegExpStrTextOriginMultipleChapters = atr_RegExpStrTextOriginChapter + r'(?:' + cfg_RegExpStrTextOriginDelimiterChapter + atr_RegExpStrTextOriginChapter + r')*'
-  atr_RegExpStrTextOriginQuery = r'(\d*\D+)('+ atr_RegExpStrTextOriginMultipleChapters + r')'
+class Translations(IModule):
+  atr_Translations = {}
+  atr_CurrentTranslation = None
 
-  # text origin related regular expression
-  atr_RegExpTextOriginQuery = re.compile(atr_RegExpStrTextOriginQuery, re.UNICODE | re.IGNORECASE)
-
-  def __init__(self, arg_TranslationFileName):
-    self.atr_XmlNodeRoot = ET.parse(arg_TranslationFileName)
-
-  def __str__(self):
-    return self.GetName()
-
-  def GetName(self):
-    return self.atr_XmlNodeRoot.getroot().get('shortcut', None)
-
-  def GetFullName(self):
-    return self.atr_XmlNodeRoot.getroot().get('name', None)
-
-  def GetVersetReference(self, arg_Book, arg_Chapter, arg_Verset):
-    tmpXmlNode = self.atr_XmlNodeRoot.find(u"./book[@shortcut='{}']/chapter[@id='{}']/verset[@id='{}']".format(arg_Book, str(arg_Chapter), str(arg_Verset)))
-
-    if tmpXmlNode is None:
-      raise Exception
-
-    return int(tmpXmlNode.get('ref', '0'))
-
-  def GetVersetReferences(self, arg_TextOrigin):
-    tmp_Versets = []
-    tmp_VersetReferences = []
-
-    tmp_Rslt = self.atr_RegExpTextOriginQuery.match(arg_TextOrigin.replace(u' ', u''))
-    if tmp_Rslt is None:
-      raise Exception
-
-    # get book and chapters with lines
-    tmp_Groups = tmp_Rslt.groups()
-    tmp_Book = tmp_Groups[0]
-    tmp_Chapters = tmp_Groups[1].split(cfg_RegExpStrTextOriginDelimiterChapter)
-    for tmp_Chapter in tmp_Chapters:
-      tmp_ChapterInfo = tmp_Chapter.split(cfg_RegExpStrTextOriginDelimiterChapterInternal)
-      tmp_ChapterNr = int(tmp_ChapterInfo[0])
-      tmp_LineRanges = tmp_ChapterInfo[1].split(cfg_RegExpStrTextOriginDelimiterLineRange)
-      for tmp_LineRange in tmp_LineRanges:
-        tmp_LineRangeMinMax = tmp_LineRange.split(cfg_RegExpStrTextOriginDelimiterLineRangeInternal)
-
-        # check if single line or range of lines
-        if len(tmp_LineRangeMinMax) == 1:
-          tmp_LineRangeMin = int(tmp_LineRangeMinMax[0])
-          tmp_LineRangeMax = int(tmp_LineRangeMinMax[0])
-        else:
-          tmp_LineRangeMin = int(tmp_LineRangeMinMax[0])
-          tmp_LineRangeMax = int(tmp_LineRangeMinMax[1])
-
-        # validate min and max elements
-        if tmp_LineRangeMin > tmp_LineRangeMax:
-          tmp_LineRangeMid = tmp_LineRangeMin
-          tmp_LineRangeMin = tmp_LineRangeMax
-          tmp_LineRangeMax = tmp_LineRangeMid
-
-        tmp_VersetReferenceMin = self.GetVersetReference(tmp_Book, tmp_ChapterNr, tmp_LineRangeMin)
-        tmp_VersetReferenceMax = self.GetVersetReference(tmp_Book, tmp_ChapterNr, tmp_LineRangeMax)
-
-        # sanity check
-        if tmp_VersetReferenceMin == 0 or tmp_VersetReferenceMax == 0:
-          raise Exception
-
-        tmp_Versets.append((tmp_ChapterNr, tmp_LineRangeMin, tmp_LineRangeMax, tmp_VersetReferenceMin, tmp_VersetReferenceMax))
-
-    tmp_Versets.append((u'', 0, 0, 0, u''))
-
-    tmp_VersetMin = None
-    tmp_VersetMax = None
-
-    for tmp_VersetCurr in tmp_Versets:
-      if tmp_VersetMax is not None and tmp_VersetCurr[1] == tmp_VersetMax[2] + 1 and tmp_VersetCurr[0] == tmp_VersetMax[0]:
-        tmp_VersetMax = tmp_VersetCurr
-      else:
-        if tmp_VersetMin is not None and tmp_VersetMax is not None:
-          if tmp_VersetMin != tmp_VersetMax or tmp_VersetMin[1] != tmp_VersetMax[2]:
-            tmp_VersetReferences.append({
-              'ref' : str(tmp_VersetMin[3]) + cfg_RegExpStrTextOriginDelimiterReferenceRange + str(tmp_VersetMax[4]),
-              'origin' : tmp_Book + u' ' + str(tmp_VersetMin[0]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[1]) + cfg_RegExpStrTextOriginDelimiterLineRangeInternal + str(tmp_VersetMax[2])
-            })
-          else:
-            tmp_VersetReferences.append({
-              'ref' : str(tmp_VersetMin[3]),
-              'origin' : tmp_Book + u' ' + str(tmp_VersetMin[0]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[1])
-            })
-
-        tmp_VersetMin = tmp_VersetCurr
-        tmp_VersetMax = tmp_VersetCurr
-
-    return tmp_VersetReferences
-
-  @staticmethod
-  def GetNameFromFileName(arg_FileName):
-    return os.path.splitext(os.path.basename(arg_FileName))[0]
-
-# helper class
-class Translations:
-  def __init__(self):
-    self.atr_Translations = {}
-    self.atr_CurrentTranslation = None
-
-  def Get(self, arg_TranslationName):
-    return self.atr_Translations.get(arg_TranslationName, None)
-
-  def GetCurrent(self):
-    return self.atr_CurrentTranslation
-
-  def SetCurrent(self, arg_TranslationName):
-    self.atr_CurrentTranslation = self.Get(arg_TranslationName)
-
-  def Register(self, arg_TranslationFileName):
-    tmp_TranslationName = Translation.GetNameFromFileName(arg_TranslationFileName)
-
-    if tmp_TranslationName not in self.atr_Translations:
-      self.atr_Translations[tmp_TranslationName] = Translation(arg_TranslationFileName)
-
-# module
-class Scripture(IModule):
   def __init__(self):
     IModule.__init__(self)
 
-    self.atr_Translations = Translations()
-
     # register all available translations
-    for tmp_File in os.listdir(cfg_TranslationsPath):
-      if tmp_File.endswith(cfg_TranslationExtension):
-        self.atr_Translations.Register(os.path.join(cfg_TranslationsPath, tmp_File))
+    for tmp_File in os.listdir(cfg_StrTranslationsPath):
+      if tmp_File.endswith(cfg_StrTranslationExtension):
+        Translations.Register(os.path.join(cfg_StrTranslationsPath, tmp_File))
+
+  def GetName(self):
+    return self.__class__.__name__
+
+  @staticmethod
+  def Get(arg_TranslationName):
+    return Translations.atr_Translations.get(arg_TranslationName, None)
+
+  @staticmethod
+  def GetCurrent():
+    return Translations.atr_CurrentTranslation
+
+  @staticmethod
+  def SetCurrent(arg_TranslationName):
+    Translations.atr_CurrentTranslation = Translations.Get(arg_TranslationName)
+
+  @staticmethod
+  def Register(arg_TranslationFileName):
+    tmp_TranslationName = Helpers.Translation.GetNameFromFileName(arg_TranslationFileName)
+
+    if tmp_TranslationName not in Translations.atr_Translations:
+      Translations.atr_Translations[tmp_TranslationName] = Helpers.Translation(arg_TranslationFileName)
+
+  def HandleCmdUse(self, arg_Params):
+    tmp_XmlNodeRoot = None
+    tmp_TranslationName = arg_Params[0].strip(cfg_ChrEntryItemQuote)
+
+    Translations.SetCurrent(tmp_TranslationName)
+
+    return tmp_XmlNodeRoot
+
+  def HandleCmd(self, arg_Function, arg_Params):
+    return {
+      'Use' : self.HandleCmdUse
+    }.get(arg_Function, self.HandleCmdUnknown)(arg_Params)
+
+# ================================================================ #
+# implementation of module: Scripture
+# ================================================================ #
+class Scripture(IModule):
+  def __init__(self):
+    IModule.__init__(self)
 
   def GetName(self):
     return self.__class__.__name__
 
   def HandleCmdGetText(self, arg_Params):
-    tmp_TextOrigin = arg_Params[0].strip(cfg_ChrQuote)
+    tmp_TextOrigin = arg_Params[0].strip(cfg_ChrEntryItemQuote)
+    tmp_Inline = False
 
-    tmp_XmlNodeRoot = ET.Element(self.GetXmlTagName('extract'))
+    if len(arg_Params) > 1:
+      tmp_Inline = {
+        'true' : True
+      }.get(arg_Params[1].lower(), False)
 
-    tmp_CurrentTranslation = self.atr_Translations.GetCurrent()
+    tmp_XmlNodeRoot = ET.Element(self.GetXmlTagName(u'extract'))
+
+    tmp_CurrentTranslation = Translations.GetCurrent()
 
     if tmp_CurrentTranslation is None:
       raise Exception
@@ -318,36 +171,26 @@ class Scripture(IModule):
     GetVersetReferences = tmp_CurrentTranslation.GetVersetReferences(tmp_TextOrigin)
 
     for GetVersetReference in GetVersetReferences:
-      tmp_XmlNodeVersetReference = ET.SubElement(tmp_XmlNodeRoot, 'verset')
+      tmp_XmlNodeVersetReference = ET.SubElement(tmp_XmlNodeRoot, u'verset')
       for tmp_Key, tmp_Value in GetVersetReference.items():
         tmp_XmlNodeVersetReference.set(tmp_Key, tmp_Value)
 
-    tmp_XmlNodeRoot.set('translation', tmp_CurrentTranslation.GetName())
-    tmp_XmlNodeRoot.set('origin', tmp_TextOrigin)
+    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['TranslationName'], tmp_CurrentTranslation.GetName())
+    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Origin'], tmp_TextOrigin)
 
-    return tmp_XmlNodeRoot
-
-  def HandleCmdUseTranslation(self, arg_Params):
-    tmp_XmlNodeRoot = None
-    tmp_TranslationName = arg_Params[0].strip(cfg_ChrQuote)
-
-    if self.atr_Translations.Get(tmp_TranslationName) is None:
-      raise Exception
-
-    self.atr_Translations.SetCurrent(tmp_TranslationName)
+    if tmp_Inline:
+      tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Inline'], u'true')
 
     return tmp_XmlNodeRoot
 
   def HandleCmd(self, arg_Function, arg_Params):
     return {
         'GetText' : self.HandleCmdGetText,
-        'UseTranslation' : self.HandleCmdUseTranslation
     }.get(arg_Function, self.HandleCmdUnknown)(arg_Params)
 
 # ================================================================ #
-# implementation of module: Document
+# implementation of module: Sectioning
 # ================================================================ #
-# module
 class Sectioning(IModule):
   atr_Levels = {
     'Document' : 0,
@@ -397,7 +240,7 @@ class Sectioning(IModule):
       raise Exception
 
     # get requested level
-    tmp_Level = self.atr_Levels.get(arg_Params[0].strip(cfg_ChrQuote), None)
+    tmp_Level = self.atr_Levels.get(arg_Params[0].strip(cfg_ChrEntryItemQuote), None)
 
     # sanity check
     if tmp_Level is None:
@@ -413,7 +256,7 @@ class Sectioning(IModule):
 
     # get title, if set
     if len(arg_Params) > 1:
-      tmp_Title = arg_Params[1].strip(cfg_ChrQuote)
+      tmp_Title = arg_Params[1].strip(cfg_ChrEntryItemQuote)
 
     # set tag name
     tmp_TagName = self.GetXmlTagName(Sectioning.GetLevelName(tmp_Level).lower())
@@ -448,7 +291,7 @@ class Sectioning(IModule):
       raise Exception
 
     # get requested level
-    tmp_Level = self.atr_Levels.get(arg_Params[0].strip(cfg_ChrQuote), None)
+    tmp_Level = self.atr_Levels.get(arg_Params[0].strip(cfg_ChrEntryItemQuote), None)
 
     # sanity check
     if tmp_Level is None:
@@ -482,12 +325,12 @@ class Sectioning(IModule):
 
     return tmp_LevelName
 
-# module
+# ================================================================ #
+# implementation of module: Document
+# ================================================================ #
 class Document(IModule):
   def __init__(self):
     IModule.__init__(self)
-
-    self.Register(Sectioning())
 
   def GetName(self):
     return self.__class__.__name__
@@ -500,24 +343,8 @@ class SWORD(IModule):
   def __init__(self):
     IModule.__init__(self)
 
-    self.Register(Scripture())
-    # self.Register(Document())
-    pass
-
   def GetName(self):
     return self.__class__.__name__
-
-  def HandleCmdInt1(self, arg_Params):
-    return None
-
-  def HandleCmdInt2(self, arg_Params):
-    return None
-
-  def HandleCmd(self, arg_Function, arg_Params):
-    return {
-        'Int1' : self.HandleCmdInt1,
-        'Int2' : self.HandleCmdInt2
-    }.get(arg_Function, self.HandleCmdUnknown)(arg_Params)
 
 # ================================================================ #
 # implementation of modules container
@@ -541,7 +368,7 @@ class Modules:
 
     for tmp_Line in arg_FileContents:
       tmp_XmlNodeObject = ET.Element('object')
-      tmp_Items = Entry(tmp_Line).GetItems()
+      tmp_Items = Helpers.Entry(tmp_Line).GetItems()
 
       for tmp_Item in tmp_Items:
         tmp_Module = None
