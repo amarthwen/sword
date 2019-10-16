@@ -23,36 +23,36 @@ Ziemski Izraelita
 
 Niebiański Izraelita
 - duchowa nieczystość
-SWORD::Scripture::GetText("J 13, 6-11")
-SWORD::Scripture::GetText("Łk 11, 24-26")
+SWORD::Scripture::GetText("J 13, 6-11", false)
+SWORD::Scripture::GetText("Łk 11, 24-26", false)
 - duchowa krew
 - duchowe ciało
-SWORD::Scripture::GetText("1 Kor 15, 44")
+SWORD::Scripture::GetText("1 Kor 15, 44", false)
 - duchowy pokarm
-SWORD::Scripture::GetText("J 4, 31-34")
+SWORD::Scripture::GetText("J 4, 31-34", false)
 - duchowy wzrok i słuch
 - niebiańska szata
-SWORD::Scripture::GetText("Za 3, 1-5")
+SWORD::Scripture::GetText("Za 3, 1-5", false)
 - obrzezanie w duchu
 - duchowa nagość
-SWORD::Scripture::GetText("Obj 3, 17-18")
+SWORD::Scripture::GetText("Obj 3, 17-18", false)
 - duchowy głód
-SWORD::Scripture::GetText("Am 8, 11-12")
+SWORD::Scripture::GetText("Am 8, 11-12", false)
 - duchowy sen
 - duchowy chrzest
-SWORD::Scripture::GetText("J 1, 33")
+SWORD::Scripture::GetText("J 1, 33", false)
 - duchowa śmierć
 - niebiański skarb
-SWORD::Scripture::GetText("Mt 6, 19-20")
+SWORD::Scripture::GetText("Mt 6, 19-20", false)
 - niebiański dom
 - duchowa ślepota i głuchota
-SWORD::Scripture::GetText("Obj 3, 17-18")
+SWORD::Scripture::GetText("Obj 3, 17-18", false)
 - życie według ducha
-SWORD::Scripture::GetText("Ga 5, 16-17")
+SWORD::Scripture::GetText("Ga 5, 16-17", false)
 - niebiańska bieda (duchowa)
-SWORD::Scripture::GetText("Obj 3, 17-18")
+SWORD::Scripture::GetText("Obj 3, 17-18", false)
 - składanie duchowych ofiar
-SWORD::Scripture::GetText("J 4, 24")
-SWORD::Scripture::GetText("Ps 51, 19")
+SWORD::Scripture::GetText("J 4, 24", false)
+SWORD::Scripture::GetText("Ps 51, 19", false)
 - niebiańska rodzina
-SWORD::Scripture::GetText("Mt 12, 46-50")
+SWORD::Scripture::GetText("Mt 12, 46-50", false)

@@ -1,17 +1,17 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
 Dwaj Świadkowie:
-SWORD::Scripture::GetText("Obj 11, 3")
+SWORD::Scripture::GetText("Obj 11, 3", false)
 Dwa Drzewa Oliwne:
-SWORD::Scripture::GetText("Obj 11, 4")
-SWORD::Scripture::GetText("Za 4, 11")
+SWORD::Scripture::GetText("Obj 11, 4", false)
+SWORD::Scripture::GetText("Za 4, 11", false)
 Dwa Świeczniki:
-SWORD::Scripture::GetText("Obj 11, 4")
+SWORD::Scripture::GetText("Obj 11, 4", false)
 Dwaj Prorocy:
-SWORD::Scripture::GetText("Obj 11, 10")
+SWORD::Scripture::GetText("Obj 11, 10", false)
 Dwaj Pomazańcy:
-SWORD::Scripture::GetText("Za 4, 11-14")
-SWORD::Scripture::GetText("Ps 105, 6-15")
+SWORD::Scripture::GetText("Za 4, 11-14", false)
+SWORD::Scripture::GetText("Ps 105, 6-15", false)
 Pomazaniec:
-SWORD::Scripture::GetText("Ps 20, 1-10")
-SWORD::Scripture::GetText("Ha 3, 3-4.10-13")
+SWORD::Scripture::GetText("Ps 20, 1-10", false)
+SWORD::Scripture::GetText("Ha 3, 3-4.10-13", false)

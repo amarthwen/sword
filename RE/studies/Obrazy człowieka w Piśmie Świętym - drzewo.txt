@@ -1,0 +1,21 @@
+Document::Sectioning::Begin("Document")
+SWORD::Scripture::Translations::Use("BW")
+
+Document::Sectioning::Begin("Section", "Wstęp")
+Podczas tego studium przyjrzymy się bliżej jednemu z obrazów człowieka, ukazanych w Piśmie Świętym, przedstawijącego go jako drzewo.
+
+Document::Sectioning::Begin("Section", "Człowiek przedstawiony jako drzewo")
+SWORD::Scripture::GetText("Ps 1, 1-3", false)
+SWORD::Scripture::GetText("Dn 4, 6-9.16-19", false)
+SWORD::Scripture::GetText("Łk 3, 1-3.7-9", false)
+SWORD::Scripture::GetText("Łk 6, 43-44", false)
+
+Document::Sectioning::Begin("Section", "Winnica Boża")
+SWORD::Scripture::GetText("Iz 5, 1-7", false)
+SWORD::Scripture::GetText("Jl 1, 4-7", false)
+
+# Document::Sectioning::Begin("Section", "Podsumowanie")
+# Tekst podsumowania
+
+# Document::Sectioning::Begin("Section", "Do dalszego studium")
+# Propozycje dalszej lektury

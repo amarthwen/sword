@@ -2,90 +2,90 @@ Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
 Królowie przed podziałem Izraela:
 - Saul
-SWORD::Scripture::GetText("1 Sm 13, 1")
+SWORD::Scripture::GetText("1 Sm 13, 1", false)
 - Dawid
-SWORD::Scripture::GetText("1 Krl 2, 11")
+SWORD::Scripture::GetText("1 Krl 2, 11", false)
 - Salomon
-SWORD::Scripture::GetText("1 Krl 11, 42")
+SWORD::Scripture::GetText("1 Krl 11, 42", false)
 
 Królowie po podziale Izraela:
 
 Królestwo Judy:
 - Rechabeam
-SWORD::Scripture::GetText("1 Krl 14, 21")
+SWORD::Scripture::GetText("1 Krl 14, 21", false)
 - Abijjam
-SWORD::Scripture::GetText("1 Krl 15, 1-2")
+SWORD::Scripture::GetText("1 Krl 15, 1-2", false)
 - Asa
-SWORD::Scripture::GetText("1 Krl 15, 9-10")
+SWORD::Scripture::GetText("1 Krl 15, 9-10", false)
 - Jehoszafat
-SWORD::Scripture::GetText("1 Krl 22, 41-42")
+SWORD::Scripture::GetText("1 Krl 22, 41-42", false)
 - Jehoram
-SWORD::Scripture::GetText("2 Krl 8, 16-17")
+SWORD::Scripture::GetText("2 Krl 8, 16-17", false)
 - Achazjasz
-SWORD::Scripture::GetText("2 Krl 8, 25-26")
+SWORD::Scripture::GetText("2 Krl 8, 25-26", false)
 - Joasz
-SWORD::Scripture::GetText("2 Krl 12, 1-2")
+SWORD::Scripture::GetText("2 Krl 12, 1-2", false)
 - Amasjasz
-SWORD::Scripture::GetText("2 Krl 14, 1-2")
+SWORD::Scripture::GetText("2 Krl 14, 1-2", false)
 - Azariasz
-SWORD::Scripture::GetText("2 Krl 15, 1-2")
+SWORD::Scripture::GetText("2 Krl 15, 1-2", false)
 - Jotam
-SWORD::Scripture::GetText("2 Krl 15, 32-33")
+SWORD::Scripture::GetText("2 Krl 15, 32-33", false)
 - Achaz
-SWORD::Scripture::GetText("2 Krl 16, 1-2")
+SWORD::Scripture::GetText("2 Krl 16, 1-2", false)
 - Hiskiasz
-SWORD::Scripture::GetText("2 Krl 18, 1-2")
+SWORD::Scripture::GetText("2 Krl 18, 1-2", false)
 - Manasses
-SWORD::Scripture::GetText("2 Krl 21, 1")
+SWORD::Scripture::GetText("2 Krl 21, 1", false)
 - Amon
-SWORD::Scripture::GetText("2 Krl 21, 19")
+SWORD::Scripture::GetText("2 Krl 21, 19", false)
 - Jozjasz
-SWORD::Scripture::GetText("2 Krl 22, 1")
+SWORD::Scripture::GetText("2 Krl 22, 1", false)
 - Jehoachaz
-SWORD::Scripture::GetText("2 Krl 23, 31")
+SWORD::Scripture::GetText("2 Krl 23, 31", false)
 - Jehojakim
-SWORD::Scripture::GetText("2 Krl 23, 36")
+SWORD::Scripture::GetText("2 Krl 23, 36", false)
 - Jehojachin
-SWORD::Scripture::GetText("2 Krl 24, 8")
+SWORD::Scripture::GetText("2 Krl 24, 8", false)
 - Sedekiasz
-SWORD::Scripture::GetText("2 Krl 24, 18")
+SWORD::Scripture::GetText("2 Krl 24, 18", false)
 
 Królestwo Izraela:
 - Jeroboam
-SWORD::Scripture::GetText("1 Krl 14, 20")
+SWORD::Scripture::GetText("1 Krl 14, 20", false)
 - Nadab
-SWORD::Scripture::GetText("1 Krl 15, 25")
+SWORD::Scripture::GetText("1 Krl 15, 25", false)
 - Baasza
-SWORD::Scripture::GetText("1 Krl 15, 33")
+SWORD::Scripture::GetText("1 Krl 15, 33", false)
 - Ela
-SWORD::Scripture::GetText("1 Krl 16, 8")
+SWORD::Scripture::GetText("1 Krl 16, 8", false)
 - Zimri
-SWORD::Scripture::GetText("1 Krl 16, 15")
+SWORD::Scripture::GetText("1 Krl 16, 15", false)
 - Omri
-SWORD::Scripture::GetText("1 Krl 16, 23")
+SWORD::Scripture::GetText("1 Krl 16, 23", false)
 - Achab
-SWORD::Scripture::GetText("1 Krl 16, 29")
+SWORD::Scripture::GetText("1 Krl 16, 29", false)
 - Achazjasz
-SWORD::Scripture::GetText("1 Krl 22, 52")
+SWORD::Scripture::GetText("1 Krl 22, 52", false)
 - Jehoram
-SWORD::Scripture::GetText("2 Krl 3, 1")
+SWORD::Scripture::GetText("2 Krl 3, 1", false)
 - Jehu
-SWORD::Scripture::GetText("2 Krl 10, 36")
+SWORD::Scripture::GetText("2 Krl 10, 36", false)
 - Jehoachaz
-SWORD::Scripture::GetText("2 Krl 13, 1")
+SWORD::Scripture::GetText("2 Krl 13, 1", false)
 - Jehoasz
-SWORD::Scripture::GetText("2 Krl 13, 10")
+SWORD::Scripture::GetText("2 Krl 13, 10", false)
 - Jeroboam
-SWORD::Scripture::GetText("2 Krl 14, 23")
+SWORD::Scripture::GetText("2 Krl 14, 23", false)
 - Zachariasz
-SWORD::Scripture::GetText("2 Krl 15, 8")
+SWORD::Scripture::GetText("2 Krl 15, 8", false)
 - Szallum
-SWORD::Scripture::GetText("2 Krl 15, 13")
+SWORD::Scripture::GetText("2 Krl 15, 13", false)
 - Menachem
-SWORD::Scripture::GetText("2 Krl 15, 17")
+SWORD::Scripture::GetText("2 Krl 15, 17", false)
 - Pekachiasz
-SWORD::Scripture::GetText("2 Krl 15, 23")
+SWORD::Scripture::GetText("2 Krl 15, 23", false)
 - Pekach
-SWORD::Scripture::GetText("2 Krl 15, 27")
+SWORD::Scripture::GetText("2 Krl 15, 27", false)
 - Ozeasz
-SWORD::Scripture::GetText("2 Krl 17, 1")
+SWORD::Scripture::GetText("2 Krl 17, 1", false)

@@ -1,4 +1,4 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
-SWORD::Scripture::GetText("Iz 24, 5")
-SWORD::Scripture::GetText("Iz 33, 8")
+SWORD::Scripture::GetText("Iz 24, 5", false)
+SWORD::Scripture::GetText("Iz 33, 8", false)

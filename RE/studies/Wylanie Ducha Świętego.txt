@@ -1,8 +1,8 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
-SWORD::Scripture::GetText("Iz 32, 9-18")
-SWORD::Scripture::GetText("Jl 3, 1-5")
-SWORD::Scripture::GetText("Za 12, 10")
-SWORD::Scripture::GetText("Iz 44, 1-5")
-SWORD::Scripture::GetText("Ez 39, 25-29")
+SWORD::Scripture::GetText("Iz 32, 9-18", false)
+SWORD::Scripture::GetText("Jl 3, 1-5", false)
+SWORD::Scripture::GetText("Za 12, 10", false)
+SWORD::Scripture::GetText("Iz 44, 1-5", false)
+SWORD::Scripture::GetText("Ez 39, 25-29", false)
 

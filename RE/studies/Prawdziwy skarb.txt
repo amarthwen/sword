@@ -1,38 +1,38 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
-SWORD::Scripture::GetText("Ab 1, 5-6")
-SWORD::Scripture::GetText("Iz 33, 6")
+SWORD::Scripture::GetText("Ab 1, 5-6", false)
+SWORD::Scripture::GetText("Iz 33, 6", false)
 
 Przypowieść o talentach:
-SWORD::Scripture::GetText("Mt 25, 14-30")
+SWORD::Scripture::GetText("Mt 25, 14-30", false)
 
 Przypowieść o synu marnotrawnym:
-SWORD::Scripture::GetText("Łk 15, 11-13")
+SWORD::Scripture::GetText("Łk 15, 11-13", false)
 
 Skarb w glinianych naczyniach:
-SWORD::Scripture::GetText("2 Kor 4, 7")
-SWORD::Scripture::GetText("Jr 18, 6")
-SWORD::Scripture::GetText("Za 14, 20-21")
+SWORD::Scripture::GetText("2 Kor 4, 7", false)
+SWORD::Scripture::GetText("Jr 18, 6", false)
+SWORD::Scripture::GetText("Za 14, 20-21", false)
 
 Podobieństwo o skarbie ukrytym na roli:
-SWORD::Scripture::GetText("Mt 13, 44")
+SWORD::Scripture::GetText("Mt 13, 44", false)
 
 Złoto w ogniu wypróbowane:
-SWORD::Scripture::GetText("Obj 3, 14-18")
+SWORD::Scripture::GetText("Obj 3, 14-18", false)
 
 Dobry skarb w dobrym skarbcu serca:
-SWORD::Scripture::GetText("Łk 6, 45")
-SWORD::Scripture::GetText("Mt 12, 35")
+SWORD::Scripture::GetText("Łk 6, 45", false)
+SWORD::Scripture::GetText("Mt 12, 35", false)
 
 Skarb w niebie:
-SWORD::Scripture::GetText("Mk 10, 17-22")
-SWORD::Scripture::GetText("Łk 18, 22")
-SWORD::Scripture::GetText("Mt 6, 19-21")
-SWORD::Scripture::GetText("Łk 12, 32-34")
+SWORD::Scripture::GetText("Mk 10, 17-22", false)
+SWORD::Scripture::GetText("Łk 18, 22", false)
+SWORD::Scripture::GetText("Mt 6, 19-21", false)
+SWORD::Scripture::GetText("Łk 12, 32-34", false)
 
 Skarb, którym zostaliśmy wykupieni z niewoli grzechu:
-SWORD::Scripture::GetText("1 Kor 6, 19-20")
+SWORD::Scripture::GetText("1 Kor 6, 19-20", false)
 
 O bogatym młodzieńcu:
-SWORD::Scripture::GetText("Mk 10, 17-22")
+SWORD::Scripture::GetText("Mk 10, 17-22", false)
 

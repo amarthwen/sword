@@ -1,5 +1,5 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
-SWORD::Scripture::GetText("1 Kor 10, 19-21")
-SWORD::Scripture::GetText("Mt 20, 20-23")
-SWORD::Scripture::GetText("Łk 22, 39-42")
+SWORD::Scripture::GetText("1 Kor 10, 19-21", false)
+SWORD::Scripture::GetText("Mt 20, 20-23", false)
+SWORD::Scripture::GetText("Łk 22, 39-42", false)
