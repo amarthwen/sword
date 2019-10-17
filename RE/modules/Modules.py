@@ -9,6 +9,9 @@ from modules import config, Helpers
 # ================================================================ #
 # configuration
 # ================================================================ #
+# The base of all xml namespaces
+cfg_XmlNamespaceBase = config.XmlNamespaceBase
+
 # entry item related configuration variables
 cfg_ChrEntryItemQuote = config.EntryItemQuoteChr
 
@@ -25,8 +28,8 @@ cfg_XmlAttrSectioningSection = config.SectioningSectionXmlAttribs
 # ================================================================ #
 # implementation of module interface
 # ================================================================ #
-class IModule:
-  atr_XmlNamespaceBase = u'https://github.com/amarthwen/sword/xmlns/'
+class IModule(object):
+  atr_XmlNamespaceBase = cfg_XmlNamespaceBase
 
   def __init__(self):
     self.atr_Modules = {}
@@ -114,8 +117,8 @@ class Translations(IModule):
     return self.__class__.__name__
 
   @staticmethod
-  def Get(arg_TranslationName):
-    return Translations.atr_Translations.get(arg_TranslationName, None)
+  def Get(arg_TranslationName, arg_Exceptional = None):
+    return Translations.atr_Translations.get(arg_TranslationName, arg_Exceptional)
 
   @staticmethod
   def GetCurrent():
@@ -156,13 +159,17 @@ class Scripture(IModule):
     return self.__class__.__name__
 
   def HandleCmdGetText(self, arg_Params):
-    tmp_TextOrigin = arg_Params[0].strip(cfg_ChrEntryItemQuote)
-    tmp_Inline = False
+    tmp_Inline = 'true'
+
+    # sanity check
+    if len(arg_Params) == 0:
+      raise Exception
+
+    tmp_Origin = arg_Params[0].strip(cfg_ChrEntryItemQuote)
 
     if len(arg_Params) > 1:
-      tmp_Inline = {
-        'true' : True
-      }.get(arg_Params[1].lower(), False)
+      if arg_Params[1].lower() in [u'false', u'true']:
+        tmp_Inline = arg_Params[1].lower()
 
     tmp_XmlNodeRoot = ET.Element(self.GetXmlTagName(u'extract'))
 
@@ -171,18 +178,17 @@ class Scripture(IModule):
     if tmp_CurrentTranslation is None:
       raise Exception
 
-    GetVersetReferences = tmp_CurrentTranslation.GetVersetReferences(tmp_TextOrigin)
+    tmp_VersetReferences, tmp_NormalizedOrigin = tmp_CurrentTranslation.GetVersetReferencesWithNormalizedOrigin(tmp_Origin)
 
-    for GetVersetReference in GetVersetReferences:
+    for tmp_VersetReference in tmp_VersetReferences:
       tmp_XmlNodeVersetReference = ET.SubElement(tmp_XmlNodeRoot, u'verset')
-      for tmp_Key, tmp_Value in GetVersetReference.items():
+      for tmp_Key, tmp_Value in tmp_VersetReference.items():
         tmp_XmlNodeVersetReference.set(tmp_Key, tmp_Value)
 
     tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['TranslationName'], tmp_CurrentTranslation.GetName())
-    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Origin'], tmp_TextOrigin)
-
-    if tmp_Inline:
-      tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Inline'], u'true')
+    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Normalized'], tmp_NormalizedOrigin)
+    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Origin'], tmp_Origin)
+    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Inline'], tmp_Inline)
 
     return tmp_XmlNodeRoot
 
@@ -235,7 +241,6 @@ class Sectioning(IModule):
 
   def HandleCmdBegin(self, arg_Params):
     tmp_XmlNode = None
-    tmp_Level = None
     tmp_Title = None
 
     # sanity check

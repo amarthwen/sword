@@ -1,7 +1,0 @@
-Document::Sectioning::Begin("Document")
-SWORD::Scripture::Translations::Use("BW")
-Człowiek jako dom:
-Człowiek jako świątynia Ducha Świętego:
-Człowiek jako drzewo:
-Człowiek jako gliniane naczynie:
-Człowiek jako metal, który podlega oczyszczeniu:

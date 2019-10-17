@@ -3,7 +3,7 @@
 # ================================================================ #
 # imports
 # ================================================================ #
-import os, re, xml.etree.ElementTree as ET
+import datetime, hashlib, os, re, xml.etree.ElementTree as ET
 from modules import config
 
 # ================================================================ #
@@ -23,6 +23,48 @@ cfg_RegExpStrTextOriginDelimiterReferenceRange = config.ScriptureTextOriginDelim
 
 # xml attributes: scripture:extract
 cfg_XmlAttrScriptureExtractVerset = config.ScriptureExtractVersetXmlAttribs
+
+# ================================================================ #
+# implementation of helper class: Token
+# ================================================================ #
+class Token:
+  def __init__(self):
+    self.atr_Text = u''
+    self.atr_DateTime = datetime.datetime.now()
+    self.atr_Payload = os.urandom(1024)
+    self.atr_PayloadHash = hashlib.sha1()
+
+    # calculate payload hash
+    self.atr_PayloadHash.update(self.atr_Payload)
+
+  def __str__(self):
+    # return u'(TOKEN:#tmsp=\'{}\'|#hash=\'{}\')'.format(self.atr_DateTime.strftime("%Y.%m.%d_%H:%M:%S.%f"), self.atr_PayloadHash.hexdigest().upper())
+    return u'#TOKEN_TMSP:{}_HASH:{}#'.format(self.atr_DateTime.strftime("%Y%m%d%H%M%S%f"), self.atr_PayloadHash.hexdigest().upper())
+
+  def SetText(self, arg_Text):
+    self.atr_Text = arg_Text
+
+  def GetText(self):
+    return self.atr_Text
+
+# ================================================================ #
+# implementation of helper class: Token
+# ================================================================ #
+class Tokens:
+  def __init__(self):
+    self.atr_Tokens = {}
+
+  def Create(self, arg_Name):
+    if arg_Name not in self.atr_Tokens:
+      self.atr_Tokens[arg_Name] = Token()
+
+    return self.atr_Tokens[arg_Name]
+
+  def Get(self, arg_Name, arg_Exceptional = None):
+    return self.atr_Tokens.get(arg_Name, arg_Exceptional)
+
+  def Items(self):
+    return self.atr_Tokens.items()
 
 # ================================================================ #
 # implementation of helper class: Entry
@@ -130,7 +172,7 @@ class Translation:
 
     return int(tmpXmlNode.get('ref', '0'))
 
-  def GetVersetReferences(self, arg_TextOrigin):
+  def GetVersetReferencesWithNormalizedOrigin(self, arg_TextOrigin):
     tmp_Versets = []
     tmp_VersetReferences = []
 
@@ -177,6 +219,9 @@ class Translation:
     tmp_VersetMin = None
     tmp_VersetMax = None
 
+    tmp_Origin = tmp_Book
+    tmp_LastChapter = 0
+
     for tmp_VersetCurr in tmp_Versets:
       if tmp_VersetMax is not None and tmp_VersetCurr[1] == tmp_VersetMax[2] + 1 and tmp_VersetCurr[0] == tmp_VersetMax[0]:
         tmp_VersetMax = tmp_VersetCurr
@@ -187,16 +232,38 @@ class Translation:
               cfg_XmlAttrScriptureExtractVerset['Reference'] : str(tmp_VersetMin[3]) + cfg_RegExpStrTextOriginDelimiterReferenceRange + str(tmp_VersetMax[4]),
               cfg_XmlAttrScriptureExtractVerset['Origin'] : tmp_Book + u' ' + str(tmp_VersetMin[0]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[1]) + cfg_RegExpStrTextOriginDelimiterLineRangeInternal + str(tmp_VersetMax[2])
             })
+
+            # add versets to text origin
+            if tmp_LastChapter != tmp_VersetMin[0]:
+              if tmp_LastChapter != 0:
+                tmp_Origin = tmp_Origin + cfg_RegExpStrTextOriginDelimiterChapter
+              tmp_Origin = tmp_Origin + u' ' + str(tmp_VersetMin[0]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[1]) + cfg_RegExpStrTextOriginDelimiterLineRangeInternal + str(tmp_VersetMax[2])
+            else:
+              if tmp_LastChapter != 0:
+                tmp_Origin = tmp_Origin + cfg_RegExpStrTextOriginDelimiterLineRange
+              tmp_Origin = tmp_Origin + str(tmp_VersetMin[1]) + cfg_RegExpStrTextOriginDelimiterLineRangeInternal + str(tmp_VersetMax[2])
           else:
             tmp_VersetReferences.append({
               cfg_XmlAttrScriptureExtractVerset['Reference'] : str(tmp_VersetMin[3]),
               cfg_XmlAttrScriptureExtractVerset['Origin'] : tmp_Book + u' ' + str(tmp_VersetMin[0]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[1])
             })
 
+            # add versets to text origin
+            if tmp_LastChapter != tmp_VersetMin[0]:
+              if tmp_LastChapter != 0:
+                tmp_Origin = tmp_Origin + cfg_RegExpStrTextOriginDelimiterChapter
+              tmp_Origin = tmp_Origin + u' ' + str(tmp_VersetMin[0]) + cfg_RegExpStrTextOriginDelimiterChapterInternal + u' ' + str(tmp_VersetMin[1])
+            else:
+              if tmp_LastChapter != 0:
+                tmp_Origin = tmp_Origin + cfg_RegExpStrTextOriginDelimiterLineRange
+              tmp_Origin = tmp_Origin + str(tmp_VersetMin[1])
+
+          tmp_LastChapter = tmp_VersetMin[0]
+
         tmp_VersetMin = tmp_VersetCurr
         tmp_VersetMax = tmp_VersetCurr
 
-    return tmp_VersetReferences
+    return tmp_VersetReferences, tmp_Origin
 
   def GetVersetByReference(self, arg_Verset):
     tmp_Verset = []
@@ -208,7 +275,7 @@ class Translation:
       tmp_RangeMax = int(tmp_Range[1])
 
     for tmp_VersetRef in range(tmp_RangeMin, tmp_RangeMax + 1):
-      tmpXmlNode = self.GetContents().find(u"./book/chapter/verset[@ref='{}']".format(str(tmp_RangeMin)))
+      tmpXmlNode = self.GetContents().find(u"./book/chapter/verset[@ref='{}']".format(str(tmp_VersetRef)))
 
       if tmpXmlNode is None:
         raise Exception

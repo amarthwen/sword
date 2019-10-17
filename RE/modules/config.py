@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
 # ================================================================ #
+# XML namespaces
+# ================================================================ #
+XmlNamespaceBase = u'https://github.com/amarthwen/sword/xmlns/'
+
+# ================================================================ #
 # helper: Entry
 # ================================================================ #
 EntryItemQuoteChr = u'"'
@@ -23,6 +28,7 @@ ScriptureTextOriginDelimiterReferenceRange = r'..'
 
 # xml attributes: 'scripture:extract'
 ScriptureExtractXmlAttribs = {
+  'Normalized' : u'normalized', # origin normalized
   'Origin' : u'origin',
   'TranslationName' : u'translation',
   'Inline' : u'inline' # Optional, default value: false
@@ -49,3 +55,7 @@ SectioningSectionXmlAttribs = {
 GenTXTQuoteChr = u'"'
 GenTXTVersetDelimiterStr = u' (...) '
 
+# ================================================================ #
+# generator: TXT
+# ================================================================ #
+GenTEXVersetDelimiterStr = u' (\\ldots) '
