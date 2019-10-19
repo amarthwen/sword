@@ -43,17 +43,32 @@ class iGenerator(object):
     # assign file name
     self.atr_FileName = u''
 
-    # set default verset delimiter
-    self.atr_VersetDelimiter = u''
+    # set list of Scripture extracts to be studied
+    self.atr_ScriptureExtracts = []
+
+    # clear sectioning levels
+    self.atr_SectioningLevels = [0 for tmp_Level in Modules.Sectioning.atr_Levels.items()]
 
     # create token container
     self.atr_Tokens = Helpers.Tokens()
+
+    # set default verset delimiter
+    self.atr_VersetDelimiter = u' (...) '
+
+    # set default verset opening quote
+    self.atr_VersetOpeningQuote = u'"'
+
+    # set default verset closing quote
+    self.atr_VersetClosingQuote = u'"'
 
   def __str__(self):
     return self.GetName()
 
   def GetName(self):
     raise NotImplementedError
+
+  def GetOrigin(self, arg_Origin):
+    return u'(' + arg_Origin + u')'
 
   def GetTagName(self, arg_Namespace, arg_TagName):
     self.GetXmlNamespaces['sectioning']
@@ -64,11 +79,84 @@ class iGenerator(object):
   def HandleTagText(self, arg_XmlNode):
     return arg_XmlNode.text
 
-  def HandleTagScriptureExtract(self, arg_XmlNode):
-    raise NotImplementedError
+  def HandleTagScriptureExtract(self, arg_XmlNode, arg_IncludeOrigin = True):
+    tmp_Contents = []
+    tmp_ScriptureExtract = []
+    tmp_AtrTranslationName = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['TranslationName'], None)
+    tmp_AtrNormalized = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Normalized'], None)
+    tmp_AtrOrigin = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Origin'], None)
+    tmp_AtrInline = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Inline'], u'true').lower()
+
+    # sanity check
+    if tmp_AtrNormalized is None or tmp_AtrOrigin is None:
+      raise Exception
+
+    tmp_Normalized = self.GetOrigin(tmp_AtrNormalized)
+    tmp_Origin = self.GetOrigin(tmp_AtrOrigin)
+
+    # sanity check
+    if tmp_AtrTranslationName is None:
+      raise Exception
+
+    # get translation
+    tmp_Translation = Modules.Translations.Get(tmp_AtrTranslationName)
+
+    # sanity check
+    if tmp_Translation is None:
+      raise Exception
+
+    # get versets contents
+    for tmp_XmlNodeChild in arg_XmlNode:
+      tmp_VersetRef = tmp_XmlNodeChild.get(cfg_XmlAttrScriptureExtractVerset['Reference'], None)
+
+      # sanity check
+      if tmp_VersetRef is None:
+        raise Exception
+
+      tmp_ScriptureExtract.append(u' '.join(tmp_Translation.GetVersetByReference(tmp_VersetRef)))
+
+    tmp_Contents.append(self.atr_VersetOpeningQuote + self.atr_VersetDelimiter.join(filter(None, tmp_ScriptureExtract)) + self.atr_VersetClosingQuote)
+
+    if arg_IncludeOrigin:
+      tmp_Contents.append(tmp_Origin)
+
+    # add Scripture extract to the list of Scripture extracts to be studied
+    if tmp_Normalized not in self.atr_ScriptureExtracts:
+      self.atr_ScriptureExtracts.append(tmp_Normalized)
+
+    return u' '.join(filter(None, tmp_Contents))
 
   def HandleTagSectioningSection(self, arg_XmlNode):
-    raise NotImplementedError
+    tmp_Contents = []
+    tmp_AtrLevel = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Level'], None)
+    tmp_AtrTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Title'], None)
+
+    # sanity check
+    if tmp_AtrLevel is None:
+      raise Exception
+
+    # get level
+    tmp_Level = int(tmp_AtrLevel)
+
+    # increase current level
+    self.atr_SectioningLevels[tmp_Level] = self.atr_SectioningLevels[tmp_Level] + 1
+
+    # clear all levels below current one
+    for tmp_SectioningLevel in Modules.Sectioning.atr_Levels.values():
+      if tmp_SectioningLevel > tmp_Level:
+        self.atr_SectioningLevels[tmp_SectioningLevel] = 0
+
+    tmp_Prefixes = []
+    for tmp_SectioningLevel in self.atr_SectioningLevels[1:]:
+      if tmp_SectioningLevel > 0:
+        tmp_Prefixes.append(str(tmp_SectioningLevel))
+      else:
+        break
+
+    tmp_Contents.append(u'.'.join(tmp_Prefixes))
+    tmp_Contents.append(tmp_AtrTitle)
+
+    return u' '.join(filter(None, tmp_Contents))
 
   def HandleTagObject(self, arg_XmlNode):
     tmp_Contents = []
@@ -133,87 +221,12 @@ class TXT(iGenerator):
   def __init__(self):
     iGenerator.__init__(self)
 
-    # clear sectioning levels
-    self.atr_SectioningLevels = [0 for tmp_Level in Modules.Sectioning.atr_Levels.items()]
-
-    # set verset delimiter
-    self.atr_VersetDelimiter = cfg_StrGenTXTVersetDelimiter
-
   def GetName(self):
     return self.__class__.__name__.lower()
-
-  def HandleTagScriptureExtract(self, arg_XmlNode):
-    tmp_Contents = []
-    tmp_ScriptureExtract = []
-    tmp_AtrTranslationName = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['TranslationName'], None)
-    tmp_AtrOrigin = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Origin'], None)
-
-    # sanity check
-    if tmp_AtrOrigin is None:
-      raise Exception
-
-    tmp_Origin = u'(' + tmp_AtrOrigin + u')'
-
-    # sanity check
-    if tmp_AtrTranslationName is None:
-      raise Exception
-
-    # get translation
-    tmp_Translation = Modules.Translations.Get(tmp_AtrTranslationName)
-
-    # sanity check
-    if tmp_Translation is None:
-      raise Exception
-
-    # get versets contents
-    for tmp_XmlNodeChild in arg_XmlNode:
-      tmp_VersetRef = tmp_XmlNodeChild.get(cfg_XmlAttrScriptureExtractVerset['Reference'], None)
-
-      # sanity check
-      if tmp_VersetRef is None:
-        raise Exception
-
-      tmp_ScriptureExtract.append(u' '.join(tmp_Translation.GetVersetByReference(tmp_VersetRef)))
-
-    tmp_Contents.append(cfg_ChrGenTXTQuote + self.atr_VersetDelimiter.join(filter(None, tmp_ScriptureExtract)) + cfg_ChrGenTXTQuote + u' ' + tmp_Origin)
-
-    return u'\n'.join(filter(None, tmp_Contents))
-
   def HandleTagSectioningSection(self, arg_XmlNode):
     tmp_Contents = []
-    tmp_AtrLevel = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Level'], None)
-    tmp_AtrTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Title'], None)
 
-    # sanity check
-    if tmp_AtrLevel is None:
-      raise Exception
-
-    # get level
-    tmp_Level = int(tmp_AtrLevel)
-
-    # increase current level
-    self.atr_SectioningLevels[tmp_Level] = self.atr_SectioningLevels[tmp_Level] + 1
-
-    # clear all levels below current one
-    for tmp_SectioningLevel in Modules.Sectioning.atr_Levels.values():
-      if tmp_SectioningLevel > tmp_Level:
-        self.atr_SectioningLevels[tmp_SectioningLevel] = 0
-
-    tmp_Prefixes = []
-    for tmp_SectioningLevel in self.atr_SectioningLevels[1:]:
-      if tmp_SectioningLevel > 0:
-        tmp_Prefixes.append(str(tmp_SectioningLevel))
-      else:
-        break
-
-    tmp_Header = u'.'.join(tmp_Prefixes)
-
-    if tmp_AtrTitle is not None:
-      if tmp_Level > 0:
-        tmp_Header = tmp_Header + u'. '
-      tmp_Header = tmp_Header + tmp_AtrTitle
-
-    tmp_Contents.append(tmp_Header)
+    tmp_Contents.append(super(TXT, self).HandleTagSectioningSection(arg_XmlNode))
 
     for tmp_XmlNodeChild in arg_XmlNode:
       tmp_Contents.append(self.HandleTag(tmp_XmlNodeChild))
@@ -228,15 +241,6 @@ class HTM(iGenerator):
   def __init__(self):
     iGenerator.__init__(self)
 
-    # set verset delimiter
-    self.atr_VersetDelimiter = cfg_StrGenTXTVersetDelimiter
-
-    # clear sectioning levels
-    self.atr_SectioningLevels = [0 for tmp_Level in Modules.Sectioning.atr_Levels.items()]
-
-    # set list of Scripture extracts to be studied
-    self.atr_ScriptureExtracts = []
-
   def GetName(self):
     return self.__class__.__name__.lower()
 
@@ -249,49 +253,22 @@ class HTM(iGenerator):
 
   def HandleTagScriptureExtract(self, arg_XmlNode):
     tmp_Contents = []
-    tmp_ScriptureExtract = []
-    tmp_AtrTranslationName = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['TranslationName'], None)
-    tmp_AtrNormalized = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Normalized'], None)
     tmp_AtrOrigin = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Origin'], None)
     tmp_AtrInline = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Inline'], u'true').lower()
 
     # sanity check
-    if tmp_AtrNormalized is None or tmp_AtrOrigin is None:
+    if tmp_AtrOrigin is None:
       raise Exception
 
-    tmp_Normalized = u'(' + tmp_AtrNormalized + u')'
-    tmp_Origin = u'(' + tmp_AtrOrigin + u')'
+    tmp_Origin = self.GetOrigin(tmp_AtrOrigin)
 
-    # sanity check
-    if tmp_AtrTranslationName is None:
-      raise Exception
-
-    # get translation
-    tmp_Translation = Modules.Translations.Get(tmp_AtrTranslationName)
-
-    # sanity check
-    if tmp_Translation is None:
-      raise Exception
-
-    # get versets contents
-    for tmp_XmlNodeChild in arg_XmlNode:
-      tmp_VersetRef = tmp_XmlNodeChild.get(cfg_XmlAttrScriptureExtractVerset['Reference'], None)
-
-      # sanity check
-      if tmp_VersetRef is None:
-        raise Exception
-
-      tmp_ScriptureExtract.append(u' '.join(tmp_Translation.GetVersetByReference(tmp_VersetRef)))
+    tmp_ScriptureExtract = super(HTM, self).HandleTagScriptureExtract(arg_XmlNode, False)
 
     if tmp_AtrInline == u'false':
-      tmp_Contents.append(u'<p class="css_bible_text">"' + self.atr_VersetDelimiter.join(filter(None, tmp_ScriptureExtract)) + u'"</p>')
+      tmp_Contents.append(u'<p class="css_bible_text">' + tmp_ScriptureExtract + u'</p>')
       tmp_Contents.append(u'<p class="css_bible_origin">' + tmp_Origin + u'</p>')
     else:
-      tmp_Contents.append(u'"' + self.atr_VersetDelimiter.join(filter(None, tmp_ScriptureExtract)) + u'" ' + tmp_Origin)
-
-    # add Scripture extract to the list of Scripture extracts to be studied
-    if tmp_Normalized not in self.atr_ScriptureExtracts:
-      self.atr_ScriptureExtracts.append(tmp_Normalized)
+      tmp_Contents.append(tmp_ScriptureExtract + u' ' + tmp_Origin)
 
     return u'\n'.join(filter(None, tmp_Contents))
 
@@ -327,30 +304,8 @@ class HTM(iGenerator):
       if tmp_AtrTitle is None:
         tmp_AtrTitle = u''
 
-      # increase current level
-      self.atr_SectioningLevels[tmp_Level] = self.atr_SectioningLevels[tmp_Level] + 1
-
-      # clear all levels below current one
-      for tmp_SectioningLevel in Modules.Sectioning.atr_Levels.values():
-        if tmp_SectioningLevel > tmp_Level:
-          self.atr_SectioningLevels[tmp_SectioningLevel] = 0
-
-      tmp_Prefixes = []
-      for tmp_SectioningLevel in self.atr_SectioningLevels[1:]:
-        if tmp_SectioningLevel > 0:
-          tmp_Prefixes.append(str(tmp_SectioningLevel))
-        else:
-          break
-
-      tmp_Header = u'.'.join(tmp_Prefixes)
-
-      if tmp_AtrTitle is not None:
-        if tmp_Level > 0:
-          tmp_Header = tmp_Header + u'. '
-        tmp_Header = tmp_Header + tmp_AtrTitle
-
       tmp_Contents.append(u'<section>')
-      tmp_Contents.append(u'<h1>' + tmp_Header + u'</h1>')
+      tmp_Contents.append(u'<h1>' + super(HTM, self).HandleTagSectioningSection(arg_XmlNode) + u'</h1>')
 
     for tmp_XmlNodeChild in arg_XmlNode:
       tmp_Contents.append(self.HandleTag(tmp_XmlNodeChild))
@@ -408,14 +363,20 @@ class TEX(iGenerator):
   def __init__(self):
     iGenerator.__init__(self)
 
-    # set verset delimiter
+    # overwrite verset delimiter
     self.atr_VersetDelimiter = cfg_StrGenTEXVersetDelimiter
 
-    # set list of Scripture extracts to be studied
-    self.atr_ScriptureExtracts = []
+    # set default verset opening quote
+    self.atr_VersetOpeningQuote = u',,'
+
+    # set default verset closing quote
+    self.atr_VersetClosingQuote = u'\'\''
 
   def GetName(self):
     return self.__class__.__name__.lower()
+
+  def GetOrigin(self, arg_Origin):
+    return u'\\mbox{(' + arg_Origin + u')}'
 
   def HandleTagObject(self, arg_XmlNode):
     tmp_Contents = []
@@ -427,51 +388,24 @@ class TEX(iGenerator):
 
   def HandleTagScriptureExtract(self, arg_XmlNode):
     tmp_Contents = []
-    tmp_ScriptureExtract = []
-    tmp_AtrTranslationName = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['TranslationName'], None)
-    tmp_AtrNormalized = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Normalized'], None)
     tmp_AtrOrigin = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Origin'], None)
     tmp_AtrInline = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Inline'], u'true').lower()
 
     # sanity check
-    if tmp_AtrNormalized is None or tmp_AtrOrigin is None:
+    if tmp_AtrOrigin is None:
       raise Exception
 
-    tmp_Normalized = u'\\mbox{(' + tmp_AtrNormalized + u')}'
-    tmp_Origin = u'\\mbox{(' + tmp_AtrOrigin + u')}'
+    tmp_Origin = self.GetOrigin(tmp_AtrOrigin)
 
-    # sanity check
-    if tmp_AtrTranslationName is None:
-      raise Exception
-
-    # get translation
-    tmp_Translation = Modules.Translations.Get(tmp_AtrTranslationName)
-
-    # sanity check
-    if tmp_Translation is None:
-      raise Exception
-
-    # get versets contents
-    for tmp_XmlNodeChild in arg_XmlNode:
-      tmp_VersetRef = tmp_XmlNodeChild.get(cfg_XmlAttrScriptureExtractVerset['Reference'], None)
-
-      # sanity check
-      if tmp_VersetRef is None:
-        raise Exception
-
-      tmp_ScriptureExtract.append(u' '.join(tmp_Translation.GetVersetByReference(tmp_VersetRef)))
+    tmp_ScriptureExtract = super(TEX, self).HandleTagScriptureExtract(arg_XmlNode, False)
 
     if tmp_AtrInline == u'false':
       tmp_Contents.append(u'\\begin{quote}')
 
-    tmp_Contents.append(u',,' + self.atr_VersetDelimiter.join(filter(None, tmp_ScriptureExtract)) + u'\'\' ' + tmp_Origin)
+    tmp_Contents.append(tmp_ScriptureExtract + u' ' + tmp_Origin)
 
     if tmp_AtrInline == u'false':
       tmp_Contents.append(u'\\end{quote}')
-
-    # add Scripture extract to the list of Scripture extracts to be studied
-    if tmp_Normalized not in self.atr_ScriptureExtracts:
-      self.atr_ScriptureExtracts.append(tmp_Normalized)
 
     return u'\n'.join(filter(None, tmp_Contents))
 
