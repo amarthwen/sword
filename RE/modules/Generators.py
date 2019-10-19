@@ -19,12 +19,6 @@ cfg_XmlAttrScriptureExtractVerset = config.ScriptureExtractVersetXmlAttribs
 cfg_XmlAttrSectioningSection = config.SectioningSectionXmlAttribs
 
 # ================================================================ #
-# configuration of generator: TXT
-# ================================================================ #
-cfg_ChrGenTXTQuote = config.GenTXTQuoteChr
-cfg_StrGenTXTVersetDelimiter = config.GenTXTVersetDelimiterStr
-
-# ================================================================ #
 # configuration of generator: TEX
 # ================================================================ #
 cfg_StrGenTEXVersetDelimiter = config.GenTEXVersetDelimiterStr
@@ -47,7 +41,7 @@ class iGenerator(object):
     self.atr_ScriptureExtracts = []
 
     # clear sectioning levels
-    self.atr_SectioningLevels = [0 for tmp_Level in Modules.Sectioning.atr_Levels.items()]
+    self.atr_SectioningLevels = [0 for tmp_Level in Modules.Sectioning.atr_Levels.values()]
 
     # create token container
     self.atr_Tokens = Helpers.Tokens()
@@ -69,9 +63,6 @@ class iGenerator(object):
 
   def GetOrigin(self, arg_Origin):
     return u'(' + arg_Origin + u')'
-
-  def GetTagName(self, arg_Namespace, arg_TagName):
-    self.GetXmlNamespaces['sectioning']
 
   def HandleTagUnknown(self, arg_XmlNode):
     raise Exception
@@ -223,6 +214,7 @@ class TXT(iGenerator):
 
   def GetName(self):
     return self.__class__.__name__.lower()
+
   def HandleTagSectioningSection(self, arg_XmlNode):
     tmp_Contents = []
 
@@ -243,6 +235,9 @@ class HTM(iGenerator):
 
   def GetName(self):
     return self.__class__.__name__.lower()
+
+  def GetOrigin(self, arg_Origin):
+    return u'(' + arg_Origin.replace(u' ', u'&nbsp;') + u')'
 
   def HandleTagObject(self, arg_XmlNode):
     tmp_Contents = []
@@ -301,9 +296,6 @@ class HTM(iGenerator):
       tmp_Contents.append(u'<p class="css_title">' + tmp_AtrTitle + u'</p>')
       tmp_Contents.append(u'<p class="css_lines"><b>Wersety do studium:</b> ' + str(tmp_TokScriptureExtracts) + u'</p>')
     else:
-      if tmp_AtrTitle is None:
-        tmp_AtrTitle = u''
-
       tmp_Contents.append(u'<section>')
       tmp_Contents.append(u'<h1>' + super(HTM, self).HandleTagSectioningSection(arg_XmlNode) + u'</h1>')
 
@@ -388,21 +380,14 @@ class TEX(iGenerator):
 
   def HandleTagScriptureExtract(self, arg_XmlNode):
     tmp_Contents = []
-    tmp_AtrOrigin = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Origin'], None)
     tmp_AtrInline = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Inline'], u'true').lower()
 
-    # sanity check
-    if tmp_AtrOrigin is None:
-      raise Exception
-
-    tmp_Origin = self.GetOrigin(tmp_AtrOrigin)
-
-    tmp_ScriptureExtract = super(TEX, self).HandleTagScriptureExtract(arg_XmlNode, False)
+    tmp_ScriptureExtract = super(TEX, self).HandleTagScriptureExtract(arg_XmlNode)
 
     if tmp_AtrInline == u'false':
       tmp_Contents.append(u'\\begin{quote}')
 
-    tmp_Contents.append(tmp_ScriptureExtract + u' ' + tmp_Origin)
+    tmp_Contents.append(tmp_ScriptureExtract)
 
     if tmp_AtrInline == u'false':
       tmp_Contents.append(u'\\end{quote}')
@@ -426,16 +411,15 @@ class TEX(iGenerator):
       # create token for Scripture extracts to be studied
       tmp_TokScriptureExtracts = self.atr_Tokens.Create(u'ScriptureExtracts')
 
+      if tmp_AtrTitle is None:
+        tmp_AtrTitle = self.atr_FileName
+
       tmp_Contents.append(u'\\documentclass[10pt,a4paper,oneside]{article}')
       tmp_Contents.append(u'\\usepackage[utf8]{inputenc}')
       tmp_Contents.append(u'\\usepackage{polski}')
       tmp_Contents.append(u'\\usepackage[polish]{babel}')
       tmp_Contents.append(u'\\usepackage[margin=0.5in,bottom=0.75in]{geometry}')
       tmp_Contents.append(u'\\begin{document}')
-
-      if tmp_AtrTitle is None:
-        tmp_AtrTitle = self.atr_FileName
-
       tmp_Contents.append(u'\\centerline{\\textbf{\\MakeUppercase{' + tmp_AtrTitle + u'}}}')
       tmp_Contents.append(u'\\begin{center}')
       tmp_Contents.append(u'\\textbf{Wersety do studium:} ')
@@ -481,5 +465,5 @@ class Generators:
 
   def Process(self, arg_FileName, arg_XmlNodeRoot, arg_OutputFolderName):
     for tmp_Generator in self.atr_Generators.values():
-      tmp_Contents = tmp_Generator.Process(arg_FileName, arg_XmlNodeRoot, arg_OutputFolderName)
+      tmp_Generator.Process(arg_FileName, arg_XmlNodeRoot, arg_OutputFolderName)
 

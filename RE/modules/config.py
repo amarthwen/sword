@@ -31,7 +31,7 @@ ScriptureExtractXmlAttribs = {
   'Normalized' : u'normalized', # origin normalized
   'Origin' : u'origin',
   'TranslationName' : u'translation',
-  'Inline' : u'inline' # Optional, default value: false
+  'Inline' : u'inline' # Optional, default value: true
 }
 
 # xml attributes: 'scripture:extract/verset'
@@ -50,12 +50,6 @@ SectioningSectionXmlAttribs = {
 }
 
 # ================================================================ #
-# generator: TXT
-# ================================================================ #
-GenTXTQuoteChr = u'"'
-GenTXTVersetDelimiterStr = u' (...) '
-
-# ================================================================ #
-# generator: TXT
+# generator: TEX
 # ================================================================ #
 GenTEXVersetDelimiterStr = u' (\\ldots) '

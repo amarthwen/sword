@@ -325,8 +325,8 @@ class Sectioning(IModule):
     }.get(arg_Function, self.HandleCmdUnknown)(arg_Params)
 
   @staticmethod
-  def GetLevelName(arg_Level):
-    tmp_LevelName = None
+  def GetLevelName(arg_Level, arg_Exceptional = None):
+    tmp_LevelName = arg_Exceptional
 
     for tmp_Key, tmp_Value in Sectioning.atr_Levels.items():
       if tmp_Value == arg_Level:
