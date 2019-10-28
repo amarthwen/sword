@@ -36,7 +36,7 @@ def main():
   # register generators
   tmp_Gens.Register(Generators.TXT())
   tmp_Gens.Register(Generators.HTM())
-  # tmp_Gens.Register(Generators.FODT())
+  tmp_Gens.Register(Generators.FODT())
   # tmp_Gens.Register(Generators.PDF())
   tmp_Gens.Register(Generators.TEX())
 

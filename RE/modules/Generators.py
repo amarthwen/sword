@@ -9,6 +9,9 @@ from modules import config, Helpers, Modules
 # ================================================================ #
 # configuration
 # ================================================================ #
+# generators temporary directory
+cfg_DirGenTmp = config.GenTmpDir
+
 # xml attributes: 'scripture:extract'
 cfg_XmlAttrScriptureExtract = config.ScriptureExtractXmlAttribs
 
@@ -37,11 +40,17 @@ class iGenerator(object):
     # assign file name
     self.atr_FileName = u''
 
+    # set xml namespaces
+    self.atr_XmlNamespaces = {}
+
     # set list of Scripture extracts to be studied
     self.atr_ScriptureExtracts = []
 
     # clear sectioning levels
     self.atr_SectioningLevels = [0 for tmp_Level in Modules.Sectioning.atr_Levels.values()]
+
+    # set current sectioning level
+    self.atr_SectioningLevel = -1
 
     # create token container
     self.atr_Tokens = Helpers.Tokens()
@@ -63,6 +72,32 @@ class iGenerator(object):
 
   def GetOrigin(self, arg_Origin):
     return u'(' + arg_Origin + u')'
+
+  def GetXmlTagName(self, arg_TagName):
+    tmp_Elements = arg_TagName.split(u':')
+    tmp_XmlTagName = u''
+
+    # sanity check
+    if len(tmp_Elements) < 1 or len(tmp_Elements) > 2:
+      raise Exception
+
+    if len(tmp_Elements) == 2:
+      tmp_URI = self.atr_XmlNamespaces.get(tmp_Elements[0], None)
+
+      # sanity check
+      if tmp_URI is None:
+        raise Exception
+
+      tmp_XmlTagName = u'{' + tmp_URI + u'}' + tmp_Elements[1]
+    else:
+      tmp_XmlTagName = tmp_Elements[0]
+
+    return tmp_XmlTagName
+
+  def RegisterXmlNamespaces(self, arg_XmlNamespaces):
+    for tmp_XmlNamespace in arg_XmlNamespaces.items():
+      self.atr_XmlNamespaces[tmp_XmlNamespace[0]] = tmp_XmlNamespace[1]
+      ET.register_namespace(tmp_XmlNamespace[0], tmp_XmlNamespace[1])
 
   def HandleTagUnknown(self, arg_XmlNode):
     raise Exception
@@ -117,7 +152,7 @@ class iGenerator(object):
 
     return u' '.join(filter(None, tmp_Contents))
 
-  def HandleTagSectioningSection(self, arg_XmlNode):
+  def HandleTagSectioningSection(self, arg_XmlNode, arg_IncludePrefix = True):
     tmp_Contents = []
     tmp_AtrLevel = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Level'], None)
     tmp_AtrTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Title'], None)
@@ -128,6 +163,9 @@ class iGenerator(object):
 
     # get level
     tmp_Level = int(tmp_AtrLevel)
+
+    # set current sectioning level
+    self.atr_SectioningLevel = tmp_Level
 
     # increase current level
     self.atr_SectioningLevels[tmp_Level] = self.atr_SectioningLevels[tmp_Level] + 1
@@ -144,8 +182,13 @@ class iGenerator(object):
       else:
         break
 
-    tmp_Contents.append(u'.'.join(tmp_Prefixes))
+    if arg_IncludePrefix:
+      tmp_Contents.append(u'.'.join(tmp_Prefixes))
+
     tmp_Contents.append(tmp_AtrTitle)
+
+    # set current sectioning level
+    self.atr_SectioningLevel = tmp_Level - 1
 
     return u' '.join(filter(None, tmp_Contents))
 
@@ -280,6 +323,9 @@ class HTM(iGenerator):
     # get level
     tmp_Level = int(tmp_AtrLevel)
     
+    # set current sectioning level
+    self.atr_SectioningLevel = tmp_Level
+
     if tmp_Level == Modules.Sectioning.atr_Levels['document']:
       # create token for Scripture extracts to be studied
       tmp_TokScriptureExtracts = self.atr_Tokens.Create(u'ScriptureExtracts')
@@ -311,6 +357,9 @@ class HTM(iGenerator):
     else:
       tmp_Contents.append(u'</section>')
 
+    # set current sectioning level
+    self.atr_SectioningLevel = tmp_Level - 1
+
     return u'\n'.join(filter(None, tmp_Contents))
 
 # ================================================================ #
@@ -321,14 +370,225 @@ class FODT(iGenerator):
   def __init__(self):
     iGenerator.__init__(self)
 
+    # set default verset opening quote
+    self.atr_VersetOpeningQuote = u'„'
+
+    # set default verset closing quote
+    self.atr_VersetClosingQuote = u'”'
+
+    self.RegisterXmlNamespaces({
+      'office' : 'urn:oasis:names:tc:opendocument:xmlns:office:1.0',
+      'style' : 'urn:oasis:names:tc:opendocument:xmlns:style:1.0',
+      'text' : 'urn:oasis:names:tc:opendocument:xmlns:text:1.0',
+      'table' : 'urn:oasis:names:tc:opendocument:xmlns:table:1.0',
+      'draw' : 'urn:oasis:names:tc:opendocument:xmlns:drawing:1.0',
+      'fo' : 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0',
+      'xlink' : 'http://www.w3.org/1999/xlink',
+      'dc' : 'http://purl.org/dc/elements/1.1/',
+      'meta' : 'urn:oasis:names:tc:opendocument:xmlns:meta:1.0',
+      'number' : 'urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0',
+      'svg' : 'urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0',
+      'chart' : 'urn:oasis:names:tc:opendocument:xmlns:chart:1.0',
+      'dr3d' : 'urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0',
+      'math' : 'http://www.w3.org/1998/Math/MathML',
+      'form' : 'urn:oasis:names:tc:opendocument:xmlns:form:1.0',
+      'script' : 'urn:oasis:names:tc:opendocument:xmlns:script:1.0',
+      'config' : 'urn:oasis:names:tc:opendocument:xmlns:config:1.0',
+      'ooo' : 'http://openoffice.org/2004/office',
+      'ooow' : 'http://openoffice.org/2004/writer',
+      'oooc' : 'http://openoffice.org/2004/calc',
+      'dom' : 'http://www.w3.org/2001/xml-events',
+      'xforms' : 'http://www.w3.org/2002/xforms',
+      'xsd' : 'http://www.w3.org/2001/XMLSchema',
+      'xsi' : 'http://www.w3.org/2001/XMLSchema-instance',
+      'rpt' : 'http://openoffice.org/2005/report',
+      'of' : 'urn:oasis:names:tc:opendocument:xmlns:of:1.2',
+      'xhtml' : 'http://www.w3.org/1999/xhtml',
+      'grddl' : 'http://www.w3.org/2003/g/data-view#',
+      'officeooo' : 'http://openoffice.org/2009/office',
+      'tableooo' : 'http://openoffice.org/2009/table',
+      'drawooo' : 'http://openoffice.org/2010/draw',
+      'calcext' : 'urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0',
+      'loext' : 'urn:org:documentfoundation:names:experimental:office:xmlns:loext:1.0',
+      'field' : 'urn:openoffice:names:experimental:ooo-ms-interop:xmlns:field:1.0',
+      'formx' : 'urn:openoffice:names:experimental:ooxml-odf-interop:xmlns:form:1.0',
+      'css3t' : 'http://www.w3.org/TR/css3-text/'
+    })
+
+    # create root node
+    self.atr_XmlNodeRoot = ET.parse(os.path.join(cfg_DirGenTmp, self.GetName(), u'template.fodt')).getroot()
+
+    # get office:text xml node
+    tmp_XmlNodeOfficeText = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'office:text'))
+
+    # sanity check
+    if tmp_XmlNodeOfficeText is None:
+      raise Exception
+
+    # remove contents of office:text xml node
+    tmp_XmlNodeOfficeText.clear()
+
+    # remove contents of office:text xml node
+    # for tmp_XmlNodeChild in tmp_XmlNodeOfficeText:
+      # if tmp_XmlNodeChild.tag != self.GetXmlTagName(u'text:sequence-decls'):
+        # tmp_XmlNodeOfficeText.remove(tmp_XmlNodeChild)
+
+    # set pointer to currently used paragraph
+    self.atr_XmlNodeParagraph = None
+
+  def HandleTagText(self, arg_XmlNode):
+    # sanity check
+    if self.atr_XmlNodeParagraph is None:
+      raise Exception
+
+    if self.atr_XmlNodeParagraph.text is not None:
+      self.atr_XmlNodeParagraph.text = self.atr_XmlNodeParagraph.text + arg_XmlNode.text
+    else:
+      self.atr_XmlNodeParagraph.text = arg_XmlNode.text
+
+    return u''
+
   def HandleTagScriptureExtract(self, arg_XmlNode):
+    tmp_AtrOrigin = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Origin'], None)
+    tmp_AtrInline = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Inline'], u'true').lower()
+
+    # sanity check
+    if tmp_AtrOrigin is None:
+      raise Exception
+
+    tmp_Origin = self.GetOrigin(tmp_AtrOrigin)
+
+    tmp_ScriptureExtract = super(FODT, self).HandleTagScriptureExtract(arg_XmlNode)
+
+    # sanity check
+    if self.atr_XmlNodeParagraph is None:
+      raise Exception
+
+    if tmp_AtrInline == u'false':
+      # TODO: implement style for non-inlined Scripture extracts
+      if self.atr_XmlNodeParagraph.text is not None:
+        self.atr_XmlNodeParagraph.text = self.atr_XmlNodeParagraph.text + tmp_ScriptureExtract
+      else:
+        self.atr_XmlNodeParagraph.text = tmp_ScriptureExtract
+    else:
+      if self.atr_XmlNodeParagraph.text is not None:
+        self.atr_XmlNodeParagraph.text = self.atr_XmlNodeParagraph.text + tmp_ScriptureExtract
+      else:
+        self.atr_XmlNodeParagraph.text = tmp_ScriptureExtract
+
     return u''
 
   def HandleTagSectioningSection(self, arg_XmlNode):
-    return u''
+    tmp_Contents = []
+    tmp_AtrLevel = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Level'], None)
+    tmp_AtrTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Title'], None)
+    tmp_TokScriptureExtracts = None
+    tmp_XmlNodeRoot = None
+
+    # clear pointer to currently used paragraph
+    self.atr_XmlNodeParagraph = None
+
+    # sanity check
+    if tmp_AtrLevel is None:
+      raise Exception
+
+    # get level
+    tmp_Level = int(tmp_AtrLevel)
+    
+    # set current sectioning level
+    self.atr_SectioningLevel = tmp_Level
+
+    tmp_XmlNodeOfficeText = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'office:text'))
+
+    # sanity check
+    if tmp_XmlNodeOfficeText is None:
+      raise Exception
+
+    if tmp_Level == Modules.Sectioning.atr_Levels['document']:
+      # create token for Scripture extracts to be studied
+      # tmp_TokScriptureExtracts = self.atr_Tokens.Create(u'ScriptureExtracts')
+
+      if tmp_AtrTitle is None:
+        tmp_AtrTitle = self.atr_FileName
+
+      tmp_XmlNodeDcTitle = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'dc:title'))
+
+      # sanity check
+      if tmp_XmlNodeDcTitle is None:
+        raise Exception
+
+      tmp_XmlNodeDcTitle.text = tmp_AtrTitle
+
+      tmp_XmlNodeTextP = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
+      tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Title')
+      tmp_XmlNodeTextP.text = tmp_AtrTitle
+    else:
+      if tmp_AtrTitle is None:
+        tmp_AtrTitle = u''
+
+      # add header
+      tmp_XmlNodeTextH = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:h'))
+      tmp_XmlNodeTextH.set(self.GetXmlTagName(u'text:style-name'), u'Heading_20_' + str(tmp_Level))
+      tmp_XmlNodeTextH.set(self.GetXmlTagName(u'text:outline-level'), str(tmp_Level))
+      tmp_XmlNodeTextH.text = tmp_AtrTitle
+
+    for tmp_XmlNodeChild in arg_XmlNode:
+      tmp_Contents.append(self.HandleTag(tmp_XmlNodeChild))
+
+    if tmp_Level == Modules.Sectioning.atr_Levels['document']:
+      tmp_Contents.append(ET.tostring(self.atr_XmlNodeRoot))
+
+      # if tmp_TokScriptureExtracts is not None:
+        # tmp_TokScriptureExtracts.SetText(u', '.join(self.atr_ScriptureExtracts))
+    else:
+      pass
+
+    # set current sectioning level
+    self.atr_SectioningLevel = tmp_Level - 1
+
+    return u'\n'.join(filter(None, tmp_Contents))
+
+  def HandleTagObject(self, arg_XmlNode):
+    tmp_XmlNodeOfficeText = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'office:text'))
+
+    # sanity check
+    if tmp_XmlNodeOfficeText is None:
+      raise Exception
+
+    # add paragraph
+    tmp_XmlNodeTextP = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
+    if self.atr_SectioningLevel > 0:
+      tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Text_20_body')
+    else:
+      tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Standard')
+
+    self.atr_XmlNodeParagraph = tmp_XmlNodeTextP
+
+    return super(FODT, self).HandleTagObject(arg_XmlNode)
 
   def GetName(self):
     return self.__class__.__name__.lower()
+
+  def WriteContents(self, arg_FileName, arg_Contents, arg_OutputFolderName):
+    tmp_Name = self.GetName()
+
+    tmp_OutputFolderName = os.path.join(arg_OutputFolderName, tmp_Name)
+    tmp_OutputFileName = arg_FileName + u'.' + tmp_Name
+
+    if os.path.exists(tmp_OutputFolderName):
+      if not os.path.isdir(tmp_OutputFolderName):
+        raise Exception
+    else:
+      os.mkdir(tmp_OutputFolderName)
+
+    # store xml tree to output file
+    ET.ElementTree(self.atr_XmlNodeRoot).write(
+      os.path.join(tmp_OutputFolderName, tmp_OutputFileName),
+      encoding = 'utf-8',
+      xml_declaration = True,
+      default_namespace = None,
+      method = "xml"
+    )
 
 # ================================================================ #
 # implementation of generator: PDF
@@ -407,6 +667,9 @@ class TEX(iGenerator):
     # get level
     tmp_Level = int(tmp_AtrLevel)
     
+    # set current sectioning level
+    self.atr_SectioningLevel = tmp_Level
+
     if tmp_Level == Modules.Sectioning.atr_Levels['document']:
       # create token for Scripture extracts to be studied
       tmp_TokScriptureExtracts = self.atr_Tokens.Create(u'ScriptureExtracts')
@@ -446,6 +709,9 @@ class TEX(iGenerator):
 
       if tmp_TokScriptureExtracts is not None:
         tmp_TokScriptureExtracts.SetText(u', '.join(self.atr_ScriptureExtracts))
+
+    # set current sectioning level
+    self.atr_SectioningLevel = tmp_Level - 1
 
     return u'\n'.join(filter(None, tmp_Contents))
 

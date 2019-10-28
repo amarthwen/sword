@@ -91,6 +91,26 @@ function cmd_GeneratePDFFilesFromLATEXSources() {
   mv $Cfg_TmpDir/tex/*.pdf $Cfg_OutputDir/pdf
 }
 
+function cmd_GeneratePDFFilesFromFODTSources() {
+  # create output directory for generated PDF files (if doesn't exist) and clean it
+  mkdir -p $Cfg_OutputDir/pdf && rm -rf $Cfg_OutputDir/pdf/*
+
+  # generate PDF files from FODT sources
+  for tmp_FileName in $Cfg_OutputDir/fodt/*.fodt; do
+    tmp_Study=$(basename "$tmp_FileName" | cut -d. -f1)
+
+    tmp_Rslt=`libreoffice --headless --convert-to pdf --outdir $Cfg_OutputDir/pdf "$tmp_FileName"`
+
+    if (( $? == 0 )); then
+      echo -e -n "[${COL_2} OK ${COL_X}]"
+    else
+      echo -e -n "[${COL_1}FAIL${COL_X}]"
+    fi
+
+    echo -e " Processing study: \"${COL_4}${tmp_Study}${COL_X}\""
+  done
+}
+
 # step 1 - remove all generated files
 rm -rf $Cfg_OutputDir/*
 
@@ -105,11 +125,21 @@ cmd_PrintWithColor ${COL_1} "Generating output files:"
 cmd_GenerateOutputFiles
 
 # step 4 - generate PDF files from LATEX sources
-cmd_PrintWithColor ${COL_1} "Generating PDF files from LATEX sources:"
-cmd_GeneratePDFFilesFromLATEXSources
+# cmd_PrintWithColor ${COL_1} "Generating PDF files from LATEX sources:"
+# cmd_GeneratePDFFilesFromLATEXSources
 
-# step 5 - add styles to generated web pages
+# step 5 - generate PDF files from FODT sources
+cmd_PrintWithColor ${COL_1} "Generating PDF files from FODT sources:"
+cmd_GeneratePDFFilesFromFODTSources
+
+# step 6 - add styles to generated web pages
 if [ -d "$Cfg_OutputDir/htm" ]; then
   cmd_PrintWithColor ${COL_1} "Adding styles to generated web pages"
   cp -r $Cfg_TmpDir/generators/htm/styles $Cfg_OutputDir/htm
+  if (( $? == 0 )); then
+    echo -e "[${COL_2} OK ${COL_X}]"
+  else
+    echo -e "[${COL_1}FAIL${COL_X}]"
+  fi
 fi
+
