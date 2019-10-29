@@ -47,7 +47,7 @@ def main():
   tmp_OutputFolderName = tmp_Args.OptOutput.decode('utf-8')
 
   # load xml tree
-  tmp_XmlNodeRoot = ET.parse(tmp_InputFileName)
+  tmp_XmlNodeRoot = ET.parse(tmp_InputFileName).getroot()
 
   # get file name
   tmp_FileNameWithExt = os.path.basename(tmp_InputFileName)

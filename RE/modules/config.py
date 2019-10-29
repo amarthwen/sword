@@ -50,12 +50,23 @@ SectioningSectionXmlAttribs = {
 }
 
 # ================================================================ #
+# module: Image
+# ================================================================ #
+# xml attributes: 'object:image'
+ObjectImageXmlAttribs = {
+  'Name' : u'name',
+  'Caption' : u'caption'
+}
+
+# ================================================================ #
 # generators
 # ================================================================ #
 GenTmpDir = u'./tmp/generators'
 
 # ================================================================ #
-# generator: TEX
+# miscellaneous
 # ================================================================ #
-GenTEXVersetDelimiterStr = u' (\\ldots) '
+ParagraphName = u'paragraph'
+TextName = u'text'
+ImagesTmpDir = u'./tmp/images'
 

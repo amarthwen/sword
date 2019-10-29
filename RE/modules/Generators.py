@@ -3,7 +3,8 @@
 # ================================================================ #
 # imports
 # ================================================================ #
-import codecs, os, xml.etree.ElementTree as ET
+import base64, codecs, mimetypes, os, xml.etree.ElementTree as ET
+from PIL import Image
 from modules import config, Helpers, Modules
 
 # ================================================================ #
@@ -21,16 +22,24 @@ cfg_XmlAttrScriptureExtractVerset = config.ScriptureExtractVersetXmlAttribs
 # xml attributes: 'sectioning:section'
 cfg_XmlAttrSectioningSection = config.SectioningSectionXmlAttribs
 
-# ================================================================ #
-# configuration of generator: TEX
-# ================================================================ #
-cfg_StrGenTEXVersetDelimiter = config.GenTEXVersetDelimiterStr
+# xml attributes: 'image:image'
+cfg_XmlAttrObjectImage = config.ObjectImageXmlAttribs
+
+# paragraph name
+cfg_StrParagraphName = config.ParagraphName
+
+# text name
+cfg_StrTextName = config.TextName
+
+# image temporary directory
+cfg_DirImagesTmp = config.ImagesTmpDir
 
 # ================================================================ #
 # implementation of generator interface
 # ================================================================ #
 class iGenerator(object):
   atr_Modules = {
+    'Object' : Modules.Object(),
     'Scripture' : Modules.Scripture(),
     'Sectioning' : Modules.Sectioning(),
     'Translations' : Modules.Translations()
@@ -102,7 +111,7 @@ class iGenerator(object):
   def HandleTagUnknown(self, arg_XmlNode):
     raise Exception
 
-  def HandleTagText(self, arg_XmlNode):
+  def HandleTagObjectText(self, arg_XmlNode):
     return arg_XmlNode.text
 
   def HandleTagScriptureExtract(self, arg_XmlNode, arg_IncludeOrigin = True):
@@ -152,6 +161,11 @@ class iGenerator(object):
 
     return u' '.join(filter(None, tmp_Contents))
 
+  def HandleTagObjectImage(self, arg_XmlNode, arg_IncludeCaption = True):
+    tmp_Contents = []
+
+    return u''.join(filter(None, tmp_Contents))
+
   def HandleTagSectioningSection(self, arg_XmlNode, arg_IncludePrefix = True):
     tmp_Contents = []
     tmp_AtrLevel = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Level'], None)
@@ -192,13 +206,14 @@ class iGenerator(object):
 
     return u' '.join(filter(None, tmp_Contents))
 
-  def HandleTagObject(self, arg_XmlNode):
+  def HandleTagObjectParagraph(self, arg_XmlNode):
     tmp_Contents = []
 
     for tmp_XmlNodeChild in arg_XmlNode:
       tmp_Contents.append(
         {
-          u'text' : self.HandleTagText,
+          iGenerator.atr_Modules['Object'].GetXmlTagName(cfg_StrTextName) : self.HandleTagObjectText,
+          iGenerator.atr_Modules['Object'].GetXmlTagName('image') : self.HandleTagObjectImage,
           iGenerator.atr_Modules['Scripture'].GetXmlTagName('extract') : self.HandleTagScriptureExtract
         }.get(tmp_XmlNodeChild.tag, self.HandleTagUnknown)(tmp_XmlNodeChild)
       )
@@ -210,15 +225,15 @@ class iGenerator(object):
 
     tmp_Contents.append(
       {
-        u'object' : self.HandleTagObject,
-        iGenerator.atr_Modules['Sectioning'].GetXmlTagName(u'section') : self.HandleTagSectioningSection,
+        iGenerator.atr_Modules['Object'].GetXmlTagName(cfg_StrParagraphName) : self.HandleTagObjectParagraph,
+        iGenerator.atr_Modules['Sectioning'].GetXmlTagName(u'section') : self.HandleTagSectioningSection
       }.get(arg_XmlNode.tag, self.HandleTagUnknown)(arg_XmlNode)
     )
 
     return u'\n'.join(filter(None, tmp_Contents))
 
   def Process(self, arg_FileName, arg_XmlNodeRoot, arg_OutputFolderName):
-    tmp_XmlNodeDocument = arg_XmlNodeRoot.find(iGenerator.atr_Modules['Sectioning'].GetXmlTagName(u'section'), iGenerator.atr_Modules['Sectioning'].GetXmlNamespace())
+    tmp_XmlNodeDocument = arg_XmlNodeRoot.find(u'.//' + iGenerator.atr_Modules['Sectioning'].GetXmlTagName(u'section'), iGenerator.atr_Modules['Sectioning'].GetXmlNamespace())
 
     if tmp_XmlNodeDocument is None:
       raise Exception
@@ -282,10 +297,10 @@ class HTM(iGenerator):
   def GetOrigin(self, arg_Origin):
     return u'(' + arg_Origin.replace(u' ', u'&nbsp;') + u')'
 
-  def HandleTagObject(self, arg_XmlNode):
+  def HandleTagObjectParagraph(self, arg_XmlNode):
     tmp_Contents = []
 
-    tmp_Contents.append(u'<p>' + super(HTM, self).HandleTagObject(arg_XmlNode) + u'</p>')
+    tmp_Contents.append(u'<p>' + super(HTM, self).HandleTagObjectParagraph(arg_XmlNode) + u'</p>')
 
     return u'\n'.join(filter(None, tmp_Contents))
 
@@ -376,6 +391,7 @@ class FODT(iGenerator):
     # set default verset closing quote
     self.atr_VersetClosingQuote = u'”'
 
+    # register ODF namespaces
     self.RegisterXmlNamespaces({
       'office' : 'urn:oasis:names:tc:opendocument:xmlns:office:1.0',
       'style' : 'urn:oasis:names:tc:opendocument:xmlns:style:1.0',
@@ -428,6 +444,32 @@ class FODT(iGenerator):
     # remove contents of office:text xml node
     tmp_XmlNodeOfficeText.clear()
 
+    tmp_XmlNodeTextSequenceDecls = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:sequence-decls'))
+
+    tmp_XmlNodeTextSequenceDecl = ET.SubElement(tmp_XmlNodeTextSequenceDecls, self.GetXmlTagName(u'text:sequence-decl'))
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:display-outline-level'), u'0')
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:name'), u'Illustration')
+
+    tmp_XmlNodeTextSequenceDecl = ET.SubElement(tmp_XmlNodeTextSequenceDecls, self.GetXmlTagName(u'text:sequence-decl'))
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:display-outline-level'), u'0')
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:name'), u'Table')
+
+    tmp_XmlNodeTextSequenceDecl = ET.SubElement(tmp_XmlNodeTextSequenceDecls, self.GetXmlTagName(u'text:sequence-decl'))
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:display-outline-level'), u'0')
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:name'), u'Text')
+
+    tmp_XmlNodeTextSequenceDecl = ET.SubElement(tmp_XmlNodeTextSequenceDecls, self.GetXmlTagName(u'text:sequence-decl'))
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:display-outline-level'), u'0')
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:name'), u'Drawing')
+
+    tmp_XmlNodeTextSequenceDecl = ET.SubElement(tmp_XmlNodeTextSequenceDecls, self.GetXmlTagName(u'text:sequence-decl'))
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:display-outline-level'), u'0')
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:name'), u'Figure')
+
+    tmp_XmlNodeTextSequenceDecl = ET.SubElement(tmp_XmlNodeTextSequenceDecls, self.GetXmlTagName(u'text:sequence-decl'))
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:display-outline-level'), u'0')
+    tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:name'), u'Obraz')
+
     # remove contents of office:text xml node
     # for tmp_XmlNodeChild in tmp_XmlNodeOfficeText:
       # if tmp_XmlNodeChild.tag != self.GetXmlTagName(u'text:sequence-decls'):
@@ -436,7 +478,95 @@ class FODT(iGenerator):
     # set pointer to currently used paragraph
     self.atr_XmlNodeParagraph = None
 
-  def HandleTagText(self, arg_XmlNode):
+    # initialize number of images
+    self.atr_ImageCounter = 0
+
+    # init MIME types
+    mimetypes.init()
+
+  def AddImageCaption(self, arg_XmlNode, arg_Caption):
+    tmp_XmlNodeTextSequence = ET.SubElement(arg_XmlNode, self.GetXmlTagName(u'text:sequence'))
+    tmp_XmlNodeTextSequence.set(self.GetXmlTagName(u'text:ref-name'), u'refFigure' + str(self.atr_ImageCounter))
+    tmp_XmlNodeTextSequence.set(self.GetXmlTagName(u'text:name'), u'Figure')
+    tmp_XmlNodeTextSequence.set(self.GetXmlTagName(u'text:formula'), u'ooow:Figure+1')
+    tmp_XmlNodeTextSequence.set(self.GetXmlTagName(u'style:num-format'), u'1')
+    tmp_XmlNodeTextSequence.text = str(self.atr_ImageCounter + 1)
+    tmp_XmlNodeTextSequence.tail = u': ' + arg_Caption
+
+    self.atr_ImageCounter = self.atr_ImageCounter + 1
+
+  def AddImage(self, arg_XmlNode, arg_Name, arg_Caption = None):
+    tmp_FileNameFull = os.path.join(cfg_DirImagesTmp, arg_Name)
+    # sanity check
+    if not os.path.exists(tmp_FileNameFull):
+      raise Exception
+
+    tmp_FileName, tmp_FileExtension = os.path.splitext(arg_Name)
+
+    # get MIME type
+    tmp_FileMimeType = mimetypes.types_map.get(tmp_FileExtension, None)
+
+    # sanity check
+    if tmp_FileMimeType is None:
+      raise Exception
+
+    # get encoded file contents
+    with open(tmp_FileNameFull, "rb") as tmp_File:
+      tmp_FileContentsBase64 = base64.b64encode(tmp_File.read())
+
+    tmp_PILImage = Image.open(tmp_FileNameFull)
+    tmp_PILImageDPI = tmp_PILImage.info.get('dpi', None)
+
+    # sanity check
+    if tmp_PILImageDPI is None:
+      raise Exception
+
+    tmp_PILImageWidth = tmp_PILImage.width / tmp_PILImageDPI[0] * 2.54
+    tmp_PILImageHeight = tmp_PILImage.height / tmp_PILImageDPI[1] * 2.54
+
+    tmp_XmlNodeTextP_001 = ET.SubElement(arg_XmlNode, self.GetXmlTagName(u'text:p'))
+    tmp_XmlNodeTextP_001.set(self.GetXmlTagName(u'text:style-name'), u'Figure')
+
+    tmp_XmlNodeDrawFrame_001 = ET.SubElement(tmp_XmlNodeTextP_001, self.GetXmlTagName(u'draw:frame'))
+    tmp_XmlNodeDrawFrame_001.set(self.GetXmlTagName(u'draw:style-name'), u'fr1')
+    tmp_XmlNodeDrawFrame_001.set(self.GetXmlTagName(u'draw:name'), u'Frame' + str(self.GetImageCounter() + 1))
+    tmp_XmlNodeDrawFrame_001.set(self.GetXmlTagName(u'text:anchor-type'), u'as-char')
+    tmp_XmlNodeDrawFrame_001.set(self.GetXmlTagName(u'svg:width'), str(tmp_PILImageWidth) + u'cm')
+    tmp_XmlNodeDrawFrame_001.set(self.GetXmlTagName(u'draw:z-index'), u'0')
+
+    tmp_XmlNodeDrawTextBox = ET.SubElement(tmp_XmlNodeDrawFrame_001, self.GetXmlTagName(u'draw:text-box'))
+    tmp_XmlNodeDrawTextBox.set(self.GetXmlTagName(u'fo:min-height'), str(tmp_PILImageHeight) + u'cm')
+
+    tmp_XmlNodeTextP_002 = ET.SubElement(tmp_XmlNodeDrawTextBox, self.GetXmlTagName(u'text:p'))
+    tmp_XmlNodeTextP_002.set(self.GetXmlTagName(u'text:style-name'), u'Figure')
+
+    tmp_XmlNodeDrawFrame_002 = ET.SubElement(tmp_XmlNodeTextP_002, self.GetXmlTagName(u'draw:frame'))
+    tmp_XmlNodeDrawFrame_002.set(self.GetXmlTagName(u'draw:style-name'), u'fr2')
+    tmp_XmlNodeDrawFrame_002.set(self.GetXmlTagName(u'draw:name'), u'Image' + str(self.GetImageCounter() + 1))
+    tmp_XmlNodeDrawFrame_002.set(self.GetXmlTagName(u'text:anchor-type'), u'as-char')
+    tmp_XmlNodeDrawFrame_002.set(self.GetXmlTagName(u'svg:width'), str(tmp_PILImageWidth) + u'cm')
+    tmp_XmlNodeDrawFrame_002.set(self.GetXmlTagName(u'style:rel-width'), u'100%')
+    tmp_XmlNodeDrawFrame_002.set(self.GetXmlTagName(u'svg:height'), str(tmp_PILImageHeight) + u'cm')
+    tmp_XmlNodeDrawFrame_002.set(self.GetXmlTagName(u'style:rel-height'), u'scale')
+    tmp_XmlNodeDrawFrame_002.set(self.GetXmlTagName(u'draw:z-index'), u'1')
+
+    tmp_XmlNodeDrawImage = ET.SubElement(tmp_XmlNodeDrawFrame_002, self.GetXmlTagName(u'draw:image'))
+    tmp_XmlNodeDrawImage.set(self.GetXmlTagName(u'loext:mime-type'), tmp_FileMimeType)
+
+    tmp_XmlNodeOfficeBinaryData = ET.SubElement(tmp_XmlNodeDrawImage, self.GetXmlTagName(u'office:binary-data'))
+    tmp_XmlNodeOfficeBinaryData.text = tmp_FileContentsBase64
+
+    if arg_Caption is not None:
+      tmp_XmlNodeTextSpan = ET.SubElement(tmp_XmlNodeTextP_002, self.GetXmlTagName(u'text:span'))
+      tmp_XmlNodeTextSpan.set(self.GetXmlTagName(u'text:style-name'), u'T1')
+      tmp_XmlNodeTextSpan.tail = u'Obraz '
+      self.AddImageCaption(tmp_XmlNodeTextP_002, arg_Caption)
+      tmp_XmlNodeTextLineBreak = ET.SubElement(tmp_XmlNodeTextSpan, self.GetXmlTagName(u'text:line-break'))
+
+  def GetImageCounter(self):
+    return self.atr_ImageCounter
+
+  def HandleTagObjectText(self, arg_XmlNode):
     # sanity check
     if self.atr_XmlNodeParagraph is None:
       raise Exception
@@ -447,6 +577,25 @@ class FODT(iGenerator):
       self.atr_XmlNodeParagraph.text = arg_XmlNode.text
 
     return u''
+
+  def HandleTagObjectImage(self, arg_XmlNode, arg_IncludeCaption = True):
+    tmp_Contents = []
+    tmp_AtrName = arg_XmlNode.get(cfg_XmlAttrObjectImage['Name'], None)
+    tmp_AtrCaption = arg_XmlNode.get(cfg_XmlAttrObjectImage['Caption'], None)
+
+    # sanity check
+    if tmp_AtrName is None:
+      raise Exception
+
+    tmp_XmlNodeOfficeText = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'office:text'))
+
+    # sanity check
+    if tmp_XmlNodeOfficeText is None:
+      raise Exception
+
+    self.AddImage(tmp_XmlNodeOfficeText, tmp_AtrName, tmp_AtrCaption)
+
+    return u''.join(filter(None, tmp_Contents))
 
   def HandleTagScriptureExtract(self, arg_XmlNode):
     tmp_AtrOrigin = arg_XmlNode.get(cfg_XmlAttrScriptureExtract['Origin'], None)
@@ -548,7 +697,7 @@ class FODT(iGenerator):
 
     return u'\n'.join(filter(None, tmp_Contents))
 
-  def HandleTagObject(self, arg_XmlNode):
+  def HandleTagObjectParagraph(self, arg_XmlNode):
     tmp_XmlNodeOfficeText = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'office:text'))
 
     # sanity check
@@ -564,7 +713,7 @@ class FODT(iGenerator):
 
     self.atr_XmlNodeParagraph = tmp_XmlNodeTextP
 
-    return super(FODT, self).HandleTagObject(arg_XmlNode)
+    return super(FODT, self).HandleTagObjectParagraph(arg_XmlNode)
 
   def GetName(self):
     return self.__class__.__name__.lower()
@@ -616,7 +765,7 @@ class TEX(iGenerator):
     iGenerator.__init__(self)
 
     # overwrite verset delimiter
-    self.atr_VersetDelimiter = cfg_StrGenTEXVersetDelimiter
+    self.atr_VersetDelimiter = u' (\\ldots) '
 
     # set default verset opening quote
     self.atr_VersetOpeningQuote = u',,'
@@ -630,11 +779,11 @@ class TEX(iGenerator):
   def GetOrigin(self, arg_Origin):
     return u'\\mbox{(' + arg_Origin + u')}'
 
-  def HandleTagObject(self, arg_XmlNode):
+  def HandleTagObjectParagraph(self, arg_XmlNode):
     tmp_Contents = []
 
     tmp_Contents.append(u'\\paragraph{}')
-    tmp_Contents.append(super(TEX, self).HandleTagObject(arg_XmlNode))
+    tmp_Contents.append(super(TEX, self).HandleTagObjectParagraph(arg_XmlNode))
 
     return u'\n'.join(filter(None, tmp_Contents))
 

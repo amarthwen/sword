@@ -25,6 +25,12 @@ cfg_XmlAttrScriptureExtract = config.ScriptureExtractXmlAttribs
 # xml attributes: 'sectioning:section'
 cfg_XmlAttrSectioningSection = config.SectioningSectionXmlAttribs
 
+# xml attributes: 'image:image'
+cfg_XmlAttrObjectImage = config.ObjectImageXmlAttribs
+
+# paragraph name
+cfg_StrParagraphName = config.ParagraphName
+
 # ================================================================ #
 # implementation of module interface
 # ================================================================ #
@@ -336,6 +342,43 @@ class Sectioning(IModule):
     return tmp_LevelName
 
 # ================================================================ #
+# implementation of module: Object
+# ================================================================ #
+class Object(IModule):
+  def __init__(self):
+    IModule.__init__(self)
+
+  def GetName(self):
+    return self.__class__.__name__
+
+  def HandleCmdImage(self, arg_Params):
+    tmp_XmlNode = None
+    tmp_FileName = None
+    tmp_Caption = None
+
+    # sanity check
+    if len(arg_Params) == 0:
+      raise Exception
+
+    # get requested level
+    tmp_FileName = arg_Params[0].strip(cfg_ChrEntryItemQuote)
+
+    if len(arg_Params) > 1:
+      tmp_Caption = arg_Params[1].strip(cfg_ChrEntryItemQuote)
+
+    tmp_XmlNode = ET.Element(self.GetXmlTagName(u'image'))
+    tmp_XmlNode.set(cfg_XmlAttrObjectImage['Name'], tmp_FileName)
+    if tmp_Caption is not None:
+      tmp_XmlNode.set(cfg_XmlAttrObjectImage['Caption'], tmp_Caption)
+
+    return tmp_XmlNode
+
+  def HandleCmd(self, arg_Function, arg_Params):
+    return {
+      'Image' : self.HandleCmdImage
+    }.get(arg_Function, self.HandleCmdUnknown)(arg_Params)
+
+# ================================================================ #
 # implementation of module: Document
 # ================================================================ #
 class Document(IModule):
@@ -370,45 +413,5 @@ class Modules:
     if tmp_ModuleName not in self.atr_Modules:
       self.atr_Modules[tmp_ModuleName] = arg_Module
 
-  def Process(self, arg_FileContents, arg_TagNameDocument):
-    tmp_XmlNodeContents = ET.Element('contents')
-    tmp_XmlNamespaces = {} # TODO: add default namespace?
-    for tmp_Module in self.atr_Modules.values():
-      tmp_XmlNamespaces.update(tmp_Module.GetXmlNamespaces())
-
-    for tmp_Line in arg_FileContents:
-      tmp_XmlNodeObject = ET.Element('object')
-      tmp_Items = Helpers.Entry(tmp_Line).GetItems()
-
-      for tmp_Item in tmp_Items:
-        tmp_Module = None
-
-        if self.atr_Modules:
-          try:
-            tmp_Module = self.atr_Modules.get(tmp_Item['elements'][0], None)
-          except:
-            tmp_Module = None
-
-        if tmp_Module is not None:
-          tmp_XmlNodeChild = tmp_Module.Process(tmp_Item['elements'][1:], tmp_Item['params'])
-          if tmp_XmlNodeChild is not None:
-            tmp_XmlNodeObject.append(tmp_XmlNodeChild)
-        else:
-          # regular text
-          tmp_XmlNodeText = ET.SubElement(tmp_XmlNodeObject, 'text')
-
-          try:
-            tmp_XmlNodeText.text = tmp_Item['text']
-          except:
-            tmp_XmlNodeText.text = tmp_Item
-
-      tmp_XmlNodeDocument = tmp_XmlNodeObject.find(arg_TagNameDocument, tmp_XmlNamespaces)
-      if tmp_XmlNodeDocument is not None and tmp_XmlNodeDocument.get(cfg_XmlAttrSectioningSection['Level'], None) == '0':
-        tmp_XmlNodeContents.append(tmp_XmlNodeDocument)
-      else:
-        if tmp_XmlNodeObject.find('*') is not None and self.atr_Modules:
-          for tmp_Module in self.atr_Modules.values():
-            tmp_Module.HandleObject(tmp_XmlNodeObject)
-
-    return tmp_XmlNodeContents
-
+  def GetModules(self):
+      return self.atr_Modules
