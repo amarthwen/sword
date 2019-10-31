@@ -1,10 +1,11 @@
-Cielesny żołnierz:
-- cielesny wróg
-- cielesna zbroja i oręż
-- cielesna walka
-- cielesna niewola
-Duchowy żołnierz:
-- duchowy wróg
-- duchowa zbroja i oręż
-- duchowa walka
-- duchowa niewola
+1 Temat główny
+1.1 Cielesny żołnierz
+1.1.1 Cielesny wróg
+1.1.2 Cielesna zbroja i oręż
+1.1.3 Cielesna walka
+1.1.4 Cielesna niewola
+1.2 Duchowy żołnierz
+1.2.1 Duchowy wróg
+1.2.2 Duchowa zbroja i oręż
+1.2.3 Duchowa walka
+1.2.4 Duchowa niewola

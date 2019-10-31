@@ -1,12 +1,13 @@
-Cielesny kapłan:
-- ziemska Świątynia
-- składanie cielesnych ofiar
-- oczyszczanie ziemskiej Świątyni
-- pokropienie cielesną krwią
-- ziemski Syjon
-Duchowy kapłan:
-- niebiańska Świątynia
-- składanie duchowych ofiar
-- oczyszczanie niebiańskiej Świątyni
-- pokropienie duchową krwią
-- niebiański Syjon
+1 Temat główny
+1.1 Cielesny kapłan
+1.1.1 Ziemska Świątynia
+1.1.2 Składanie cielesnych ofiar
+1.1.3 Oczyszczanie ziemskiej Świątyni
+1.1.4 Pokropienie cielesną krwią
+1.1.5 Ziemski Syjon
+1.2 Duchowy kapłan
+1.2.1 Niebiańska Świątynia
+1.2.2 Składanie duchowych ofiar
+1.2.3 Oczyszczanie niebiańskiej Świątyni
+1.2.4 Pokropienie duchową krwią
+1.2.5 Niebiański Syjon
