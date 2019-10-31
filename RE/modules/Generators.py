@@ -161,7 +161,7 @@ class iGenerator(object):
 
     return u' '.join(filter(None, tmp_Contents))
 
-  def HandleTagObjectImage(self, arg_XmlNode, arg_IncludeCaption = True):
+  def HandleTagObjectImage(self, arg_XmlNode):
     tmp_Contents = []
 
     return u''.join(filter(None, tmp_Contents))
@@ -521,8 +521,8 @@ class FODT(iGenerator):
     if tmp_PILImageDPI is None:
       raise Exception
 
-    tmp_PILImageWidth = tmp_PILImage.width / tmp_PILImageDPI[0] * 2.54
-    tmp_PILImageHeight = tmp_PILImage.height / tmp_PILImageDPI[1] * 2.54
+    tmp_PILImageWidth = 2.54 * tmp_PILImage.width / tmp_PILImageDPI[0]
+    tmp_PILImageHeight = 2.54 * tmp_PILImage.height / tmp_PILImageDPI[1]
 
     tmp_XmlNodeTextP_001 = ET.SubElement(arg_XmlNode, self.GetXmlTagName(u'text:p'))
     tmp_XmlNodeTextP_001.set(self.GetXmlTagName(u'text:style-name'), u'Figure')
@@ -578,7 +578,7 @@ class FODT(iGenerator):
 
     return u''
 
-  def HandleTagObjectImage(self, arg_XmlNode, arg_IncludeCaption = True):
+  def HandleTagObjectImage(self, arg_XmlNode):
     tmp_Contents = []
     tmp_AtrName = arg_XmlNode.get(cfg_XmlAttrObjectImage['Name'], None)
     tmp_AtrCaption = arg_XmlNode.get(cfg_XmlAttrObjectImage['Caption'], None)
@@ -631,6 +631,8 @@ class FODT(iGenerator):
     tmp_Contents = []
     tmp_AtrLevel = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Level'], None)
     tmp_AtrTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Title'], None)
+    tmp_AtrSubTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['SubTitle'], None)
+    tmp_AtrEmblem = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Emblem'], None)
     tmp_TokScriptureExtracts = None
     tmp_XmlNodeRoot = None
 
@@ -657,7 +659,7 @@ class FODT(iGenerator):
       # create token for Scripture extracts to be studied
       # tmp_TokScriptureExtracts = self.atr_Tokens.Create(u'ScriptureExtracts')
 
-      if tmp_AtrTitle is None:
+      if tmp_AtrTitle is None or len(tmp_AtrTitle) == 0:
         tmp_AtrTitle = self.atr_FileName
 
       tmp_XmlNodeDcTitle = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'dc:title'))
@@ -671,6 +673,14 @@ class FODT(iGenerator):
       tmp_XmlNodeTextP = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
       tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Title')
       tmp_XmlNodeTextP.text = tmp_AtrTitle
+
+      if tmp_AtrEmblem is not None and len(tmp_AtrEmblem) > 0:
+        self.AddImage(tmp_XmlNodeOfficeText, tmp_AtrEmblem)
+
+      if tmp_AtrSubTitle is not None and len(tmp_AtrSubTitle) > 0:
+        tmp_XmlNodeTextP = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
+        tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Subtitle')
+        tmp_XmlNodeTextP.text = tmp_AtrSubTitle
     else:
       if tmp_AtrTitle is None:
         tmp_AtrTitle = u''

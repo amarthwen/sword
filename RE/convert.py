@@ -79,6 +79,8 @@ def main():
   # process file contents
   tmp_XmlNodeRoot = ET.Element(tmp_Modules['Document'].GetXmlTagName(u'document'))
   tmp_XmlNodeDocumentBody = ET.SubElement(tmp_XmlNodeRoot, tmp_Modules['Document'].GetXmlTagName(u'body'))
+  tmp_XmlNodeFirstParagraph = None
+  tmp_XmlNodeFirstSection = None
 
   # process file contents
   for tmp_Line in tmp_FileContents:
@@ -109,13 +111,21 @@ def main():
         except:
           tmp_XmlNodeText.text = tmp_Item
 
-    tmp_XmlNodeDocument = tmp_XmlNodeParagraph.find(tmp_Modules['Sectioning'].GetXmlTagName(u'section'))
-    if tmp_XmlNodeDocument is not None and tmp_XmlNodeDocument.get(cfg_XmlAttrSectioningSection['Level'], None) == '0':
-      tmp_XmlNodeDocumentBody.append(tmp_XmlNodeParagraph)
+    tmp_XmlNodeSection = tmp_XmlNodeParagraph.find(tmp_Modules['Sectioning'].GetXmlTagName(u'section'))
+    if tmp_XmlNodeSection is not None and tmp_XmlNodeSection.get(cfg_XmlAttrSectioningSection['Level'], None) == '0':
+      tmp_XmlNodeFirstParagraph = tmp_XmlNodeParagraph
+      tmp_XmlNodeFirstSection = tmp_XmlNodeSection
     else:
       if tmp_XmlNodeParagraph.find('*') is not None and tmp_Mods.GetModules():
         for tmp_Module in tmp_Mods.GetModules().values():
           tmp_Module.HandleObject(tmp_XmlNodeParagraph)
+
+  # sanity check
+  if tmp_XmlNodeFirstParagraph is None or tmp_XmlNodeFirstSection is None:
+    raise Exception
+
+  # add first paragraph (including section with level '0') to document body
+  tmp_XmlNodeDocumentBody.append(tmp_XmlNodeFirstParagraph)
 
   # get file name
   tmp_FileNameWithExt = os.path.basename(tmp_InputFileName)

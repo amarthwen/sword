@@ -31,6 +31,9 @@ cfg_XmlAttrObjectImage = config.ObjectImageXmlAttribs
 # paragraph name
 cfg_StrParagraphName = config.ParagraphName
 
+# default emblem
+cfg_StrDefaultEmblem = config.DefaultEmblem
+
 # ================================================================ #
 # implementation of module interface
 # ================================================================ #
@@ -248,6 +251,8 @@ class Sectioning(IModule):
   def HandleCmdBegin(self, arg_Params):
     tmp_XmlNode = None
     tmp_Title = None
+    tmp_SubTitle = None
+    tmp_Emblem = cfg_StrDefaultEmblem
 
     # sanity check
     if len(arg_Params) == 0:
@@ -269,8 +274,16 @@ class Sectioning(IModule):
       raise Exception
 
     # get title, if set
-    if len(arg_Params) > 1:
+    if len(arg_Params) > 1 and arg_Params[1] is not None:
       tmp_Title = arg_Params[1].strip(cfg_ChrEntryItemQuote)
+
+    # get subtitle, if set
+    if len(arg_Params) > 2 and arg_Params[2] is not None:
+      tmp_SubTitle = arg_Params[2].strip(cfg_ChrEntryItemQuote)
+
+    # get subtitle, if set
+    if len(arg_Params) > 3 and arg_Params[3] is not None:
+      tmp_Emblem = arg_Params[3].strip(cfg_ChrEntryItemQuote)
 
     # set tag name
     tmp_TagName = self.GetXmlTagName(u'section')
@@ -284,6 +297,12 @@ class Sectioning(IModule):
 
     if tmp_Title is not None:
       tmp_XmlNode.set(cfg_XmlAttrSectioningSection['Title'], tmp_Title)
+
+    if tmp_Level == 0:
+      if tmp_SubTitle is not None and len(tmp_SubTitle) > 0:
+        tmp_XmlNode.set(cfg_XmlAttrSectioningSection['SubTitle'], tmp_SubTitle)
+      if tmp_Emblem is not None and len(tmp_Emblem) > 0:
+        tmp_XmlNode.set(cfg_XmlAttrSectioningSection['Emblem'], tmp_Emblem)
 
     # assign xml node in xml path
     self.atr_XmlPath[tmp_Level] = tmp_XmlNode
@@ -385,8 +404,58 @@ class Document(IModule):
   def __init__(self):
     IModule.__init__(self)
 
+    self.atr_Title = None
+    self.atr_SubTitle = None
+    self.atr_Emblem = None
+
   def GetName(self):
     return self.__class__.__name__
+
+  def GetTitle(self):
+    return self.atr_Title
+
+  def GetSubTitle(self):
+    return self.atr_SubTitle
+
+  def GetEmblem(self):
+    return self.atr_Emblem
+
+  def HandleCmdSetTitle(self, arg_Params):
+    # sanity check
+    if len(arg_Params) == 0:
+      raise Exception
+
+    # get document title
+    self.atr_Title = arg_Params[0].strip(cfg_ChrEntryItemQuote)
+
+    return None
+
+  def HandleCmdSetSubTitle(self, arg_Params):
+    # sanity check
+    if len(arg_Params) == 0:
+      raise Exception
+
+    # get document title
+    self.atr_SubTitle = arg_Params[0].strip(cfg_ChrEntryItemQuote)
+
+    return None
+
+  def HandleCmdSetEmblem(self, arg_Params):
+    # sanity check
+    if len(arg_Params) == 0:
+      raise Exception
+
+    # get document title
+    self.atr_Emblem = arg_Params[0].strip(cfg_ChrEntryItemQuote)
+
+    return None
+
+  def HandleCmd(self, arg_Function, arg_Params):
+    return {
+      'SetTitle' : self.HandleCmdSetTitle,
+      'SetSubTitle' : self.HandleCmdSetSubTitle,
+      'SetEmblem' : self.HandleCmdSetEmblem
+    }.get(arg_Function, self.HandleCmdUnknown)(arg_Params)
 
 # ================================================================ #
 # implementation of module: SWORD

@@ -46,7 +46,9 @@ ScriptureExtractVersetXmlAttribs = {
 # xml attributes: 'sectioning:section'
 SectioningSectionXmlAttribs = {
   'Level' : u'level',
-  'Title' : u'title'
+  'Title' : u'title',
+  'SubTitle' : u'subtitle',
+  'Emblem' : u'emblem'
 }
 
 # ================================================================ #
@@ -69,4 +71,5 @@ GenTmpDir = u'./tmp/generators'
 ParagraphName = u'paragraph'
 TextName = u'text'
 ImagesTmpDir = u'./tmp/images'
+DefaultEmblem = u'default.jpg'
 
