@@ -1,12 +1,33 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
-Tysiąc dwieście sześćdziesiąt dni:
+
+# Document::Sectioning::Begin("Section", "Wstęp")
+# Tekst wstępu
+
+# Document::Sectioning::Begin("Section", "Prerekwizyty")
+# W tej sekcji zostaną podane prerekwizyty
+
+# Document::Sectioning::Begin("Section", "Temat pomocniczy - XXX")
+# Tekst tematu pomocnicznego
+
+Document::Sectioning::Begin("Section", "Temat główny")
+
+Document::Sectioning::Begin("SubSection", "Tysiąc dwieście sześćdziesiąt dni")
 SWORD::Scripture::GetText("Obj 11, 3", false)
 SWORD::Scripture::GetText("Obj 12, 6", false)
-Czterdzieści dwa miesiące:
+
+Document::Sectioning::Begin("SubSection", "Czterdzieści dwa miesiące")
 SWORD::Scripture::GetText("Obj 11, 2", false)
 SWORD::Scripture::GetText("Obj 13, 5", false)
-Czas, czasy i pół czasu:
+
+Document::Sectioning::Begin("SubSection", "Czas, czasy i pół czasu")
 SWORD::Scripture::GetText("Obj 12, 14", false)
 SWORD::Scripture::GetText("Dn 7, 25", false)
 SWORD::Scripture::GetText("Dn 12, 7", false)
+
+# Document::Sectioning::Begin("Section", "Podsumowanie")
+# Tekst podsumowania
+
+# Document::Sectioning::Begin("Section", "Do dalszego studium")
+# Tekst, w którym podane zostaną propozycje tematów do dalszego studium
+

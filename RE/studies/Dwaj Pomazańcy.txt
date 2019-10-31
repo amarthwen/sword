@@ -1,17 +1,26 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
-Dwaj Świadkowie:
+
+Document::Sectioning::Begin("Section", "Temat główny")
+
+Document::Sectioning::Begin("SubSection", "Dwaj Świadkowie")
 SWORD::Scripture::GetText("Obj 11, 3", false)
-Dwa Drzewa Oliwne:
+
+Document::Sectioning::Begin("SubSection", "Dwa Drzewa Oliwne")
 SWORD::Scripture::GetText("Obj 11, 4", false)
 SWORD::Scripture::GetText("Za 4, 11", false)
-Dwa Świeczniki:
+
+Document::Sectioning::Begin("SubSection", "Dwa Świeczniki")
 SWORD::Scripture::GetText("Obj 11, 4", false)
-Dwaj Prorocy:
+
+Document::Sectioning::Begin("SubSection", "Dwaj Prorocy")
 SWORD::Scripture::GetText("Obj 11, 10", false)
-Dwaj Pomazańcy:
+
+Document::Sectioning::Begin("SubSection", "Dwaj Pomazańcy")
 SWORD::Scripture::GetText("Za 4, 11-14", false)
 SWORD::Scripture::GetText("Ps 105, 6-15", false)
-Pomazaniec:
+
+Document::Sectioning::Begin("SubSection", "Pomazaniec")
 SWORD::Scripture::GetText("Ps 20, 1-10", false)
 SWORD::Scripture::GetText("Ha 3, 3-4.10-13", false)
+

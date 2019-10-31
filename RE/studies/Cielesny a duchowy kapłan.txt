@@ -1,16 +1,19 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
-Cielesny kapłan:
-- ziemska Świątynia
-- składanie cielesnych ofiar
-- oczyszczanie ziemskiej Świątyni
-- pokropienie cielesną krwią
-- ziemski Syjon
 
-Duchowy kapłan:
-- niebiańska Świątynia
-- składanie duchowych ofiar
-- oczyszczanie niebiańskiej Świątyni
-- pokropienie duchową krwią
-- niebiański Syjon
+Document::Sectioning::Begin("Section", "Temat główny")
+
+Document::Sectioning::Begin("SubSection", "Cielesny kapłan")
+Document::Sectioning::Begin("SubSubSection", "Ziemska Świątynia")
+Document::Sectioning::Begin("SubSubSection", "Składanie cielesnych ofiar")
+Document::Sectioning::Begin("SubSubSection", "Oczyszczanie ziemskiej Świątyni")
+Document::Sectioning::Begin("SubSubSection", "Pokropienie cielesną krwią")
+Document::Sectioning::Begin("SubSubSection", "Ziemski Syjon")
+
+Document::Sectioning::Begin("SubSection", "Duchowy kapłan")
+Document::Sectioning::Begin("SubSubSection", "Niebiańska Świątynia")
+Document::Sectioning::Begin("SubSubSection", "Składanie duchowych ofiar")
+Document::Sectioning::Begin("SubSubSection", "Oczyszczanie niebiańskiej Świątyni")
+Document::Sectioning::Begin("SubSubSection", "Pokropienie duchową krwią")
+Document::Sectioning::Begin("SubSubSection", "Niebiański Syjon")
 

@@ -1,91 +1,93 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
-Królowie przed podziałem Izraela:
-- Saul
+
+Document::Sectioning::Begin("Section", "Królowie przed podziałem Izraela")
+Document::Sectioning::Begin("SubSection", "Saul")
 SWORD::Scripture::GetText("1 Sm 13, 1", false)
-- Dawid
+Document::Sectioning::Begin("SubSection", "Dawid")
 SWORD::Scripture::GetText("1 Krl 2, 11", false)
-- Salomon
+Document::Sectioning::Begin("SubSection", "Salomon")
 SWORD::Scripture::GetText("1 Krl 11, 42", false)
 
-Królowie po podziale Izraela:
+Document::Sectioning::Begin("Section", "Królowie po podziale Izraela")
 
-Królestwo Judy:
-- Rechabeam
+Document::Sectioning::Begin("SubSection", "Królestwo Judy")
+Document::Sectioning::Begin("SubSubSection", "Rechabeam")
 SWORD::Scripture::GetText("1 Krl 14, 21", false)
-- Abijjam
+Document::Sectioning::Begin("SubSubSection", "Abijjam")
 SWORD::Scripture::GetText("1 Krl 15, 1-2", false)
-- Asa
+Document::Sectioning::Begin("SubSubSection", "Asa")
 SWORD::Scripture::GetText("1 Krl 15, 9-10", false)
-- Jehoszafat
+Document::Sectioning::Begin("SubSubSection", "Jehoszafat")
 SWORD::Scripture::GetText("1 Krl 22, 41-42", false)
-- Jehoram
+Document::Sectioning::Begin("SubSubSection", "Jehoram")
 SWORD::Scripture::GetText("2 Krl 8, 16-17", false)
-- Achazjasz
+Document::Sectioning::Begin("SubSubSection", "Achazjasz")
 SWORD::Scripture::GetText("2 Krl 8, 25-26", false)
-- Joasz
+Document::Sectioning::Begin("SubSubSection", "Joasz")
 SWORD::Scripture::GetText("2 Krl 12, 1-2", false)
-- Amasjasz
+Document::Sectioning::Begin("SubSubSection", "Amasjasz")
 SWORD::Scripture::GetText("2 Krl 14, 1-2", false)
-- Azariasz
+Document::Sectioning::Begin("SubSubSection", "Azariasz")
 SWORD::Scripture::GetText("2 Krl 15, 1-2", false)
-- Jotam
+Document::Sectioning::Begin("SubSubSection", "Jotam")
 SWORD::Scripture::GetText("2 Krl 15, 32-33", false)
-- Achaz
+Document::Sectioning::Begin("SubSubSection", "Achaz")
 SWORD::Scripture::GetText("2 Krl 16, 1-2", false)
-- Hiskiasz
+Document::Sectioning::Begin("SubSubSection", "Hiskiasz")
 SWORD::Scripture::GetText("2 Krl 18, 1-2", false)
-- Manasses
+Document::Sectioning::Begin("SubSubSection", "Manasses")
 SWORD::Scripture::GetText("2 Krl 21, 1", false)
-- Amon
+Document::Sectioning::Begin("SubSubSection", "Amon")
 SWORD::Scripture::GetText("2 Krl 21, 19", false)
-- Jozjasz
+Document::Sectioning::Begin("SubSubSection", "Jozjasz")
 SWORD::Scripture::GetText("2 Krl 22, 1", false)
-- Jehoachaz
+Document::Sectioning::Begin("SubSubSection", "Jehoachaz")
 SWORD::Scripture::GetText("2 Krl 23, 31", false)
-- Jehojakim
+Document::Sectioning::Begin("SubSubSection", "Jehojakim")
 SWORD::Scripture::GetText("2 Krl 23, 36", false)
-- Jehojachin
+Document::Sectioning::Begin("SubSubSection", "Jehojachin")
 SWORD::Scripture::GetText("2 Krl 24, 8", false)
-- Sedekiasz
+Document::Sectioning::Begin("SubSubSection", "Sedekiasz")
 SWORD::Scripture::GetText("2 Krl 24, 18", false)
 
-Królestwo Izraela:
-- Jeroboam
+Document::Sectioning::Begin("SubSection", "Królestwo Izraela")
+Document::Sectioning::Begin("SubSubSection", "Jeroboam")
 SWORD::Scripture::GetText("1 Krl 14, 20", false)
-- Nadab
+Document::Sectioning::Begin("SubSubSection", "Nadab")
 SWORD::Scripture::GetText("1 Krl 15, 25", false)
-- Baasza
+Document::Sectioning::Begin("SubSubSection", "Baasza")
 SWORD::Scripture::GetText("1 Krl 15, 33", false)
-- Ela
+Document::Sectioning::Begin("SubSubSection", "Ela")
 SWORD::Scripture::GetText("1 Krl 16, 8", false)
-- Zimri
+Document::Sectioning::Begin("SubSubSection", "Zimri")
 SWORD::Scripture::GetText("1 Krl 16, 15", false)
-- Omri
+Document::Sectioning::Begin("SubSubSection", "Omri")
 SWORD::Scripture::GetText("1 Krl 16, 23", false)
-- Achab
+Document::Sectioning::Begin("SubSubSection", "Achab")
 SWORD::Scripture::GetText("1 Krl 16, 29", false)
-- Achazjasz
+Document::Sectioning::Begin("SubSubSection", "Achazjasz")
 SWORD::Scripture::GetText("1 Krl 22, 52", false)
-- Jehoram
+Document::Sectioning::Begin("SubSubSection", "Jehoram")
 SWORD::Scripture::GetText("2 Krl 3, 1", false)
-- Jehu
+Document::Sectioning::Begin("SubSubSection", "Jehu")
 SWORD::Scripture::GetText("2 Krl 10, 36", false)
-- Jehoachaz
+Document::Sectioning::Begin("SubSubSection", "Jehoachaz")
 SWORD::Scripture::GetText("2 Krl 13, 1", false)
-- Jehoasz
+Document::Sectioning::Begin("SubSubSection", "Jehoasz")
 SWORD::Scripture::GetText("2 Krl 13, 10", false)
-- Jeroboam
+Document::Sectioning::Begin("SubSubSection", "Jeroboam")
 SWORD::Scripture::GetText("2 Krl 14, 23", false)
-- Zachariasz
+Document::Sectioning::Begin("SubSubSection", "Zachariasz")
 SWORD::Scripture::GetText("2 Krl 15, 8", false)
-- Szallum
+Document::Sectioning::Begin("SubSubSection", "Szallum")
 SWORD::Scripture::GetText("2 Krl 15, 13", false)
-- Menachem
+Document::Sectioning::Begin("SubSubSection", "Menachem")
 SWORD::Scripture::GetText("2 Krl 15, 17", false)
-- Pekachiasz
+Document::Sectioning::Begin("SubSubSection", "Pekachiasz")
 SWORD::Scripture::GetText("2 Krl 15, 23", false)
-- Pekach
+Document::Sectioning::Begin("SubSubSection", "Pekach")
 SWORD::Scripture::GetText("2 Krl 15, 27", false)
-- Ozeasz
+Document::Sectioning::Begin("SubSubSection", "Ozeasz")
 SWORD::Scripture::GetText("2 Krl 17, 1", false)
+

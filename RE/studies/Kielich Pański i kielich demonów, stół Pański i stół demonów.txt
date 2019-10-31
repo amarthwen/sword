@@ -1,5 +1,9 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
+
+Document::Sectioning::Begin("Section", "Temat główny")
+
 SWORD::Scripture::GetText("1 Kor 10, 19-21", false)
 SWORD::Scripture::GetText("Mt 20, 20-23", false)
 SWORD::Scripture::GetText("Łk 22, 39-42", false)
+

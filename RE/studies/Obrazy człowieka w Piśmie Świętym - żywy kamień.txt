@@ -1,3 +1,7 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
 
+Document::Sectioning::Begin("Section", "Temat główny")
+
+SWORD::Scripture::GetText("1 P 2, 4-9", false)
+

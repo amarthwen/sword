@@ -1,3 +1,7 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
 
+Document::Sectioning::Begin("Section", "Temat główny")
+
+SWORD::Scripture::GetText("Jr 6, 27-30", false)
+

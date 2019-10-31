@@ -1,2 +1,5 @@
-Document::Sectioning::Begin("Document")
+Document::Sectioning::Begin("Document", , "W trakcie opracowania...", "under_construction.jpg")
 SWORD::Scripture::Translations::Use("BW")
+
+# przypowieść o talentach
+# szafarze rozlicznej łaski Bożej

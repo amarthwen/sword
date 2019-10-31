@@ -1,13 +1,17 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
-Cielesny żołnierz:
-- cielesny wróg
-- cielesna zbroja i oręż
-- cielesna walka
-- cielesna niewola
 
-Duchowy żołnierz:
-- duchowy wróg
-- duchowa zbroja i oręż
-- duchowa walka
-- duchowa niewola
+Document::Sectioning::Begin("Section", "Temat główny")
+
+Document::Sectioning::Begin("SubSection", "Cielesny żołnierz")
+Document::Sectioning::Begin("SubSubSection", "Cielesny wróg")
+Document::Sectioning::Begin("SubSubSection", "Cielesna zbroja i oręż")
+Document::Sectioning::Begin("SubSubSection", "Cielesna walka")
+Document::Sectioning::Begin("SubSubSection", "Cielesna niewola")
+
+Document::Sectioning::Begin("SubSection", "Duchowy żołnierz")
+Document::Sectioning::Begin("SubSubSection", "Duchowy wróg")
+Document::Sectioning::Begin("SubSubSection", "Duchowa zbroja i oręż")
+Document::Sectioning::Begin("SubSubSection", "Duchowa walka")
+Document::Sectioning::Begin("SubSubSection", "Duchowa niewola")
+

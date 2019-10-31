@@ -1,2 +1,75 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
+
+Document::Sectioning::Begin("Section", "Niewola Babilońska w Starym Testamencie")
+
+Document::Sectioning::Begin("SubSection", "Niewola Babilońska w Drugiej Księdze Królewskiej")
+
+Document::Sectioning::Begin("SubSubSection", "Pierwsze oblężenie Jerozolimy")
+
+Document::Sectioning::Begin("SubSubSection", "Drugie oblężenie oraz zdobycie Jerozolimy")
+SWORD::Scripture::GetText("2 Krl 25, 1-7", false)
+
+Document::Sectioning::Begin("SubSubSection", "Spalenie Świątyni Pana oraz częściowe zburzenie Jerozolimy")
+SWORD::Scripture::GetText("2 Krl 25, 8-10", false)
+
+Document::Sectioning::Begin("SubSubSection", "Deportacja ludności oraz wywiezienie naczyń świątynnych do Babilonu")
+SWORD::Scripture::GetText("2 Krl 25, 11-21", false)
+
+Document::Sectioning::Begin("SubSection", "Niewola Babilońska w Drugiej Księdze Kronik")
+Document::Sectioning::Begin("SubSection", "Niewola Babilońska w Księdze Jeremiasza")
+Document::Sectioning::Begin("SubSection", "Niewola Babilońska w Księdze Ezechiela")
+Document::Sectioning::Begin("SubSection", "Niewola Babilońska w Księdze Daniela")
+Document::Sectioning::Begin("SubSection", "Chronologia")
+Document::Sectioning::Begin("SubSubSection", "Zapowiedź niewoli Babilońskiej")
+SWORD::Scripture::GetText("Jr 25, 1-14", false)
+
+Document::Sectioning::Begin("SubSubSection", "Pierwsze oblężenie Jerozolimy. Początek niewoli")
+SWORD::Scripture::GetText("2 Krl 24, 10-16", false)
+SWORD::Scripture::GetText("Dn 1, 1-2", false)
+
+Document::Sectioning::Begin("SubSubSection", "Czwarty rok niewoli")
+SWORD::Scripture::GetText("Jr 28, 1", false)
+
+Document::Sectioning::Begin("SubSubSection", "Piąty rok niewoli")
+SWORD::Scripture::GetText("Ez 1, 1", false)
+
+Document::Sectioning::Begin("SubSubSection", "Szósty rok niewoli")
+SWORD::Scripture::GetText("Ez 8, 1", false)
+
+Document::Sectioning::Begin("SubSubSection", "Siódmy rok niewoli")
+SWORD::Scripture::GetText("Ez 20, 1", false)
+
+Document::Sectioning::Begin("SubSubSection", "Dziewiąty rok niewoli")
+SWORD::Scripture::GetText("Ez 24, 1", false)
+SWORD::Scripture::GetText("Jr 52, 4", false)
+SWORD::Scripture::GetText("Jr 39, 1", false)
+SWORD::Scripture::GetText("2 Krl 25, 1", false)
+
+Document::Sectioning::Begin("SubSubSection", "Dziesiąty rok niewoli")
+SWORD::Scripture::GetText("Ez 29, 1", false)
+
+Document::Sectioning::Begin("SubSubSection", "Jedenasty rok niewoli")
+SWORD::Scripture::GetText("Ez 30, 20", false)
+SWORD::Scripture::GetText("Ez 31, 1", false)
+SWORD::Scripture::GetText("Jr 52, 6", false)
+SWORD::Scripture::GetText("Jr 39, 2", false)
+SWORD::Scripture::GetText("2 Krl 25, 2-4", false)
+SWORD::Scripture::GetText("Jr 52, 12", false)
+SWORD::Scripture::GetText("2 Krl 25, 8-10", false)
+SWORD::Scripture::GetText("Jr 41, 1", false)
+SWORD::Scripture::GetText("2 Krl 25, 25-26", false)
+SWORD::Scripture::GetText("Ez 26, 1", false)
+
+Document::Sectioning::Begin("SubSubSection", "Dwunasty rok niewoli")
+SWORD::Scripture::GetText("Ez 32, 17", false)
+SWORD::Scripture::GetText("Ez 33, 21", false)
+SWORD::Scripture::GetText("Ez 32, 1", false)
+
+Document::Sectioning::Begin("SubSubSection", "Dwudziesty piąty rok niewoli")
+SWORD::Scripture::GetText("Ez 40, 1", false)
+
+Document::Sectioning::Begin("SubSubSection", "Trzydziesty siódmy rok niewoli")
+SWORD::Scripture::GetText("Jr 52, 31", false)
+SWORD::Scripture::GetText("2 Krl 25, 27", false)
+

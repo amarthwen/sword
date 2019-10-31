@@ -1,5 +1,8 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
+
+Document::Sectioning::Begin("Section", "Temat główny")
+
 SWORD::Scripture::GetText("Dn 8, 11-14", false)
 SWORD::Scripture::GetText("Dn 11, 31", false)
 SWORD::Scripture::GetText("Dn 12, 11-12", false)
@@ -23,3 +26,4 @@ SWORD::Scripture::GetText("Jr 16, 13", false)
 SWORD::Scripture::GetText("Jr 17, 4", false)
 SWORD::Scripture::GetText("Ez 28, 18", false)
 SWORD::Scripture::GetText("1 Kor 10, 19-20", false)
+
