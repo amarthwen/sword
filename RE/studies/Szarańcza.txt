@@ -1,6 +1,8 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
 
+Document::SetEmblem("locust.jpg")
+
 Document::Sectioning::Begin("Section", "Temat główny")
 
 SWORD::Scripture::GetText("Obj 9, 1-11", false)

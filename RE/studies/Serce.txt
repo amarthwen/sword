@@ -1,7 +1,39 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
 
+Document::SetEmblem("heart.jpg")
+Document::SetQuote("Łk 6, 45")
+
+# Document::Sectioning::Begin("Section", "Wstęp")
+# Podczas tego studium przyjrzymy się bliżej sercu człowieka. Spróbujemy odpowiedzieć na pytanie: co tak naprawdę dzieje się w jego wnętrznu i jaki ma to wpływ na decyzje, które podejmujemy każdego dnia, a w konsekwencji na życie nasze oraz drugiego człowieka. Myślę, że perspektywa cielesna jest nam w tej kwesti dość dobrze znana, dlatego chciałbym abyśmy naszą uwagę skupili przede wszystkim na tym, co nie jest widoczne dla oka ludzkiego. Na podstawie wybranych fragmentów z Pisma Świętego, spróbujemy więc spojrzeć na serce człowieka z perspektywy Pana Boga - stwórcy, tego, który ukształtowaj je w naszym ciele, nadając mu ściśle określoną funkcję.
+# W pierwszych dwóch rozdziałach Księgi Rodzaju (Pierwszej Księgi Mojżeszowej) czytamy o tym, że Pan Bóg stworzył człowieka na swoje podobieństwo: SWORD::Scripture::GetText("1 Moj 1, 27", true). Dowiadujemy się również, że ciało, w którym zostaliśmy stworzeni, jest ciałem cielesnym, wziętym z prochu ziemi (1 Moj 2, 7), Pan Bóg jest zaś duchem (2 Kor 3, 17). W jaki sposób powinniśmy więc rozumieć obraz, na którego podobieństwo zostaliśmy stworzeni? W jaki sposób odnosi się on do cielesnego serca, które zostało nam dane? Czy jest ono w takim razie wyłącznie fizycznym organem o okreslonej funkcji czy kryje się w nim coś więcej? Wierzę, że odpowiedź na to oraz na inne pytania znajdziemy podczas tego studium.
+
+# Dlaczego nadal upadamy pomimo tego, że mieszka w naszym sercu Duch Święty, który jest z Boga?
+
+# Document::Sectioning::Begin("Section", "Prerekwizyty")
+# Brak.
+
 Document::Sectioning::Begin("Section", "Temat główny")
+# Aby zrozumiec rolę, jaką odgrywa serce w życiu człowieka,  co tak naprawdę dzieje się w ludzkim sercu powinniśmy wrócićPo ukończeniu dzieła stworzeniu świata Pan Bóg stwierdził, że wszystko, co stworzył, było bardzo dobre: SWORD::Scripture::GetText("1 Moj 1, 31", false) tekst po fragmencie
+
+# Na początku wszystko było bardzo dobre
+# Zepsucie ludzi przet potopem
+
+# Document::Sectioning::Begin("SubSection", "Pragnienia oraz pożądliwości serca")
+# historia króla Dawida
+
+# Document::Sectioning::Begin("SubSection", "Serce człowieka jako duchowy skarbiec")
+# W szóstym rozdziale ewangelii Łukasza czytamy o tym
+
+# Sercem wierzy się ku usprawiedliwieniu (Rz 10, 9-10)
+
+# Kłótliwość w naszych sercach
+# W jaki sposób możemy dowiedzieć się więc jakiego rodzaju skarb znajduje się w naszym sercu?
+
+# Document::Sectioning::Begin("SubSection", "Duchowa diagnoza")
+# Pan Bóg bada serca i nerki
+
+# Prośba Dawida o stworzenie czystego serca w Ps 51 oraz odpowiedź w księdze Ezechiela Ez 11, 17-21
 
 SWORD::Scripture::GetText("Ef 3, 14-19", false)
 SWORD::Scripture::GetText("Ga 4, 6", false)
@@ -19,4 +51,10 @@ SWORD::Scripture::GetText("Ps 51, 12", false)
 SWORD::Scripture::GetText("Mt 6, 19-21", false)
 SWORD::Scripture::GetText("Rz 1, 18-25", false)
 SWORD::Scripture::GetText("1 Moj 6, 5-6", false)
+
+# Document::Sectioning::Begin("Section", "Podsumowanie")
+
+# Document::Sectioning::Begin("Section", "Do dalszego studium")
+# "Wieczne przymierze" - wylanie Ducha Świętego do serc ludzkich
+# "Ciało cielesne i ciało duchowe"
 

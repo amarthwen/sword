@@ -16,4 +16,6 @@ SWORD::Scripture::GetText("Am 5, 21-24", false)
 SWORD::Scripture::GetText("Iz 1, 14-20", false)
 SWORD::Scripture::GetText("Mi 6, 6-8", false)
 SWORD::Scripture::GetText("Ez 20, 41-42", false)
+SWORD::Scripture::GetText("Rz 12, 1", false)
+SWORD::Scripture::GetText("Rz 15, 16", false)
 

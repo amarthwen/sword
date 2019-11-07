@@ -1,5 +1,9 @@
-Document::Sectioning::Begin("Document", "Obrazy człowieka w Piśmie Świętym", "Drzewo", "tree.jpg")
+Document::Sectioning::Begin("Document", "Obrazy człowieka w Piśmie Świętym")
 SWORD::Scripture::Translations::Use("BW")
+
+Document::SetSubTitle("Drzewo")
+Document::SetEmblem("tree.jpg")
+Document::SetQuote("Ps 1, 1-3")
 
 # Document::Sectioning::Begin("Section", "Wstęp")
 # Podczas tego studium przyjrzymy się bliżej jednemu z obrazów człowieka, ukazanych w Piśmie Świętym, przedstawijącego go jako drzewo.
@@ -19,6 +23,7 @@ SWORD::Scripture::GetText("2 Moj 10, 3-15", false)
 Plaga szarańczy jako konsekwencja trwania przez Izraela w grzechu
 SWORD::Scripture::GetText("Am 4, 9", false)
 SWORD::Scripture::GetText("Jl 1, 4-7", false)
+# SWORD::Scripture::GetText("Am 7, 1-3", false)
 
 # Document::Sectioning::Begin("Section", "Latorośl")
 # O wszczepieniu latorośli w szlachetny krzew
@@ -31,3 +36,4 @@ SWORD::Scripture::GetText("Jl 1, 4-7", false)
 
 # Document::Sectioning::Begin("Section", "Do dalszego studium")
 # Propozycje dalszej lektury
+
