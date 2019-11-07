@@ -265,16 +265,10 @@ class Translation:
 
     return tmp_VersetReferences, tmp_Origin
 
-  def GetVersetByReference(self, arg_Verset):
+  def GetVersetByReferenceRange(self, arg_RangeMin, arg_RangeMax):
     tmp_Verset = []
-    tmp_Range = arg_Verset.split(cfg_RegExpStrTextOriginDelimiterReferenceRange)
-    tmp_RangeMin = int(tmp_Range[0])
-    tmp_RangeMax = int(tmp_Range[0])
 
-    if len(tmp_Range) > 1:
-      tmp_RangeMax = int(tmp_Range[1])
-
-    for tmp_VersetRef in range(tmp_RangeMin, tmp_RangeMax + 1):
+    for tmp_VersetRef in range(arg_RangeMin, arg_RangeMax + 1):
       tmpXmlNode = self.GetContents().find(u"./book/chapter/verset[@ref='{}']".format(str(tmp_VersetRef)))
 
       if tmpXmlNode is None:
@@ -283,6 +277,17 @@ class Translation:
       tmp_Verset.append(tmpXmlNode.text)
 
     return tmp_Verset
+
+  def GetVersetByReferenceRangeStr(self, arg_VersetReferenceRangeStr):
+    tmp_Verset = []
+    tmp_Range = arg_VersetReferenceRangeStr.split(cfg_RegExpStrTextOriginDelimiterReferenceRange)
+    tmp_RangeMin = int(tmp_Range[0])
+    tmp_RangeMax = int(tmp_Range[0])
+
+    if len(tmp_Range) > 1:
+      tmp_RangeMax = int(tmp_Range[1])
+
+    return self.GetVersetByReferenceRange(tmp_RangeMin, tmp_RangeMax)
 
   @staticmethod
   def GetNameFromFileName(arg_FileName):

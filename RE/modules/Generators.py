@@ -25,11 +25,11 @@ cfg_XmlAttrSectioningSection = config.SectioningSectionXmlAttribs
 # xml attributes: 'image:image'
 cfg_XmlAttrObjectImage = config.ObjectImageXmlAttribs
 
+# xml attributes: 'document:config'
+cfg_XmlAttrDocumentConfig = config.DocumentConfigXmlAttribs
+
 # paragraph name
 cfg_StrParagraphName = config.ParagraphName
-
-# text name
-cfg_StrTextName = config.TextName
 
 # image temporary directory
 cfg_DirImagesTmp = config.ImagesTmpDir
@@ -39,6 +39,7 @@ cfg_DirImagesTmp = config.ImagesTmpDir
 # ================================================================ #
 class iGenerator(object):
   atr_Modules = {
+    'Document' : Modules.Document(),
     'Object' : Modules.Object(),
     'Scripture' : Modules.Scripture(),
     'Sectioning' : Modules.Sectioning(),
@@ -48,6 +49,18 @@ class iGenerator(object):
   def __init__(self):
     # assign file name
     self.atr_FileName = u''
+
+    # set document title
+    self.atr_DocumentTitle = None
+
+    # set document subtitle
+    self.atr_DocumentSubTitle = None
+
+    # set document emblem
+    self.atr_DocumentEmblem = None
+
+    # set document quote
+    self.atr_DocumentQuote = None
 
     # set xml namespaces
     self.atr_XmlNamespaces = {}
@@ -60,6 +73,10 @@ class iGenerator(object):
 
     # set current sectioning level
     self.atr_SectioningLevel = -1
+
+    # set text paragraphs
+    self.atr_TextParagraphPrev = None
+    self.atr_TextParagraphCurr = None
 
     # create token container
     self.atr_Tokens = Helpers.Tokens()
@@ -148,7 +165,7 @@ class iGenerator(object):
       if tmp_VersetRef is None:
         raise Exception
 
-      tmp_ScriptureExtract.append(u' '.join(tmp_Translation.GetVersetByReference(tmp_VersetRef)))
+      tmp_ScriptureExtract.append(u' '.join(tmp_Translation.GetVersetByReferenceRangeStr(tmp_VersetRef)))
 
     tmp_Contents.append(self.atr_VersetOpeningQuote + self.atr_VersetDelimiter.join(filter(None, tmp_ScriptureExtract)) + self.atr_VersetClosingQuote)
 
@@ -181,6 +198,10 @@ class iGenerator(object):
     # set current sectioning level
     self.atr_SectioningLevel = tmp_Level
 
+    # set text paragraphs
+    self.atr_TextParagraphPrev = None
+    self.atr_TextParagraphCurr = None
+
     # increase current level
     self.atr_SectioningLevels[tmp_Level] = self.atr_SectioningLevels[tmp_Level] + 1
 
@@ -210,13 +231,20 @@ class iGenerator(object):
     tmp_Contents = []
 
     for tmp_XmlNodeChild in arg_XmlNode:
+      self.atr_TextParagraphPrev = self.atr_TextParagraphCurr
+      self.atr_TextParagraphCurr = None
+
       tmp_Contents.append(
         {
-          iGenerator.atr_Modules['Object'].GetXmlTagName(cfg_StrTextName) : self.HandleTagObjectText,
-          iGenerator.atr_Modules['Object'].GetXmlTagName('image') : self.HandleTagObjectImage,
-          iGenerator.atr_Modules['Scripture'].GetXmlTagName('extract') : self.HandleTagScriptureExtract
+          iGenerator.atr_Modules['Object'].GetXmlTagName(u'text') : self.HandleTagObjectText,
+          iGenerator.atr_Modules['Object'].GetXmlTagName(u'image') : self.HandleTagObjectImage,
+          iGenerator.atr_Modules['Scripture'].GetXmlTagName(u'extract') : self.HandleTagScriptureExtract
         }.get(tmp_XmlNodeChild.tag, self.HandleTagUnknown)(tmp_XmlNodeChild)
       )
+
+    # set text paragraphs
+    self.atr_TextParagraphPrev = None
+    self.atr_TextParagraphCurr = None
 
     return u''.join(filter(None, tmp_Contents))
 
@@ -234,11 +262,20 @@ class iGenerator(object):
 
   def Process(self, arg_FileName, arg_XmlNodeRoot, arg_OutputFolderName):
     tmp_XmlNodeDocument = arg_XmlNodeRoot.find(u'.//' + iGenerator.atr_Modules['Sectioning'].GetXmlTagName(u'section'), iGenerator.atr_Modules['Sectioning'].GetXmlNamespace())
+    tmp_XmlNodeDocumentConfig = arg_XmlNodeRoot.find(u'.//' + iGenerator.atr_Modules['Document'].GetXmlTagName(u'config'), iGenerator.atr_Modules['Document'].GetXmlNamespace())
 
-    if tmp_XmlNodeDocument is None:
+    if tmp_XmlNodeDocument is None or tmp_XmlNodeDocumentConfig is None:
       raise Exception
 
+    tmp_XmlNodeDocumentConfigQuote = tmp_XmlNodeDocumentConfig.find(u'.//' + iGenerator.atr_Modules['Document'].GetXmlTagName(u'quote'), iGenerator.atr_Modules['Document'].GetXmlNamespace())
+
     self.atr_FileName = arg_FileName
+    self.atr_DocumentTitle = tmp_XmlNodeDocumentConfig.get(cfg_XmlAttrDocumentConfig['Title'], arg_FileName)
+    self.atr_DocumentSubTitle = tmp_XmlNodeDocumentConfig.get(cfg_XmlAttrDocumentConfig['SubTitle'], None)
+    self.atr_DocumentEmblem = tmp_XmlNodeDocumentConfig.get(cfg_XmlAttrDocumentConfig['Emblem'], None)
+    if tmp_XmlNodeDocumentConfigQuote is not None:
+      for tmp_XmlNodeDocumentConfigQuoteChild in tmp_XmlNodeDocumentConfigQuote:
+        self.atr_DocumentQuote = iGenerator.HandleTagScriptureExtract(self, tmp_XmlNodeDocumentConfigQuoteChild)
 
     tmp_Contents = self.HandleTag(tmp_XmlNodeDocument)
 
@@ -441,10 +478,13 @@ class FODT(iGenerator):
     if tmp_XmlNodeOfficeText is None:
       raise Exception
 
-    # remove contents of office:text xml node
-    tmp_XmlNodeOfficeText.clear()
+    # assign xml node office:text
+    self.atr_XmlNodeOfficeText = tmp_XmlNodeOfficeText
 
-    tmp_XmlNodeTextSequenceDecls = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:sequence-decls'))
+    # remove contents of office:text xml node
+    self.atr_XmlNodeOfficeText.clear()
+
+    tmp_XmlNodeTextSequenceDecls = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:sequence-decls'))
 
     tmp_XmlNodeTextSequenceDecl = ET.SubElement(tmp_XmlNodeTextSequenceDecls, self.GetXmlTagName(u'text:sequence-decl'))
     tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:display-outline-level'), u'0')
@@ -470,30 +510,45 @@ class FODT(iGenerator):
     tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:display-outline-level'), u'0')
     tmp_XmlNodeTextSequenceDecl.set(self.GetXmlTagName(u'text:name'), u'Obraz')
 
-    # remove contents of office:text xml node
-    # for tmp_XmlNodeChild in tmp_XmlNodeOfficeText:
-      # if tmp_XmlNodeChild.tag != self.GetXmlTagName(u'text:sequence-decls'):
-        # tmp_XmlNodeOfficeText.remove(tmp_XmlNodeChild)
-
-    # set pointer to currently used paragraph
-    self.atr_XmlNodeParagraph = None
-
     # initialize number of images
     self.atr_ImageCounter = 0
+
+    # initialize number of images
+    self.atr_ImageCaptionCounter = 0
 
     # init MIME types
     mimetypes.init()
 
+  def AddTextToCurrentParagraph(self, arg_Text):
+    # print u'AddTextToCurrentParagraph'
+    # print self.atr_TextParagraphPrev
+    # print self.atr_TextParagraphCurr
+    # print arg_Text
+    if self.atr_TextParagraphPrev is not None:
+      self.atr_TextParagraphPrev.text = filter(None, u''.join([self.atr_TextParagraphPrev.text, arg_Text]))
+      self.atr_TextParagraphCurr = self.atr_TextParagraphPrev
+    else:
+      tmp_XmlNodeTextP = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
+
+      if self.atr_SectioningLevel > 0:
+        tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Text_20_body')
+      else:
+        tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Standard')
+
+      tmp_XmlNodeTextP.text = arg_Text
+
+      self.atr_TextParagraphCurr = tmp_XmlNodeTextP
+
   def AddImageCaption(self, arg_XmlNode, arg_Caption):
     tmp_XmlNodeTextSequence = ET.SubElement(arg_XmlNode, self.GetXmlTagName(u'text:sequence'))
-    tmp_XmlNodeTextSequence.set(self.GetXmlTagName(u'text:ref-name'), u'refFigure' + str(self.atr_ImageCounter))
+    tmp_XmlNodeTextSequence.set(self.GetXmlTagName(u'text:ref-name'), u'refFigure' + str(self.atr_ImageCaptionCounter))
     tmp_XmlNodeTextSequence.set(self.GetXmlTagName(u'text:name'), u'Figure')
     tmp_XmlNodeTextSequence.set(self.GetXmlTagName(u'text:formula'), u'ooow:Figure+1')
     tmp_XmlNodeTextSequence.set(self.GetXmlTagName(u'style:num-format'), u'1')
     tmp_XmlNodeTextSequence.text = str(self.atr_ImageCounter + 1)
     tmp_XmlNodeTextSequence.tail = u': ' + arg_Caption
 
-    self.atr_ImageCounter = self.atr_ImageCounter + 1
+    self.atr_ImageCaptionCounter = self.atr_ImageCaptionCounter + 1
 
   def AddImage(self, arg_XmlNode, arg_Name, arg_Caption = None):
     tmp_FileNameFull = os.path.join(cfg_DirImagesTmp, arg_Name)
@@ -563,18 +618,13 @@ class FODT(iGenerator):
       self.AddImageCaption(tmp_XmlNodeTextP_002, arg_Caption)
       tmp_XmlNodeTextLineBreak = ET.SubElement(tmp_XmlNodeTextSpan, self.GetXmlTagName(u'text:line-break'))
 
+    self.atr_ImageCounter = self.atr_ImageCounter + 1
+
   def GetImageCounter(self):
     return self.atr_ImageCounter
 
   def HandleTagObjectText(self, arg_XmlNode):
-    # sanity check
-    if self.atr_XmlNodeParagraph is None:
-      raise Exception
-
-    if self.atr_XmlNodeParagraph.text is not None:
-      self.atr_XmlNodeParagraph.text = self.atr_XmlNodeParagraph.text + arg_XmlNode.text
-    else:
-      self.atr_XmlNodeParagraph.text = arg_XmlNode.text
+    self.AddTextToCurrentParagraph(arg_XmlNode.text)
 
     return u''
 
@@ -587,13 +637,8 @@ class FODT(iGenerator):
     if tmp_AtrName is None:
       raise Exception
 
-    tmp_XmlNodeOfficeText = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'office:text'))
-
-    # sanity check
-    if tmp_XmlNodeOfficeText is None:
-      raise Exception
-
-    self.AddImage(tmp_XmlNodeOfficeText, tmp_AtrName, tmp_AtrCaption)
+    # get xml node: image object
+    self.AddImage(self.atr_XmlNodeOfficeText, tmp_AtrName, tmp_AtrCaption)
 
     return u''.join(filter(None, tmp_Contents))
 
@@ -607,37 +652,29 @@ class FODT(iGenerator):
 
     tmp_Origin = self.GetOrigin(tmp_AtrOrigin)
 
-    tmp_ScriptureExtract = super(FODT, self).HandleTagScriptureExtract(arg_XmlNode)
-
-    # sanity check
-    if self.atr_XmlNodeParagraph is None:
-      raise Exception
-
     if tmp_AtrInline == u'false':
-      # TODO: implement style for non-inlined Scripture extracts
-      if self.atr_XmlNodeParagraph.text is not None:
-        self.atr_XmlNodeParagraph.text = self.atr_XmlNodeParagraph.text + tmp_ScriptureExtract
+      tmp_XmlNodeTextP = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
+
+      if False:
+        tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Scripture_20_extract_20_raw')
+        tmp_XmlNodeTextP.text = super(FODT, self).HandleTagScriptureExtract(arg_XmlNode)
       else:
-        self.atr_XmlNodeParagraph.text = tmp_ScriptureExtract
+        tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Scripture_20_extract_20_-_20_high')
+        tmp_XmlNodeTextP.text = super(FODT, self).HandleTagScriptureExtract(arg_XmlNode, False)
+
+        tmp_XmlNodeTextP = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
+        tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Scripture_20_extract_20_-_20_low')
+        tmp_XmlNodeTextP.text = tmp_Origin
     else:
-      if self.atr_XmlNodeParagraph.text is not None:
-        self.atr_XmlNodeParagraph.text = self.atr_XmlNodeParagraph.text + tmp_ScriptureExtract
-      else:
-        self.atr_XmlNodeParagraph.text = tmp_ScriptureExtract
+      self.AddTextToCurrentParagraph(super(FODT, self).HandleTagScriptureExtract(arg_XmlNode))
 
     return u''
 
   def HandleTagSectioningSection(self, arg_XmlNode):
     tmp_Contents = []
     tmp_AtrLevel = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Level'], None)
-    tmp_AtrTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Title'], None)
-    tmp_AtrSubTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['SubTitle'], None)
-    tmp_AtrEmblem = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Emblem'], None)
-    tmp_TokScriptureExtracts = None
-    tmp_XmlNodeRoot = None
-
-    # clear pointer to currently used paragraph
-    self.atr_XmlNodeParagraph = None
+    tmp_AtrTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Title'], u'')
+    tmp_XmlNodeScriptureExtractsToBeStudied = None
 
     # sanity check
     if tmp_AtrLevel is None:
@@ -649,44 +686,43 @@ class FODT(iGenerator):
     # set current sectioning level
     self.atr_SectioningLevel = tmp_Level
 
-    tmp_XmlNodeOfficeText = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'office:text'))
-
-    # sanity check
-    if tmp_XmlNodeOfficeText is None:
-      raise Exception
+    # set text paragraphs
+    self.atr_TextParagraphPrev = None
+    self.atr_TextParagraphCurr = None
 
     if tmp_Level == Modules.Sectioning.atr_Levels['document']:
-      # create token for Scripture extracts to be studied
-      # tmp_TokScriptureExtracts = self.atr_Tokens.Create(u'ScriptureExtracts')
-
-      if tmp_AtrTitle is None or len(tmp_AtrTitle) == 0:
-        tmp_AtrTitle = self.atr_FileName
-
       tmp_XmlNodeDcTitle = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'dc:title'))
 
       # sanity check
       if tmp_XmlNodeDcTitle is None:
         raise Exception
 
-      tmp_XmlNodeDcTitle.text = tmp_AtrTitle
+      tmp_XmlNodeDcTitle.text = self.atr_DocumentTitle
 
-      tmp_XmlNodeTextP = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
+      tmp_XmlNodeTextP = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
       tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Title')
-      tmp_XmlNodeTextP.text = tmp_AtrTitle
+      tmp_XmlNodeTextP.text = self.atr_DocumentTitle
 
-      if tmp_AtrEmblem is not None and len(tmp_AtrEmblem) > 0:
-        self.AddImage(tmp_XmlNodeOfficeText, tmp_AtrEmblem)
+      if self.atr_DocumentEmblem is not None and len(self.atr_DocumentEmblem) > 0:
+        self.AddImage(self.atr_XmlNodeOfficeText, self.atr_DocumentEmblem)
 
-      if tmp_AtrSubTitle is not None and len(tmp_AtrSubTitle) > 0:
-        tmp_XmlNodeTextP = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
+      if self.atr_DocumentSubTitle is not None and len(self.atr_DocumentSubTitle) > 0:
+        tmp_XmlNodeTextP = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
         tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Subtitle')
-        tmp_XmlNodeTextP.text = tmp_AtrSubTitle
-    else:
-      if tmp_AtrTitle is None:
-        tmp_AtrTitle = u''
+        tmp_XmlNodeTextP.text = self.atr_DocumentSubTitle
 
+      if self.atr_DocumentQuote is not None and len(self.atr_DocumentQuote) > 0:
+        tmp_XmlNodeTextP = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
+        tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Main_20_quote')
+        tmp_XmlNodeTextP.text = self.atr_DocumentQuote
+
+      tmp_XmlNodeScriptureExtractsToBeStudied = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
+      tmp_XmlNodeScriptureExtractsToBeStudied.set(self.GetXmlTagName(u'text:style-name'), u'Scripture_20_extracts_20_to_20_be_20_studied')
+      tmp_XmlNodeScriptureExtractsToBeStudiedInner = ET.SubElement(tmp_XmlNodeScriptureExtractsToBeStudied, self.GetXmlTagName(u'text:span'))
+      tmp_XmlNodeScriptureExtractsToBeStudiedInner.set(self.GetXmlTagName(u'text:style-name'), u'T5')
+    else:
       # add header
-      tmp_XmlNodeTextH = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:h'))
+      tmp_XmlNodeTextH = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:h'))
       tmp_XmlNodeTextH.set(self.GetXmlTagName(u'text:style-name'), u'Heading_20_' + str(tmp_Level))
       tmp_XmlNodeTextH.set(self.GetXmlTagName(u'text:outline-level'), str(tmp_Level))
       tmp_XmlNodeTextH.text = tmp_AtrTitle
@@ -697,8 +733,9 @@ class FODT(iGenerator):
     if tmp_Level == Modules.Sectioning.atr_Levels['document']:
       tmp_Contents.append(ET.tostring(self.atr_XmlNodeRoot))
 
-      # if tmp_TokScriptureExtracts is not None:
-        # tmp_TokScriptureExtracts.SetText(u', '.join(self.atr_ScriptureExtracts))
+      if tmp_XmlNodeScriptureExtractsToBeStudiedInner is not None:
+        tmp_XmlNodeScriptureExtractsToBeStudiedInner.text = u'Wersety do studium: '
+        tmp_XmlNodeScriptureExtractsToBeStudiedInner.tail = u', '.join(self.atr_ScriptureExtracts)
     else:
       pass
 
@@ -708,21 +745,6 @@ class FODT(iGenerator):
     return u'\n'.join(filter(None, tmp_Contents))
 
   def HandleTagObjectParagraph(self, arg_XmlNode):
-    tmp_XmlNodeOfficeText = self.atr_XmlNodeRoot.find(u'.//' + self.GetXmlTagName(u'office:text'))
-
-    # sanity check
-    if tmp_XmlNodeOfficeText is None:
-      raise Exception
-
-    # add paragraph
-    tmp_XmlNodeTextP = ET.SubElement(tmp_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
-    if self.atr_SectioningLevel > 0:
-      tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Text_20_body')
-    else:
-      tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Standard')
-
-    self.atr_XmlNodeParagraph = tmp_XmlNodeTextP
-
     return super(FODT, self).HandleTagObjectParagraph(arg_XmlNode)
 
   def GetName(self):

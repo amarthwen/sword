@@ -46,9 +46,7 @@ ScriptureExtractVersetXmlAttribs = {
 # xml attributes: 'sectioning:section'
 SectioningSectionXmlAttribs = {
   'Level' : u'level',
-  'Title' : u'title',
-  'SubTitle' : u'subtitle',
-  'Emblem' : u'emblem'
+  'Title' : u'title'
 }
 
 # ================================================================ #
@@ -58,6 +56,16 @@ SectioningSectionXmlAttribs = {
 ObjectImageXmlAttribs = {
   'Name' : u'name',
   'Caption' : u'caption'
+}
+
+# ================================================================ #
+# module: Document
+# ================================================================ #
+# xml attributes: 'document:config'
+DocumentConfigXmlAttribs = {
+  'Title' : u'title',
+  'SubTitle' : u'subtitle',
+  'Emblem' : u'emblem'
 }
 
 # ================================================================ #

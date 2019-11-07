@@ -14,6 +14,9 @@ Cfg_ChrComment = u'#'
 # xml attributes: 'sectioning:section'
 cfg_XmlAttrSectioningSection = config.SectioningSectionXmlAttribs
 
+# xml attributes: 'document:config'
+cfg_XmlAttrDocumentConfig = config.DocumentConfigXmlAttribs
+
 # paragraph name
 cfg_StrParagraphName = config.ParagraphName
 
@@ -48,6 +51,11 @@ def main():
   else:
     os.mkdir(tmp_OutputFolderName)
 
+  # get file name
+  tmp_InputFileNameWithExt = os.path.basename(tmp_InputFileName)
+  tmp_InputFileName = os.path.splitext(tmp_InputFileNameWithExt)[0]
+  tmp_OutputFileName = os.path.join(tmp_OutputFolderName, tmp_InputFileName + u'.xml')
+
   with codecs.open(tmp_Args.OptInput, 'r', 'utf-8') as tmp_File:
     tmp_FileContents = [tmp_Line.strip(u'\n') for tmp_Line in tmp_File.readlines()]
 
@@ -78,7 +86,13 @@ def main():
 
   # process file contents
   tmp_XmlNodeRoot = ET.Element(tmp_Modules['Document'].GetXmlTagName(u'document'))
-  tmp_XmlNodeDocumentBody = ET.SubElement(tmp_XmlNodeRoot, tmp_Modules['Document'].GetXmlTagName(u'body'))
+
+  # add document configuration
+  tmp_XmlNodeDocumentConfig = tmp_Modules['Document'].GetXmlNodeConfig(tmp_XmlNodeRoot)
+
+  # add document body
+  tmp_XmlNodeDocumentBody = tmp_Modules['Document'].GetXmlNodeBody(tmp_XmlNodeRoot)
+
   tmp_XmlNodeFirstParagraph = None
   tmp_XmlNodeFirstSection = None
 
@@ -115,6 +129,10 @@ def main():
     if tmp_XmlNodeSection is not None and tmp_XmlNodeSection.get(cfg_XmlAttrSectioningSection['Level'], None) == '0':
       tmp_XmlNodeFirstParagraph = tmp_XmlNodeParagraph
       tmp_XmlNodeFirstSection = tmp_XmlNodeSection
+
+      tmp_DocumentTitle = tmp_XmlNodeFirstSection.get(cfg_XmlAttrSectioningSection['Title'], None)
+      if tmp_DocumentTitle is not None:
+        tmp_Modules['Document'].SetTitle(tmp_DocumentTitle)
     else:
       if tmp_XmlNodeParagraph.find('*') is not None and tmp_Mods.GetModules():
         for tmp_Module in tmp_Mods.GetModules().values():
@@ -127,10 +145,25 @@ def main():
   # add first paragraph (including section with level '0') to document body
   tmp_XmlNodeDocumentBody.append(tmp_XmlNodeFirstParagraph)
 
-  # get file name
-  tmp_FileNameWithExt = os.path.basename(tmp_InputFileName)
-  tmp_FileName = os.path.splitext(tmp_FileNameWithExt)[0]
-  tmp_OutputFileName = os.path.join(tmp_OutputFolderName, tmp_FileName + u'.xml')
+  # assign document title, if set
+  tmp_DocumentTitle = tmp_Modules['Document'].GetTitle()
+  if tmp_DocumentTitle is not None:
+    tmp_XmlNodeDocumentConfig.set(cfg_XmlAttrDocumentConfig['Title'], tmp_DocumentTitle)
+
+  # assign document subtitle, if set
+  tmp_DocumentSubTitle = tmp_Modules['Document'].GetSubTitle()
+  if tmp_DocumentSubTitle is not None:
+    tmp_XmlNodeDocumentConfig.set(cfg_XmlAttrDocumentConfig['SubTitle'], tmp_DocumentSubTitle)
+
+  # assign document emblem, if set
+  tmp_DocumentEmblem = tmp_Modules['Document'].GetEmblem()
+  if tmp_DocumentEmblem is not None:
+    tmp_XmlNodeDocumentConfig.set(cfg_XmlAttrDocumentConfig['Emblem'], tmp_DocumentEmblem)
+
+  # assign document quote, if set
+  tmp_DocumentQuote = tmp_Modules['Document'].GetQuote()
+  if tmp_DocumentQuote is not None:
+    tmp_XmlNodeDocumentConfigQuote = tmp_Modules['Document'].GetXmlNodeConfigQuote(tmp_XmlNodeDocumentConfig, tmp_Modules['Scripture'].GetText(tmp_DocumentQuote))
 
   # store xml tree to output file
   ET.ElementTree(tmp_XmlNodeRoot).write(

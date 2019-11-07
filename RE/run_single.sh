@@ -21,7 +21,7 @@ popd () {
 
 function cmd_ConvertStudies() {
   # convert studies
-  for tmp_FileName in $Cfg_StudiesDir/*.$Cfg_StudiesFilenameExt; do
+  for tmp_FileName in $Cfg_StudiesDir/"$1".$Cfg_StudiesFilenameExt; do
     tmp_Study=$(basename "$tmp_FileName" | cut -d. -f1)
 
     tmp_Rslt=`python -B convert.py "$tmp_FileName" "$Cfg_ConvertedStudiesOutputDir"`
@@ -38,7 +38,7 @@ function cmd_ConvertStudies() {
 
 function cmd_GenerateOutputFiles() {
   # generate output files
-  for tmp_FileName in $Cfg_ConvertedStudiesOutputDir/*.$Cfg_ConvertedStudiesFilenameExt; do
+  for tmp_FileName in $Cfg_ConvertedStudiesOutputDir/"$1".$Cfg_ConvertedStudiesFilenameExt; do
     tmp_Study=$(basename "$tmp_FileName" | cut -d. -f1)
 
     tmp_Rslt=`python -B generate.py "$tmp_FileName" "$Cfg_OutputDir"`
@@ -58,7 +58,7 @@ function cmd_GeneratePDFFilesFromLATEXSources() {
   mkdir -p $Cfg_OutputDir/tex
 
   # create output directory for generated PDF files (if doesn't exist) and clean it
-  mkdir -p $Cfg_OutputDir/pdf && rm -rf $Cfg_OutputDir/pdf/*
+  mkdir -p $Cfg_OutputDir/pdf && rm -rf $Cfg_OutputDir/pdf/"$1".pdf
 
   # create temporary directory for LATEX sources (if doesn't exist) and clean it
   mkdir -p $Cfg_TmpDir/tex && rm -rf $Cfg_TmpDir/tex
@@ -70,7 +70,7 @@ function cmd_GeneratePDFFilesFromLATEXSources() {
   pushd $Cfg_TmpDir/tex
 
   # generate PDF files from LATEX sources
-  for tmp_FileName in ./*.tex; do
+  for tmp_FileName in ./"$1".tex; do
     tmp_Study=$(basename "$tmp_FileName" | cut -d. -f1)
 
     tmp_Rslt=`pdflatex "$tmp_FileName"`
@@ -87,16 +87,16 @@ function cmd_GeneratePDFFilesFromLATEXSources() {
   # leave temporary directory
   popd
 
-  # move all generated PDF files to output directory
-  mv $Cfg_TmpDir/tex/*.pdf $Cfg_OutputDir/pdf
+  # move generated PDF file to output directory
+  mv $Cfg_TmpDir/tex/"$1".pdf $Cfg_OutputDir/pdf
 }
 
 function cmd_GeneratePDFFilesFromFODTSources() {
   # create output directory for generated PDF files (if doesn't exist) and clean it
-  mkdir -p $Cfg_OutputDir/pdf && rm -rf $Cfg_OutputDir/pdf/*
+  mkdir -p $Cfg_OutputDir/pdf && rm -rf $Cfg_OutputDir/pdf/"$1".pdf
 
   # generate PDF files from FODT sources
-  for tmp_FileName in $Cfg_OutputDir/fodt/*.fodt; do
+  for tmp_FileName in $Cfg_OutputDir/fodt/"$1".fodt; do
     tmp_Study=$(basename "$tmp_FileName" | cut -d. -f1)
 
     tmp_Rslt=`libreoffice --headless --convert-to pdf --outdir $Cfg_OutputDir/pdf "$tmp_FileName" 2>&1`
@@ -111,18 +111,15 @@ function cmd_GeneratePDFFilesFromFODTSources() {
   done
 }
 
-# step 1 - remove all generated files
-rm -rf $Cfg_OutputDir/*
-
 # step 2 - convert files
-if [ -z "$1" ] || [ "$1" != "-g" ]; then
-  cmd_PrintWithColor ${COL_1} "Converting studies:"
-  cmd_ConvertStudies
-fi
+# if [ -z "$1" ] || [ "$1" != "-g" ]; then
+cmd_PrintWithColor ${COL_1} "Converting studies:"
+cmd_ConvertStudies "$1"
+# fi
 
 # step 3 - generate output files
 cmd_PrintWithColor ${COL_1} "Generating output files:"
-cmd_GenerateOutputFiles
+cmd_GenerateOutputFiles "$1"
 
 # step 4 - generate PDF files from LATEX sources
 # cmd_PrintWithColor ${COL_1} "Generating PDF files from LATEX sources:"
@@ -130,7 +127,7 @@ cmd_GenerateOutputFiles
 
 # step 5 - generate PDF files from FODT sources
 cmd_PrintWithColor ${COL_1} "Generating PDF files from FODT sources:"
-cmd_GeneratePDFFilesFromFODTSources
+cmd_GeneratePDFFilesFromFODTSources "$1"
 
 # step 6 - add styles to generated web pages
 if [ -d "$Cfg_OutputDir/htm" ]; then

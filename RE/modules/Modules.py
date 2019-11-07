@@ -167,8 +167,30 @@ class Scripture(IModule):
   def GetName(self):
     return self.__class__.__name__
 
+  def GetText(self, arg_Origin, arg_Inline = u'true'):
+    tmp_XmlNodeRoot = ET.Element(self.GetXmlTagName(u'extract'))
+
+    tmp_CurrentTranslation = Translations.GetCurrent()
+
+    if tmp_CurrentTranslation is None:
+      raise Exception
+
+    tmp_VersetReferences, tmp_NormalizedOrigin = tmp_CurrentTranslation.GetVersetReferencesWithNormalizedOrigin(arg_Origin)
+
+    for tmp_VersetReference in tmp_VersetReferences:
+      tmp_XmlNodeVersetReference = ET.SubElement(tmp_XmlNodeRoot, u'verset')
+      for tmp_Key, tmp_Value in tmp_VersetReference.items():
+        tmp_XmlNodeVersetReference.set(tmp_Key, tmp_Value)
+
+    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['TranslationName'], tmp_CurrentTranslation.GetName())
+    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Normalized'], tmp_NormalizedOrigin)
+    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Origin'], arg_Origin)
+    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Inline'], arg_Inline)
+
+    return tmp_XmlNodeRoot
+
   def HandleCmdGetText(self, arg_Params):
-    tmp_Inline = 'true'
+    tmp_Inline = u'true'
 
     # sanity check
     if len(arg_Params) == 0:
@@ -180,26 +202,7 @@ class Scripture(IModule):
       if arg_Params[1].lower() in [u'false', u'true']:
         tmp_Inline = arg_Params[1].lower()
 
-    tmp_XmlNodeRoot = ET.Element(self.GetXmlTagName(u'extract'))
-
-    tmp_CurrentTranslation = Translations.GetCurrent()
-
-    if tmp_CurrentTranslation is None:
-      raise Exception
-
-    tmp_VersetReferences, tmp_NormalizedOrigin = tmp_CurrentTranslation.GetVersetReferencesWithNormalizedOrigin(tmp_Origin)
-
-    for tmp_VersetReference in tmp_VersetReferences:
-      tmp_XmlNodeVersetReference = ET.SubElement(tmp_XmlNodeRoot, u'verset')
-      for tmp_Key, tmp_Value in tmp_VersetReference.items():
-        tmp_XmlNodeVersetReference.set(tmp_Key, tmp_Value)
-
-    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['TranslationName'], tmp_CurrentTranslation.GetName())
-    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Normalized'], tmp_NormalizedOrigin)
-    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Origin'], tmp_Origin)
-    tmp_XmlNodeRoot.set(cfg_XmlAttrScriptureExtract['Inline'], tmp_Inline)
-
-    return tmp_XmlNodeRoot
+    return self.GetText(tmp_Origin, tmp_Inline)
 
   def HandleCmd(self, arg_Function, arg_Params):
     return {
@@ -251,8 +254,6 @@ class Sectioning(IModule):
   def HandleCmdBegin(self, arg_Params):
     tmp_XmlNode = None
     tmp_Title = None
-    tmp_SubTitle = None
-    tmp_Emblem = cfg_StrDefaultEmblem
 
     # sanity check
     if len(arg_Params) == 0:
@@ -281,10 +282,6 @@ class Sectioning(IModule):
     if len(arg_Params) > 2 and arg_Params[2] is not None:
       tmp_SubTitle = arg_Params[2].strip(cfg_ChrEntryItemQuote)
 
-    # get subtitle, if set
-    if len(arg_Params) > 3 and arg_Params[3] is not None:
-      tmp_Emblem = arg_Params[3].strip(cfg_ChrEntryItemQuote)
-
     # set tag name
     tmp_TagName = self.GetXmlTagName(u'section')
 
@@ -297,12 +294,6 @@ class Sectioning(IModule):
 
     if tmp_Title is not None:
       tmp_XmlNode.set(cfg_XmlAttrSectioningSection['Title'], tmp_Title)
-
-    if tmp_Level == 0:
-      if tmp_SubTitle is not None and len(tmp_SubTitle) > 0:
-        tmp_XmlNode.set(cfg_XmlAttrSectioningSection['SubTitle'], tmp_SubTitle)
-      if tmp_Emblem is not None and len(tmp_Emblem) > 0:
-        tmp_XmlNode.set(cfg_XmlAttrSectioningSection['Emblem'], tmp_Emblem)
 
     # assign xml node in xml path
     self.atr_XmlPath[tmp_Level] = tmp_XmlNode
@@ -406,10 +397,24 @@ class Document(IModule):
 
     self.atr_Title = None
     self.atr_SubTitle = None
-    self.atr_Emblem = None
+    self.atr_Emblem = cfg_StrDefaultEmblem
+    self.atr_Quote = None
 
   def GetName(self):
     return self.__class__.__name__
+
+  def GetXmlNodeBody(self, arg_XmlNodeParent):
+    return ET.SubElement(arg_XmlNodeParent, self.GetXmlTagName(u'body'))
+
+  def GetXmlNodeConfig(self, arg_XmlNodeParent):
+    return ET.SubElement(arg_XmlNodeParent, self.GetXmlTagName(u'config'))
+
+  def GetXmlNodeConfigQuote(self, arg_XmlNodeParent, arg_XmlNodeScriptureExtract):
+    tmp_XmlNode = ET.SubElement(arg_XmlNodeParent, self.GetXmlTagName(u'quote'))
+
+    tmp_XmlNode.append(arg_XmlNodeScriptureExtract)
+
+    return tmp_XmlNode
 
   def GetTitle(self):
     return self.atr_Title
@@ -420,13 +425,29 @@ class Document(IModule):
   def GetEmblem(self):
     return self.atr_Emblem
 
+  def GetQuote(self):
+    return self.atr_Quote
+
+  def SetTitle(self, arg_Title):
+    self.atr_Title = arg_Title
+
+  def SetSubTitle(self, arg_SubTitle):
+    self.atr_SubTitle = arg_SubTitle
+
+  def SetEmblem(self, arg_Emblem):
+    self.atr_Emblem = arg_Emblem
+
+  def SetQuote(self, arg_Quote):
+    self.atr_Quote = arg_Quote
+
   def HandleCmdSetTitle(self, arg_Params):
     # sanity check
     if len(arg_Params) == 0:
       raise Exception
 
-    # get document title
-    self.atr_Title = arg_Params[0].strip(cfg_ChrEntryItemQuote)
+    # set document title
+    if arg_Params[0] is not None:
+      self.SetTitle(arg_Params[0].strip(cfg_ChrEntryItemQuote))
 
     return None
 
@@ -435,8 +456,9 @@ class Document(IModule):
     if len(arg_Params) == 0:
       raise Exception
 
-    # get document title
-    self.atr_SubTitle = arg_Params[0].strip(cfg_ChrEntryItemQuote)
+    # set document subtitle
+    if arg_Params[0] is not None:
+      self.SetSubTitle(arg_Params[0].strip(cfg_ChrEntryItemQuote))
 
     return None
 
@@ -445,8 +467,20 @@ class Document(IModule):
     if len(arg_Params) == 0:
       raise Exception
 
-    # get document title
-    self.atr_Emblem = arg_Params[0].strip(cfg_ChrEntryItemQuote)
+    # set document emblem
+    if arg_Params[0] is not None:
+      self.SetEmblem(arg_Params[0].strip(cfg_ChrEntryItemQuote))
+
+    return None
+
+  def HandleCmdSetQuote(self, arg_Params):
+    # sanity check
+    if len(arg_Params) == 0:
+      raise Exception
+
+    # set document quote
+    if arg_Params[0] is not None:
+      self.SetQuote(arg_Params[0].strip(cfg_ChrEntryItemQuote))
 
     return None
 
@@ -454,7 +488,8 @@ class Document(IModule):
     return {
       'SetTitle' : self.HandleCmdSetTitle,
       'SetSubTitle' : self.HandleCmdSetSubTitle,
-      'SetEmblem' : self.HandleCmdSetEmblem
+      'SetEmblem' : self.HandleCmdSetEmblem,
+      'SetQuote' : self.HandleCmdSetQuote
     }.get(arg_Function, self.HandleCmdUnknown)(arg_Params)
 
 # ================================================================ #
