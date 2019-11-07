@@ -8,4 +8,5 @@ SWORD::Scripture::GetText("Jr 12, 10-12", false)
 SWORD::Scripture::GetText("Iz 34, 9-11", false)
 SWORD::Scripture::GetText("Iz 1, 7-9", false)
 SWORD::Scripture::GetText("So 2, 9.13", false)
+SWORD::Scripture::GetText("Jr 6, 8", false)
 

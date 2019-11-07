@@ -1,3 +1,6 @@
-Document::Sectioning::Begin("Document", , "W trakcie opracowania...", "under_construction.jpg")
+Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
+
+Document::SetSubTitle("W trakcie opracowania...")
+Document::SetEmblem("under_construction.jpg")
 
