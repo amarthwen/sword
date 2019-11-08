@@ -392,7 +392,7 @@ class HTM(iGenerator):
       tmp_Contents.append(u'</head>')
       tmp_Contents.append(u'<body>')
       tmp_Contents.append(u'<p class="css_title">' + tmp_AtrTitle + u'</p>')
-      tmp_Contents.append(u'<p class="css_lines"><b>Wersety do studium:</b> ' + str(tmp_TokScriptureExtracts) + u'</p>')
+      tmp_Contents.append(str(tmp_TokScriptureExtracts))
     else:
       tmp_Contents.append(u'<section>')
       tmp_Contents.append(u'<h1>' + super(HTM, self).HandleTagSectioningSection(arg_XmlNode) + u'</h1>')
@@ -405,7 +405,10 @@ class HTM(iGenerator):
       tmp_Contents.append(u'</html>')
 
       if tmp_TokScriptureExtracts is not None:
-        tmp_TokScriptureExtracts.SetText(u', '.join(self.atr_ScriptureExtracts))
+        if len(self.atr_ScriptureExtracts) > 0:
+          tmp_TokScriptureExtracts.SetText(u'<p class="css_lines"><b>Wersety do studium:</b> ' + u', '.join(self.atr_ScriptureExtracts) + u'</p>')
+        else:
+          tmp_TokScriptureExtracts.SetText(u'')
     else:
       tmp_Contents.append(u'</section>')
 
@@ -734,8 +737,12 @@ class FODT(iGenerator):
       tmp_Contents.append(ET.tostring(self.atr_XmlNodeRoot))
 
       if tmp_XmlNodeScriptureExtractsToBeStudiedInner is not None:
-        tmp_XmlNodeScriptureExtractsToBeStudiedInner.text = u'Wersety do studium: '
-        tmp_XmlNodeScriptureExtractsToBeStudiedInner.tail = u', '.join(self.atr_ScriptureExtracts)
+        if len(self.atr_ScriptureExtracts) > 0:
+          tmp_XmlNodeScriptureExtractsToBeStudiedInner.text = u'Wersety do studium: '
+          tmp_XmlNodeScriptureExtractsToBeStudiedInner.tail = u', '.join(self.atr_ScriptureExtracts)
+        else:
+          tmp_XmlNodeScriptureExtractsToBeStudiedInner.text = None
+          tmp_XmlNodeScriptureExtractsToBeStudiedInner.tail = None
     else:
       pass
 
@@ -865,10 +872,7 @@ class TEX(iGenerator):
       tmp_Contents.append(u'\\usepackage[margin=0.5in,bottom=0.75in]{geometry}')
       tmp_Contents.append(u'\\begin{document}')
       tmp_Contents.append(u'\\centerline{\\textbf{\\MakeUppercase{' + tmp_AtrTitle + u'}}}')
-      tmp_Contents.append(u'\\begin{center}')
-      tmp_Contents.append(u'\\textbf{Wersety do studium:} ')
       tmp_Contents.append(str(tmp_TokScriptureExtracts))
-      tmp_Contents.append(u'\\end{center}')
     else:
       tmp_Section = Modules.Sectioning.GetLevelName(tmp_Level)
 
@@ -889,7 +893,10 @@ class TEX(iGenerator):
       tmp_Contents.append(u'\\end{document}')
 
       if tmp_TokScriptureExtracts is not None:
-        tmp_TokScriptureExtracts.SetText(u', '.join(self.atr_ScriptureExtracts))
+        if len(self.atr_ScriptureExtracts) > 0:
+          tmp_TokScriptureExtracts.SetText(u'\n'.join([u'\\begin{center}', u'\\textbf{Wersety do studium:} ' + u', '.join(self.atr_ScriptureExtracts), u'\\end{center}']))
+        else:
+          tmp_TokScriptureExtracts.SetText(u'')
 
     # set current sectioning level
     self.atr_SectioningLevel = tmp_Level - 1
