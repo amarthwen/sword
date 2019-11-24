@@ -58,3 +58,6 @@ SWORD::Scripture::GetText("1 Moj 6, 5-6", false)
 # "Wieczne przymierze" - wylanie Ducha Świętego do serc ludzkich
 # "Ciało cielesne i ciało duchowe"
 
+To, co kala człowieka, pochodzi z jego wnętrza (z serca):
+SWORD::Scripture::GetText("Mk 7, 15-23", false)
+

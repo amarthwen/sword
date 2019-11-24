@@ -11,7 +11,12 @@ Document::Sectioning::Begin("SubSubSection", "Cielesna niewola")
 
 Document::Sectioning::Begin("SubSection", "Duchowy żołnierz")
 Document::Sectioning::Begin("SubSubSection", "Duchowy wróg")
+SWORD::Scripture::GetText("Ef 6, 11-12", false)
 Document::Sectioning::Begin("SubSubSection", "Duchowa zbroja i oręż")
+SWORD::Scripture::GetText("Ef 6, 13-17", false)
 Document::Sectioning::Begin("SubSubSection", "Duchowa walka")
+SWORD::Scripture::GetText("Ef 6, 11-12", false)
 Document::Sectioning::Begin("SubSubSection", "Duchowa niewola")
+SWORD::Scripture::GetText("1 Kor 6, 12-13", false)
+SWORD::Scripture::GetText("Ga 5, 1.13", false)
 

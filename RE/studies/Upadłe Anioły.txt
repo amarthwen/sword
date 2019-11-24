@@ -16,6 +16,7 @@ SWORD::Scripture::GetText("Ha 1, 9-11", false)
 SWORD::Scripture::GetText("Jr 30, 15-16", false)
 SWORD::Scripture::GetText("Ez 7, 20-24", false)
 SWORD::Scripture::GetText("Jr 49, 9", false)
+SWORD::Scripture::GetText("Jr 18, 22", false)
 
 Document::Sectioning::Begin("SubSection", "Mordercy")
 

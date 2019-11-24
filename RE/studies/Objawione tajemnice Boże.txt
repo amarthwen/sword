@@ -7,4 +7,5 @@ SWORD::Scripture::GetText("Ef 3, 1-7", false)
 SWORD::Scripture::GetText("1 Kor 15, 51-57", false)
 SWORD::Scripture::GetText("Kol 1, 24-28", false)
 SWORD::Scripture::GetText("Rz 11, 25-32", false)
+SWORD::Scripture::GetText("1 Tm 3, 16", false)
 
