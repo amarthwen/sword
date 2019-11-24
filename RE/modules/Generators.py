@@ -217,10 +217,11 @@ class iGenerator(object):
       else:
         break
 
-    if arg_IncludePrefix:
-      tmp_Contents.append(u'.'.join(tmp_Prefixes))
+    if tmp_AtrTitle is not None:
+      if arg_IncludePrefix:
+        tmp_Contents.append(u'.'.join(tmp_Prefixes))
 
-    tmp_Contents.append(tmp_AtrTitle)
+      tmp_Contents.append(tmp_AtrTitle)
 
     # set current sectioning level
     self.atr_SectioningLevel = tmp_Level - 1
@@ -394,8 +395,9 @@ class HTM(iGenerator):
       tmp_Contents.append(u'<p class="css_title">' + tmp_AtrTitle + u'</p>')
       tmp_Contents.append(str(tmp_TokScriptureExtracts))
     else:
-      tmp_Contents.append(u'<section>')
-      tmp_Contents.append(u'<h1>' + super(HTM, self).HandleTagSectioningSection(arg_XmlNode) + u'</h1>')
+      if tmp_AtrTitle is not None:
+        tmp_Contents.append(u'<section>')
+        tmp_Contents.append(u'<h1>' + super(HTM, self).HandleTagSectioningSection(arg_XmlNode) + u'</h1>')
 
     for tmp_XmlNodeChild in arg_XmlNode:
       tmp_Contents.append(self.HandleTag(tmp_XmlNodeChild))
@@ -658,7 +660,7 @@ class FODT(iGenerator):
     if tmp_AtrInline == u'false':
       tmp_XmlNodeTextP = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
 
-      if False:
+      if True:
         tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Scripture_20_extract_20_raw')
         tmp_XmlNodeTextP.text = super(FODT, self).HandleTagScriptureExtract(arg_XmlNode)
       else:
@@ -676,7 +678,7 @@ class FODT(iGenerator):
   def HandleTagSectioningSection(self, arg_XmlNode):
     tmp_Contents = []
     tmp_AtrLevel = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Level'], None)
-    tmp_AtrTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Title'], u'')
+    tmp_AtrTitle = arg_XmlNode.get(cfg_XmlAttrSectioningSection['Title'], None)
     tmp_XmlNodeScriptureExtractsToBeStudied = None
 
     # sanity check
@@ -700,7 +702,7 @@ class FODT(iGenerator):
       if tmp_XmlNodeDcTitle is None:
         raise Exception
 
-      tmp_XmlNodeDcTitle.text = self.atr_DocumentTitle
+      tmp_XmlNodeDcTitle.text = u' - '.join(filter(None, [self.atr_DocumentTitle, self.atr_DocumentSubTitle]))
 
       tmp_XmlNodeTextP = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:p'))
       tmp_XmlNodeTextP.set(self.GetXmlTagName(u'text:style-name'), u'Title')
@@ -724,11 +726,12 @@ class FODT(iGenerator):
       tmp_XmlNodeScriptureExtractsToBeStudiedInner = ET.SubElement(tmp_XmlNodeScriptureExtractsToBeStudied, self.GetXmlTagName(u'text:span'))
       tmp_XmlNodeScriptureExtractsToBeStudiedInner.set(self.GetXmlTagName(u'text:style-name'), u'T5')
     else:
-      # add header
-      tmp_XmlNodeTextH = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:h'))
-      tmp_XmlNodeTextH.set(self.GetXmlTagName(u'text:style-name'), u'Heading_20_' + str(tmp_Level))
-      tmp_XmlNodeTextH.set(self.GetXmlTagName(u'text:outline-level'), str(tmp_Level))
-      tmp_XmlNodeTextH.text = tmp_AtrTitle
+      if tmp_AtrTitle is not None:
+        # add header
+        tmp_XmlNodeTextH = ET.SubElement(self.atr_XmlNodeOfficeText, self.GetXmlTagName(u'text:h'))
+        tmp_XmlNodeTextH.set(self.GetXmlTagName(u'text:style-name'), u'Heading_20_' + str(tmp_Level))
+        tmp_XmlNodeTextH.set(self.GetXmlTagName(u'text:outline-level'), str(tmp_Level))
+        tmp_XmlNodeTextH.text = tmp_AtrTitle
 
     for tmp_XmlNodeChild in arg_XmlNode:
       tmp_Contents.append(self.HandleTag(tmp_XmlNodeChild))
@@ -880,10 +883,11 @@ class TEX(iGenerator):
       if tmp_Section is None:
         raise Exception
 
-      if tmp_AtrTitle is None:
-        tmp_AtrTitle = u''
+      if tmp_AtrTitle is not None:
+        tmp_Header = u'\\' + tmp_Section + u'{' + tmp_AtrTitle + u'}'
+      else:
+        tmp_Header = u'\\' + tmp_Section + u'*{}'
 
-      tmp_Header = u'\\' + tmp_Section + u'{' + tmp_AtrTitle + u'}'
       tmp_Contents.append(tmp_Header)
 
     for tmp_XmlNodeChild in arg_XmlNode:

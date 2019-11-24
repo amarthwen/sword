@@ -20,9 +20,11 @@ popd () {
 }
 
 function cmd_ConvertStudies() {
+  tmp_Study=$(basename "$1" | cut -d. -f1)
+
   # convert studies
-  for tmp_FileName in $Cfg_StudiesDir/"$1".$Cfg_StudiesFilenameExt; do
-    tmp_Study=$(basename "$tmp_FileName" | cut -d. -f1)
+  for tmp_FileName in "$Cfg_StudiesDir/$tmp_Study.$Cfg_StudiesFilenameExt"; do
+    
 
     tmp_Rslt=`python -B convert.py "$tmp_FileName" "$Cfg_ConvertedStudiesOutputDir"`
 
@@ -37,10 +39,10 @@ function cmd_ConvertStudies() {
 }
 
 function cmd_GenerateOutputFiles() {
-  # generate output files
-  for tmp_FileName in $Cfg_ConvertedStudiesOutputDir/"$1".$Cfg_ConvertedStudiesFilenameExt; do
-    tmp_Study=$(basename "$tmp_FileName" | cut -d. -f1)
+  tmp_Study=$(basename "$1" | cut -d. -f1)
 
+  # generate output files
+  for tmp_FileName in "$Cfg_ConvertedStudiesOutputDir/$tmp_Study.$Cfg_ConvertedStudiesFilenameExt"; do
     tmp_Rslt=`python -B generate.py "$tmp_FileName" "$Cfg_OutputDir"`
 
     if (( $? == 0 )); then
@@ -54,11 +56,13 @@ function cmd_GenerateOutputFiles() {
 }
 
 function cmd_GeneratePDFFilesFromLATEXSources() {
+  tmp_Study=$(basename "$1" | cut -d. -f1)
+
   # create output directory for generated LATEX files (if doesn't exist)
   mkdir -p $Cfg_OutputDir/tex
 
   # create output directory for generated PDF files (if doesn't exist) and clean it
-  mkdir -p $Cfg_OutputDir/pdf && rm -rf $Cfg_OutputDir/pdf/"$1".pdf
+  mkdir -p $Cfg_OutputDir/pdf && rm -rf "$Cfg_OutputDir/pdf/$tmp_Study.pdf"
 
   # create temporary directory for LATEX sources (if doesn't exist) and clean it
   mkdir -p $Cfg_TmpDir/tex && rm -rf $Cfg_TmpDir/tex
@@ -70,9 +74,7 @@ function cmd_GeneratePDFFilesFromLATEXSources() {
   pushd $Cfg_TmpDir/tex
 
   # generate PDF files from LATEX sources
-  for tmp_FileName in ./"$1".tex; do
-    tmp_Study=$(basename "$tmp_FileName" | cut -d. -f1)
-
+  for tmp_FileName in "./$tmp_Study.tex"; do
     tmp_Rslt=`pdflatex "$tmp_FileName"`
 
     if (( $? == 0 )); then
@@ -88,17 +90,17 @@ function cmd_GeneratePDFFilesFromLATEXSources() {
   popd
 
   # move generated PDF file to output directory
-  mv $Cfg_TmpDir/tex/"$1".pdf $Cfg_OutputDir/pdf
+  mv "$Cfg_TmpDir/tex/$tmp_Study.pdf" $Cfg_OutputDir/pdf
 }
 
 function cmd_GeneratePDFFilesFromFODTSources() {
+  tmp_Study=$(basename "$1" | cut -d. -f1)
+
   # create output directory for generated PDF files (if doesn't exist) and clean it
-  mkdir -p $Cfg_OutputDir/pdf && rm -rf $Cfg_OutputDir/pdf/"$1".pdf
+  mkdir -p $Cfg_OutputDir/pdf && rm -rf "$Cfg_OutputDir/pdf/$tmp_Study.pdf"
 
   # generate PDF files from FODT sources
-  for tmp_FileName in $Cfg_OutputDir/fodt/"$1".fodt; do
-    tmp_Study=$(basename "$tmp_FileName" | cut -d. -f1)
-
+  for tmp_FileName in "$Cfg_OutputDir/fodt/$tmp_Study.fodt"; do
     tmp_Rslt=`libreoffice --headless --convert-to pdf --outdir $Cfg_OutputDir/pdf "$tmp_FileName" 2>&1`
 
     if (( $? == 0 )); then

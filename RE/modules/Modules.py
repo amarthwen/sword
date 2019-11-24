@@ -267,8 +267,8 @@ class Sectioning(IModule):
       raise Exception
 
     # sanity check
-    if tmp_Level > self.GetCurrentLevel() + 1:
-      raise Exception
+    # if tmp_Level > self.GetCurrentLevel() + 1:
+      # raise Exception
 
     # sanity check
     if tmp_Level == 0 and self.atr_XmlPath[tmp_Level] is not None:
@@ -284,6 +284,18 @@ class Sectioning(IModule):
 
     # set tag name
     tmp_TagName = self.GetXmlTagName(u'section')
+
+    if tmp_Level > self.GetCurrentLevel():
+      for tmp_CurrentLevel in range(self.GetCurrentLevel() + 1, tmp_Level):
+        if tmp_CurrentLevel == 0:
+          tmp_XmlNode = ET.Element(tmp_TagName)
+        else:
+          tmp_XmlNode = ET.SubElement(self.atr_XmlPath[tmp_CurrentLevel - 1], tmp_TagName)
+
+        tmp_XmlNode.set(cfg_XmlAttrSectioningSection['Level'], str(tmp_CurrentLevel))
+
+        # assign xml node in xml path
+        self.atr_XmlPath[tmp_CurrentLevel] = tmp_XmlNode
 
     if tmp_Level == 0:
       tmp_XmlNode = ET.Element(tmp_TagName)
