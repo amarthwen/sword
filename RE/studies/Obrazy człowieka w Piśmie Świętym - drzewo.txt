@@ -5,35 +5,50 @@ Document::SetSubTitle("Drzewo")
 Document::SetEmblem("tree.jpg")
 Document::SetQuote("Ps 1, 1-3")
 
-# Document::Sectioning::Begin("Section", "Wstęp")
-# Podczas tego studium przyjrzymy się bliżej jednemu z obrazów człowieka, ukazanych w Piśmie Świętym, przedstawijącego go jako drzewo.
-
+Document::Sectioning::Begin("Section", "Wstęp")
 Document::Sectioning::Begin("Section", "Temat główny")
-
-Document::Sectioning::Begin("SubSection", "Człowiek przedstawiony jako drzewo")
-SWORD::Scripture::GetText("Ps 1, 1-3", false)
-SWORD::Scripture::GetText("Dn 4, 6-9.16-19", false)
-SWORD::Scripture::GetText("Łk 3, 1-3.7-9", false)
-SWORD::Scripture::GetText("Łk 6, 43-44", false)
-
-Document::Sectioning::Begin("SubSection", "Plaga szarańczy")
-Plaga szarańczy w Egipcie:
-SWORD::Scripture::GetText("2 Moj 10, 3-15", false)
-
-Plaga szarańczy jako konsekwencja trwania przez Izraela w grzechu
+Document::Sectioning::Begin("SubSection", "Człowiek przyrównany do drzewa")
+Document::Sectioning::Begin("SubSubSection", "Drzewo rodzące owoc we właściwym czasie")
+SWORD::Scripture::GetText("Ps 1, 1-6", false)
+Document::Sectioning::Begin("SubSubSection", "Ostrzeżenie dla człowieka, który odstąpił od Pana Boga")
+SWORD::Scripture::GetText("Łk 3, 2-9", false)
+Document::Sectioning::Begin("SubSubSection", "Ostrzeżenie dla człowieka, który zatwardza swoje serce")
+SWORD::Scripture::GetText("2 Moj 10, 1-20", false)
+Document::Sectioning::Begin("SubSubSection", "Ostrzeżenie dla człowieka, nad którym zaczyna panować grzech")
+SWORD::Scripture::GetText("Dn 4, 6-9.16-24", false)
+Document::Sectioning::Begin("SubSubSection", "Trwanie w niewoli grzechu - Pan Jezus jako ogrodnik nawożący drzewo")
+SWORD::Scripture::GetText("Łk 13, 6-9", false)
+Document::Sectioning::Begin("SubSection", "Skąd właściwie biorą się owoce?")
+Document::Sectioning::Begin("SubSubSection", "O wydawaniu dobrego owocu")
+SWORD::Scripture::GetText("J 15, 1-16", false)
+Document::Sectioning::Begin("SubSubSection", "Dwa scenariusze")
+SWORD::Scripture::GetText("Iz 30, 1-5", false)
+Document::Sectioning::Begin("Section", "Szarańcza")
+Document::Sectioning::Begin("SubSection", "Skąd ta plaga?")
+Dlaczego plaga szarańczy została opisana w Piśmie Świętym?
+Document::Sectioning::Begin("SubSubSection", "Plaga szarańczy w Egipcie")
+SWORD::Scripture::GetText("2 Moj 10, 12-15", false)
+Document::Sectioning::Begin("SubSubSection", "Plaga szarańczy w Izraelu")
 SWORD::Scripture::GetText("Am 4, 9", false)
+SWORD::Scripture::GetText("Ml 3, 11", false)
+SWORD::Scripture::GetText("Jl 2, 25", false)
+Document::Sectioning::Begin("SubSubSection", "Plaga szarańczy jako konsekwencja trwania przez dany naród w grzechu")
+SWORD::Scripture::GetText("Am 7, 1-3", false)
+Document::Sectioning::Begin("SubSection", "Czego obrazem w Piśmie Świętym jest szarańcza?")
+Jeżeli drzewo jest obrazem człowieka to czego obrazem jest szarańcza?
 SWORD::Scripture::GetText("Jl 1, 4-7", false)
-# SWORD::Scripture::GetText("Am 7, 1-3", false)
+SWORD::Scripture::GetText("Obj 9, 1-11", false)
+# Cielesny Izrael = cielesna niewola + cielesny prześladowca (cielesny władca cielesnego Babilonu - Nebukadnezar)
+# Duchowy Izrael = duchowa niewola + duchowy prześladowca (duchowy władca duchowego Babilonu - Szatan)
+Document::Sectioning::Begin("Section", "Podsumowanie")
+Document::Sectioning::Begin("Section", "Do dalszego studium")
+Document::Sectioning::Begin("Section", "Pozostałe wersety")
+Najazd króla Sancheryba na Judę:
+SWORD::Scripture::GetText("2 Krl 19, 20-30", false)
+Inne:
+SWORD::Scripture::GetText("Iz 10, 15", false)
+SWORD::Scripture::GetText("Jr 17, 7-10", false)
+SWORD::Scripture::GetText("Jr 5, 11-14", false)
+SWORD::Scripture::GetText("Mt 7, 15-20", false)
 
-# Document::Sectioning::Begin("Section", "Latorośl")
-# O wszczepieniu latorośli w szlachetny krzew
-
-# Document::Sectioning::Begin("Section", "Winnica Boża")
-# SWORD::Scripture::GetText("Iz 5, 1-7", false)
-
-# Document::Sectioning::Begin("Section", "Podsumowanie")
-# Tekst podsumowania
-
-# Document::Sectioning::Begin("Section", "Do dalszego studium")
-# Propozycje dalszej lektury
 
