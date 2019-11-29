@@ -1,5 +1,9 @@
-Document::Sectioning::Begin("Document")
+Document::Sectioning::Begin("Document", "Obrazy człowieka w Piśmie Świętym")
 SWORD::Scripture::Translations::Use("BW")
+
+Document::SetSubTitle("Świątynia Ducha Świętego")
+Document::SetEmblem("Temple.jpg")
+Document::SetQuote("J 2, 18-21")
 
 Document::Sectioning::Begin("Section", "Temat główny")
 
