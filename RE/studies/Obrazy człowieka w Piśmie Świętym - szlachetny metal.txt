@@ -1,5 +1,8 @@
-Document::Sectioning::Begin("Document")
+Document::Sectioning::Begin("Document", "Obrazy człowieka w Piśmie Świętym")
 SWORD::Scripture::Translations::Use("BW")
+
+Document::SetSubTitle("Szlachetny metal")
+Document::SetEmblem("iron_pour.jpg")
 
 Document::Sectioning::Begin("Section", "Temat główny")
 
