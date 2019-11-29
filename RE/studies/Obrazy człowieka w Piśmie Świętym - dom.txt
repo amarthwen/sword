@@ -1,5 +1,8 @@
-Document::Sectioning::Begin("Document")
+Document::Sectioning::Begin("Document", "Obrazy człowieka w Piśmie Świętym")
 SWORD::Scripture::Translations::Use("BW")
+
+Document::SetSubTitle("Dom")
+Document::SetEmblem("home.jpg")
 
 Document::Sectioning::Begin("Section", "Temat główny")
 
@@ -9,5 +12,5 @@ SWORD::Scripture::GetText("Obj 3, 20", false)
 SWORD::Scripture::GetText("1 Moj 4, 3-7", false)
 SWORD::Scripture::GetText("1 Kor 3, 10-15", false)
 SWORD::Scripture::GetText("Jk 4, 5", false)
-SWORD::Scripture::GetText("Rz 7, 14-20", false)
+# SWORD::Scripture::GetText("Rz 7, 14-20", false)
 
