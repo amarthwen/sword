@@ -1,6 +1,20 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
 
-Document::SetSubTitle("W trakcie opracowania...")
-Document::SetEmblem("under_construction.jpg")
+# Document::SetEmblem("tree.jpg")
+# Document::SetQuote("Ps 1, 1-3")
+
+Document::Sectioning::Begin("Section", "Temat główny")
+SWORD::Scripture::GetText("Łk 11, 24-26", false)
+# SWORD::Scripture::GetText("Dz 19, 13-16", false)
+Document::Sectioning::Begin("SubSection", "Różne rodzaje duchów")
+Document::Sectioning::Begin("SubSubSection", "Duch kłamstwa")
+SWORD::Scripture::GetText("1 Krl 22, 18-22", false)
+SWORD::Scripture::GetText("Mi 2, 11", false)
+Document::Sectioning::Begin("SubSubSection", "Duch wszeteczeństwa")
+SWORD::Scripture::GetText("Oz 4, 12; 5, 4", false)
+Document::Sectioning::Begin("SubSubSection", "Duch głuchy i niemy")
+SWORD::Scripture::GetText("Mk 9, 25-27", false)
+Document::Sectioning::Begin("SubSubSection", "Duch wieszczy")
+SWORD::Scripture::GetText("Dz 16, 16-18", false)
 
