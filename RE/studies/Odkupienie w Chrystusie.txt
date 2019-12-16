@@ -3,6 +3,11 @@ SWORD::Scripture::Translations::Use("BW")
 
 Document::Sectioning::Begin("Section", "Temat główny")
 
+SWORD::Scripture::GetText("Rz 3, 21-26", false)
+SWORD::Scripture::GetText("Rz 6, 16-23", false)
+SWORD::Scripture::GetText("Rz 7, 4-6", false)
+SWORD::Scripture::GetText("Rz 7, 21-25", false)
+SWORD::Scripture::GetText("Rz 8, 14-17", false)
 SWORD::Scripture::GetText("Ga 4, 3-7", false)
 SWORD::Scripture::GetText("1 Kor 6, 19-20", false)
 SWORD::Scripture::GetText("Ga 3, 13-14", false)
