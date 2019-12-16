@@ -1,11 +1,36 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
 
-Document::Sectioning::Begin("Section", "Temat główny")
+Document::SetQuote("1 Moj 4, 6-7")
 
-SWORD::Scripture::GetText("Rz 7, 7-20", false)
-SWORD::Scripture::GetText("Ga 5, 16-17", false)
-SWORD::Scripture::GetText("1 Moj 4, 3-7", false)
-SWORD::Scripture::GetText("Ef 6, 10-18", false)
+Document::Sectioning::Begin("Section", "Temat główny")
+# SWORD::Scripture::GetText("Ga 5, 16-17", false)
+
+# SWORD::Scripture::GetText("Ef 6, 10-18", false)
 SWORD::Scripture::GetText("1 Kor 15, 53-56", false)
+SWORD::Scripture::GetText("Rz 5, 12-14", false)
+
+Document::Sectioning::Begin("SubSection", "Grzech i jego pożądliwości")
+SWORD::Scripture::GetText("1 Moj 4, 3-7", false)
+SWORD::Scripture::GetText("Rz 6, 3.10-12", false)
+
+Document::Sectioning::Begin("SubSection", "Niewola grzechu")
+SWORD::Scripture::GetText("Rz 6, 16-22", false)
+
+Document::Sectioning::Begin("SubSection", "Końcem grzechu jest śmierć")
+SWORD::Scripture::GetText("Rz 6, 20-21.23", false)
+SWORD::Scripture::GetText("Rz 7, 9-11", false)
+SWORD::Scripture::GetText("Rz 7, 14-20", false)
+SWORD::Scripture::GetText("Rz 8, 6", false)
+SWORD::Scripture::GetText("Rz 8, 12-13", false)
+SWORD::Scripture::GetText("Jk 1, 12-15", false)
+
+Document::Sectioning::Begin("SubSection", "Mocą grzechu jest Prawo Boże")
+# SWORD::Scripture::GetText("Rz 6, 7-11.13", false)
+SWORD::Scripture::GetText("Rz 7, 7-11.13", false)
+SWORD::Scripture::GetText("1 Kor 15, 56", false)
+
+Document::Sectioning::Begin("SubSection", "Śmierć dla grzechu")
+SWORD::Scripture::GetText("Rz 6, 1-14", false)
+SWORD::Scripture::GetText("Rz 7, 4-6", false)
 
