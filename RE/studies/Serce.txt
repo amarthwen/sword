@@ -51,6 +51,7 @@ SWORD::Scripture::GetText("Ps 51, 12", false)
 SWORD::Scripture::GetText("Mt 6, 19-21", false)
 SWORD::Scripture::GetText("Rz 1, 18-25", false)
 SWORD::Scripture::GetText("1 Moj 6, 5-6", false)
+SWORD::Scripture::GetText("Rz 5, 1-5", false)
 
 # Document::Sectioning::Begin("Section", "Podsumowanie")
 
