@@ -7,4 +7,5 @@ SWORD::Scripture::GetText("Obj 1, 18", false)
 SWORD::Scripture::GetText("Obj 6, 8", false)
 SWORD::Scripture::GetText("Obj 20, 13-14", false)
 SWORD::Scripture::GetText("1 Kor 15, 54-56", false)
+SWORD::Scripture::GetText("Rz 5, 12-14", false)
 
