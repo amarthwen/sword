@@ -1,6 +1,13 @@
 Document::Sectioning::Begin("Document")
 SWORD::Scripture::Translations::Use("BW")
 
-Document::SetSubTitle("W trakcie opracowania...")
-Document::SetEmblem("under_construction.jpg")
+# Document::SetSubTitle("W trakcie opracowania...")
+# Document::SetEmblem("under_construction.jpg")
+
+Document::Sectioning::Begin("Section", "Temat główny")
+
+Document::Sectioning::Begin("SubSection", "Owoce ciała")
+SWORD::Scripture::GetText("Mk 7, 21-23", false)
+SWORD::Scripture::GetText("Rz 1, 28-31", false)
+SWORD::Scripture::GetText("Ga 5, 19-21", false)
 
