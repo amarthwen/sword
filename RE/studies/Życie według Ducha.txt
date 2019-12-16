@@ -8,3 +8,6 @@ SWORD::Scripture::GetText("Rz 8, 14-17", false)
 SWORD::Scripture::GetText("J 3, 1-8", false)
 SWORD::Scripture::GetText("Rz 8, 1-9", false)
 
+Document::Sectioning::Begin("SubSection", "Owoc Ducha")
+SWORD::Scripture::GetText("Ga 5, 22-23", false)
+
