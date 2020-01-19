@@ -6,4 +6,4 @@ Document::Sectioning::Begin("Section", "Temat główny")
 SWORD::Scripture::GetText("Obj 3, 17-18", false)
 SWORD::Scripture::GetText("Za 3, 1-5", false)
 SWORD::Scripture::GetText("Obj 19, 6-8", false)
-
+SWORD::Scripture::GetText("Iz 61, 10", false)
