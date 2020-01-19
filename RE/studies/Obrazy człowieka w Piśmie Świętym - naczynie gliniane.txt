@@ -7,8 +7,12 @@ Document::SetEmblem("pottery.jpg")
 Document::Sectioning::Begin("Section", "Temat główny")
 
 SWORD::Scripture::GetText("2 Kor 4, 7", false)
+SWORD::Scripture::GetText("Jr 13, 12-14", false)
 SWORD::Scripture::GetText("Jr 18, 1-6", false)
 SWORD::Scripture::GetText("Jr 19, 1-6.10-13", false)
 SWORD::Scripture::GetText("Rz 9, 20-24", false)
 SWORD::Scripture::GetText("Iz 45, 9", false)
+SWORD::Scripture::GetText("Iz 29, 16", false)
+SWORD::Scripture::GetText("Iz 30, 13-14", false)
+SWORD::Scripture::GetText("Iz 64, 8", false)
 
