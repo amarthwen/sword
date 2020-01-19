@@ -8,4 +8,5 @@ Document::Sectioning::Begin("Section", "Temat główny")
 
 SWORD::Scripture::GetText("Iz 1, 24-25", false)
 SWORD::Scripture::GetText("Jr 6, 27-30", false)
+SWORD::Scripture::GetText("Ez 22, 17-22", false)
 
