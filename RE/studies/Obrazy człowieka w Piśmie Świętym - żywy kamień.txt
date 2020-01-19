@@ -7,4 +7,5 @@ Document::SetEmblem("stones.jpg")
 Document::Sectioning::Begin("Section", "Temat główny")
 
 SWORD::Scripture::GetText("1 P 2, 4-9", false)
+SWORD::Scripture::GetText("Iz 51, 1", false)
 
