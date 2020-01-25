@@ -1,0 +1,11 @@
+Document::Sectioning::Begin("Document")
+SWORD::Scripture::Translations::Use("BW")
+
+# Document::SetEmblem("locust.jpg")
+# Document::SetQuote("Obj 16, 13-14")
+
+Document::Sectioning::Begin("Section", "Temat główny")
+SWORD::Scripture::GetText("Iz 7, 23-25", false)
+SWORD::Scripture::GetText("Iz 9, 15-17", false)
+SWORD::Scripture::GetText("Iz 10, 12-14.16-17", false)
+SWORD::Scripture::GetText("Iz 32, 9-13", false)
