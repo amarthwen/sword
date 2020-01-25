@@ -8,6 +8,7 @@ SWORD::Scripture::GetText("Ez 37, 21-28", false)
 SWORD::Scripture::GetText("Ez 16, 52-63", false)
 SWORD::Scripture::GetText("J 14, 16-17", false)
 SWORD::Scripture::GetText("Hbr 13, 20-21", false)
+SWORD::Scripture::GetText("Iz 61, 6-8", false)
 
 # Document::Sectioning::Begin("SubSection", "Zerwanie wiecznego przymierza")
 SWORD::Scripture::GetText("Iz 24, 1-6", false)
