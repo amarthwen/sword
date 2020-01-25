@@ -9,6 +9,5 @@ SWORD::Scripture::GetText("Iz 34, 9-11", false)
 SWORD::Scripture::GetText("Iz 1, 7-9", false)
 SWORD::Scripture::GetText("So 2, 9.13", false)
 SWORD::Scripture::GetText("Jr 6, 8", false)
-SWORD::Scripture::GetText("Iz 51, 3", false)
-SWORD::Scripture::GetText("Iz 64, 10", false)
-
+SWORD::Scripture::GetText("Iz 51, 2-3", false)
+SWORD::Scripture::GetText("Iz 64, 9-10", false)
