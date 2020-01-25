@@ -1,0 +1,17 @@
+Document::Sectioning::Begin("Document")
+SWORD::Scripture::Translations::Use("BW")
+
+# Document::SetQuote("1 Moj 4, 6-7")
+
+Document::Sectioning::Begin("Section", "Temat główny")
+SWORD::Scripture::GetText("Iz 1, 27-28", false)
+SWORD::Scripture::GetText("Iz 2, 2-3", false)
+SWORD::Scripture::GetText("Iz 4, 3-6", false)
+SWORD::Scripture::GetText("Iz 8, 18", false)
+SWORD::Scripture::GetText("Iz 10, 12-14", false)
+SWORD::Scripture::GetText("Iz 12, 1-6", false)
+SWORD::Scripture::GetText("Iz 51, 2-3", false)
+SWORD::Scripture::GetText("Iz 52, 1-2", false)
+SWORD::Scripture::GetText("Iz 52, 7-10", false)
+
+SWORD::Scripture::GetText("Ab 1, 16-17", false)
