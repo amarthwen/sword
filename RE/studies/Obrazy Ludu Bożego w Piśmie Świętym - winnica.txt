@@ -7,6 +7,7 @@ Document::SetEmblem("grapes.jpg")
 Document::Sectioning::Begin("Section", "Temat główny")
 
 SWORD::Scripture::GetText("Iz 3, 14", false)
+SWORD::Scripture::GetText("Iz 4, 2-3", false)
 SWORD::Scripture::GetText("Iz 5, 1-7", false)
 SWORD::Scripture::GetText("Iz 27, 1-3", false)
 # SWORD::Scripture::GetText("Jr 11, 10-11", false)
