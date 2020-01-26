@@ -387,12 +387,25 @@ class HTM(iGenerator):
         tmp_AtrTitle = self.atr_FileName
 
       tmp_Contents.append(u'<html>')
+      tmp_Contents.append(u'<meta http-equiv="Content-Type" content="text/html; charset=utf-8">')
       tmp_Contents.append(u'<head>')
       tmp_Contents.append(u'<title>' + tmp_AtrTitle + u'</title>')
       tmp_Contents.append(u'<link rel="stylesheet" type="text/css" href="styles/default.css" />')
       tmp_Contents.append(u'</head>')
       tmp_Contents.append(u'<body>')
       tmp_Contents.append(u'<p class="css_title">' + tmp_AtrTitle + u'</p>')
+
+      if self.atr_DocumentEmblem is not None and len(self.atr_DocumentEmblem) > 0:
+        tmp_DocumentEmblem = os.path.join(u'..', u'..', cfg_DirImagesTmp, self.atr_DocumentEmblem)
+
+        tmp_Contents.append(u'<center><img class="css_emblem" alt="' + self.atr_DocumentEmblem + u'" src="' + tmp_DocumentEmblem + u'"></center>')
+
+      if self.atr_DocumentSubTitle is not None and len(self.atr_DocumentSubTitle) > 0:
+        tmp_Contents.append(u'<p class="css_subtitle">' + self.atr_DocumentSubTitle + u'</p>')
+
+      if self.atr_DocumentQuote is not None and len(self.atr_DocumentQuote) > 0:
+        tmp_Contents.append(u'<p class="css_quote">' + self.atr_DocumentQuote + u'</p>')
+
       tmp_Contents.append(str(tmp_TokScriptureExtracts))
     else:
       if tmp_AtrTitle is not None:
