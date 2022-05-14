@@ -46,8 +46,10 @@ class IModule(object):
     self.atr_XmlNamespace = {
       self.GetName().lower() : IModule.atr_XmlNamespaceBase + self.GetName().lower()
     }
+    
+    tmp_Iter = next(iter(self.atr_XmlNamespace))
 
-    ET.register_namespace(self.atr_XmlNamespace.keys()[0], self.atr_XmlNamespace.values()[0])
+    ET.register_namespace(tmp_Iter, self.atr_XmlNamespace[tmp_Iter])
 
   def __str__(self):
     return self.GetName()
@@ -69,7 +71,9 @@ class IModule(object):
     return tmp_XmlNamespaces
 
   def GetXmlTagName(self, arg_TagName):
-    return u'{' + self.atr_XmlNamespace.values()[0] + u'}' + arg_TagName
+    tmp_Iter = next(iter(self.atr_XmlNamespace))
+
+    return u'{' + self.atr_XmlNamespace[tmp_Iter] + u'}' + arg_TagName
 
   def HandleCmdUnknown(self, arg_Params):
     raise NotImplementedError

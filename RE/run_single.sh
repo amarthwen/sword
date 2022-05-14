@@ -26,7 +26,7 @@ function cmd_ConvertStudies() {
   for tmp_FileName in "$Cfg_StudiesDir/$tmp_Study.$Cfg_StudiesFilenameExt"; do
     
 
-    tmp_Rslt=`python -B convert.py "$tmp_FileName" "$Cfg_ConvertedStudiesOutputDir"`
+    tmp_Rslt=`python3 -B convert.py "$tmp_FileName" "$Cfg_ConvertedStudiesOutputDir"`
 
     if (( $? == 0 )); then
       echo -e -n "[${COL_2} OK ${COL_X}]"
@@ -43,7 +43,7 @@ function cmd_GenerateOutputFiles() {
 
   # generate output files
   for tmp_FileName in "$Cfg_ConvertedStudiesOutputDir/$tmp_Study.$Cfg_ConvertedStudiesFilenameExt"; do
-    tmp_Rslt=`python -B generate.py "$tmp_FileName" "$Cfg_OutputDir"`
+    tmp_Rslt=`python3 -B generate.py "$tmp_FileName" "$Cfg_OutputDir"`
 
     if (( $? == 0 )); then
       echo -e -n "[${COL_2} OK ${COL_X}]"

@@ -36,13 +36,13 @@ def main():
   if not os.path.exists(tmp_Args.OptInput):
     sys.exit(os.EX_OSFILE)
 
-  print 'Processing file: "' + tmp_Args.OptInput + '"'
+  print('Processing file: "{}"'.format(tmp_Args.OptInput))
 
   # get input file name
-  tmp_InputFileName = tmp_Args.OptInput.decode('utf-8')
+  tmp_InputFileName = tmp_Args.OptInput
 
   # get output folder name
-  tmp_OutputFolderName = tmp_Args.OptOutput.decode('utf-8')
+  tmp_OutputFolderName = tmp_Args.OptOutput
 
   # try to create output folder, if doesn't exist
   if os.path.exists(tmp_OutputFolderName):

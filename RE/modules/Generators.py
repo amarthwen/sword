@@ -538,10 +538,6 @@ class FODT(iGenerator):
     mimetypes.init()
 
   def AddTextToCurrentParagraph(self, arg_Text):
-    # print u'AddTextToCurrentParagraph'
-    # print self.atr_TextParagraphPrev
-    # print self.atr_TextParagraphCurr
-    # print arg_Text
     if self.atr_TextParagraphPrev is not None:
       self.atr_TextParagraphPrev.text = filter(None, u''.join([self.atr_TextParagraphPrev.text, arg_Text]))
       self.atr_TextParagraphCurr = self.atr_TextParagraphPrev
@@ -627,7 +623,7 @@ class FODT(iGenerator):
     tmp_XmlNodeDrawImage.set(self.GetXmlTagName(u'loext:mime-type'), tmp_FileMimeType)
 
     tmp_XmlNodeOfficeBinaryData = ET.SubElement(tmp_XmlNodeDrawImage, self.GetXmlTagName(u'office:binary-data'))
-    tmp_XmlNodeOfficeBinaryData.text = tmp_FileContentsBase64
+    tmp_XmlNodeOfficeBinaryData.text = tmp_FileContentsBase64.decode()
 
     if arg_Caption is not None:
       tmp_XmlNodeTextSpan = ET.SubElement(tmp_XmlNodeTextP_002, self.GetXmlTagName(u'text:span'))
@@ -750,7 +746,7 @@ class FODT(iGenerator):
       tmp_Contents.append(self.HandleTag(tmp_XmlNodeChild))
 
     if tmp_Level == Modules.Sectioning.atr_Levels['document']:
-      tmp_Contents.append(ET.tostring(self.atr_XmlNodeRoot))
+      tmp_Contents.append(ET.tostring(self.atr_XmlNodeRoot, encoding='utf8', method='xml').decode('utf-8'))
 
       if tmp_XmlNodeScriptureExtractsToBeStudiedInner is not None:
         if len(self.atr_ScriptureExtracts) > 0:

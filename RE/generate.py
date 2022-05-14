@@ -28,7 +28,7 @@ def main():
   if not os.path.exists(tmp_Args.OptOutput):
     sys.exit(os.EX_OSFILE)
 
-  print 'Processing file: "' + tmp_Args.OptInput + '"'
+  print('Processing file: "{}"'.format(tmp_Args.OptInput))
 
   # create instance of generators
   tmp_Gens = Generators.Generators()
@@ -41,10 +41,10 @@ def main():
   tmp_Gens.Register(Generators.TEX())
 
   # get input file name
-  tmp_InputFileName = tmp_Args.OptInput.decode('utf-8')
+  tmp_InputFileName = tmp_Args.OptInput
 
   # get output folder name
-  tmp_OutputFolderName = tmp_Args.OptOutput.decode('utf-8')
+  tmp_OutputFolderName = tmp_Args.OptOutput
 
   # load xml tree
   tmp_XmlNodeRoot = ET.parse(tmp_InputFileName).getroot()

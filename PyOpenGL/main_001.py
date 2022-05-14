@@ -1,11 +1,13 @@
 # taken from https://cyrille.rossant.net/2d-graphics-rendering-tutorial-with-pyopengl/
 
-# PyQt4 imports
-from PyQt4 import QtGui, QtCore, QtOpenGL
-from PyQt4.QtOpenGL import QGLWidget
+import sys
+
+# PyQt5 imports
+from PyQt5 import QtWidgets
+from PyQt5.QtOpenGL import QGLWidget
+
 # PyOpenGL imports
 import OpenGL.GL as gl
-import OpenGL.arrays.vbo as glvbo
 
 class GLPlotWidget(QGLWidget):
     # default window size
@@ -99,23 +101,21 @@ class GLPlotWidget(QGLWidget):
         # the window corner OpenGL coordinates are (-+1, -+1)
         gl.glOrtho(0, width, height, 0, -1, 1)
 
+# define a Qt window with an OpenGL widget inside it
+class TestWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(TestWindow, self).__init__()
+        # initialize the GL widget
+        self.widget = GLPlotWidget()
+        # put the window at the screen position (100, 100)
+        self.setGeometry(100, 100, self.widget.width, self.widget.height)
+        self.setCentralWidget(self.widget)
+        self.show()
+
 if __name__ == '__main__':
-    # import numpy for generating random data points
-    import sys
-
-    # define a Qt window with an OpenGL widget inside it
-    class TestWindow(QtGui.QMainWindow):
-        def __init__(self):
-            super(TestWindow, self).__init__()
-            # initialize the GL widget
-            self.widget = GLPlotWidget()
-            # put the window at the screen position (100, 100)
-            self.setGeometry(100, 100, self.widget.width, self.widget.height)
-            self.setCentralWidget(self.widget)
-            self.show()
-
     # create the Qt App and window
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     window = TestWindow()
     window.show()
     app.exec_()
+
